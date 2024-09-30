@@ -5,12 +5,13 @@ const controller = require('../controllers/userController')
 
 const router = express.Router()
 
-router.use(require('../middlewares/hbs').setLayoutName('auth'))
+router.get('/register', require('../middlewares/hbs').setLayoutName('single'), controller.register)
+router.get('/login', require('../middlewares/hbs').setLayoutName('single'), controller.login)
+router.get('/profile', controller.profile)
 
-router.get('/register', controller.register)
-router.get('/login', controller.login)
 
 router.post('/register', controller.register)
 router.post('/login', controller.login)
+router.post('/profile', controller.register)
 
 module.exports = router
