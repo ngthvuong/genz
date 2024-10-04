@@ -1,0 +1,44 @@
+{
+    "admin": {
+        "report": [
+            "view",
+            "viewDetail"
+        ],
+        "user": [
+            "verifyLicense"
+        ]
+    },
+    "donor": {
+        "report": [
+            "view",
+            "viewDetail",
+            "ratingDetail"
+        ],
+        "donor":["transfer"]
+    },
+    "charity": {
+        "report": [
+            "view",
+            "viewDetail"
+        ],
+        "campaign": [
+            "create",
+            "edit",
+            "delete",
+            "changeStatus",
+            "createContribution",
+            "editContribution",
+            "deleteDistribution",
+            "createDistribution",
+            "editDistribution",
+            "deleteDistribution"
+        ]
+    },
+    "recipient": {
+        "report": [
+            "view",
+            "viewDetail",
+            "ratingDetail"
+        ]
+    }
+}

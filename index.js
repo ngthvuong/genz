@@ -1,15 +1,29 @@
 'use strict'
 
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 3060
 const path = require('path')
 const hbs = require('express-handlebars')
+const session = require('express-session')
+
 
 app.use(express.static(__dirname + '/public'))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use(session({
+    secret:  process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        maxAge: 20 * 60 * 1000
+    }
+}))
 
 app.engine('hbs', hbs.engine({
     extname: '.hbs',

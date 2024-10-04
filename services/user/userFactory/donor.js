@@ -1,6 +1,7 @@
 'use strict'
 
-const donor = require('./user')
+const commonUser = require('./commonUser')
+const donor = Object.create(commonUser)
 
 donor.contribute = async () => {
     return "donor contribute service"
