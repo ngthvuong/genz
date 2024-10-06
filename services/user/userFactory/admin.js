@@ -7,4 +7,4 @@ admin.approveLisense = async () => {
     return "admin approveLisense service"
 }
 
-module.exports = donor
+module.exports = admin

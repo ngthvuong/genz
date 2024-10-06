@@ -38,6 +38,19 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.use(require('./routes'))
 
+app.use((req, res, next) => {
+    res.status(404).render('errorPage', {
+        title: "404 Error",
+        message: 'Page Not Found'
+    })
+})
+app.use((req, res, next) => {
+    res.status(500).render('errorPage', {
+        title: "500 Error",
+        message: 'Internal server error.'
+    })
+})
+
 app.listen(port, () => {
     console.log(`server is running on port ${port}`)
 })

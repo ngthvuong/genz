@@ -12,7 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      Charity.belongsTo(models.user, {foreignKey: userID})
+      Charity.belongsTo(models.User, {
+        foreignKey: 'userID',
+        scope: { role: 'charity' }
+      })
     }
   }
   Charity.init({

@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasOne(models.Charity, {
+        foreignKey: 'userID',
+        scope: { role: 'charity' }
+      })
     }
   }
   User.init({
@@ -32,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     role: {
       type: DataTypes.ENUM('admin', 'donor', 'recipient', 'charity'),
-      allowNull:false
+      allowNull: false
     }
   }, {
     sequelize,
