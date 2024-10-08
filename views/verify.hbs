@@ -3,52 +3,25 @@
     <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
         <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
             <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
-                <form id="registerForm">
+                <form action="/auth/register" method="post">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <a href="#" class="">
                             <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>GENZ</h3>
                         </a>
-                        <h3>Đăng Ký</h3>
+                        <h3>Xác Thực Tài Khoản</h3>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="phone" id="phone">
-                        <label for="phone">Điện Thoại</label>
+                        <input type="text" class="form-control" name="pin" id="pin">
+                        <label for="pin">Mã xác thực</label>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" name="email" id="email">
-                        <label for="email">Email</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="name" class="form-control" name="name" id="name">
-                        <label for="name">Tên</label>
-                    </div>
-                    <div class="form-floating mb-4">
-                        <input type="password" class="form-control" name="password" id="password">
-                        <label for="password">Mật Khẩu</label>
-                    </div>
-                    <div class="form-floating mb-4">
-                        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword">
-                        <label for="confirmPassword">Xác Nhận Mật Khẩu</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <select class="form-select" id="role" name="role" aria-label="Floating label select example"
-                            required>
-                            <option value=""></option>
-                            <option value="charity">Tổ chức quyên góp</option>
-                            <option value="donor">Người hỗ trợ</option>
-                            <option value="recipient">người nhận hỗ trợ</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                        <label for="role">Chọn loại người dùng</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Đăng Ký</button>
-                    <p class="text-center mb-0">Bạn đã có tài khoản? <a href="/auth/login">Đăng Nhập</a></p>
+                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Xác Thực</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 <!-- Sign Up End -->
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('registerForm').addEventListener('submit', function (event) {
@@ -86,7 +59,7 @@
                         document.getElementById('registerForm').appendChild(registerFormError);
 
                     } else {
-                        window.location.href = data.nextUrl
+                        window.location.href = "/auth/complete"
                     }
 
                 })
