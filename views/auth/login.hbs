@@ -1,0 +1,82 @@
+<!-- Sign In Start -->
+<div class="container-fluid">
+    <div class="row h-100 align-items-center justify-content-center" style="min-height: 90vh;">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
+                <form id="loginForm">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <a href="#" class="">
+                            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>{{appName}}</h3>
+                        </a>
+                        <h3>Đăng Nhập</h3>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Số điện thoại">
+                        <label for="phone">Số điện thoại</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu">
+                        <label for="password">Mật khẩu</label>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">Ghi Nhớ</label>
+                        </div>
+                        <a href="">Quên mật khẩu</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Đăng Nhập</button>
+                    <p class="text-center mb-0">Don't have an Account? <a href="/auth/register">Đăng ký</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sign In End -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let formErrors = document.getElementById('formErrors')
+            if (formErrors) {
+                formErrors.remove()
+            }
+
+            const formData = new FormData(this)
+            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+            fetch('/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.errors) {
+
+                        let messages = ''
+                        data.errors.forEach(error => {
+                            messages += `<p>${error.msg}</p>`
+                        })
+                        formErrors = document.createElement('div')
+                        formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                        formErrors.id = "formErrors"
+                        formErrors.innerHTML = messages
+                        document.getElementById('loginForm').appendChild(formErrors);
+
+                    } else {
+                        window.location.href = data.nextUrl
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        })
+    })
+</script>

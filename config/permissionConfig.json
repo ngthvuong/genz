@@ -1,8 +1,7 @@
 {
     "admin": {
         "report": [
-            "view",
-            "viewDetail"
+            "view"
         ],
         "user": [
             "verifyLicense"
@@ -11,34 +10,37 @@
     "donor": {
         "report": [
             "view",
-            "viewDetail",
-            "ratingDetail"
+            "rating"
         ],
-        "donor":["transfer"]
+        "contribute": [
+            "transfer"
+        ]
     },
     "charity": {
         "report": [
-            "view",
-            "viewDetail"
+            "view"
         ],
         "campaign": [
             "create",
             "edit",
             "delete",
-            "changeStatus",
-            "createContribution",
-            "editContribution",
-            "deleteDistribution",
-            "createDistribution",
-            "editDistribution",
-            "deleteDistribution"
+            "changeStatus"
+        ],
+        "contribute": [
+            "create",
+            "edit",
+            "delete"
+        ],
+        "distribute": [
+            "create",
+            "edit",
+            "delete"
         ]
     },
     "recipient": {
         "report": [
             "view",
-            "viewDetail",
-            "ratingDetail"
+            "rating"
         ]
     }
 }

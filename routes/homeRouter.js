@@ -6,6 +6,7 @@ const models = require('../models')
 
 const router = express.Router()
 
+
 router.get('/sync-db', (req, res) => {
     let models = require("../models")
     models.sequelize.sync().then(() => {
@@ -13,7 +14,7 @@ router.get('/sync-db', (req, res) => {
     })
 })
 
-
+router.use(require('../middlewares/auth').isLogged())
 router.get('/', controller.show)
 router.get('/error', require('../middlewares/hbs').setLayoutName('single'), controller.errorPage)
 

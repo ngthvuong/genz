@@ -1,9 +1,11 @@
 'use strict'
 
 const express = require('express')
+const controller = require('../controllers/callbackController')
+
 const router = express.Router()
 
-const controller = require('../controllers/callbackController')
+router.use(require('../middlewares/auth').isLogged())
 
 router.get('/payment/zalopay', controller.zaloPay)
 

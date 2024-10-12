@@ -2,11 +2,18 @@
 
 const auth = {}
 
-auth.check = () => {
+auth.isLogged = () => {
     return (req, res, next) => {
-
-        if(1){
-            res.redirect("/auth/login")
+        if (!req.session.user) {
+            return res.redirect("/auth/login")
+        }
+        next()
+    }
+}
+auth.isNotLogged = () => {
+    return (req, res, next) => {
+        if (req.session.user) {
+            return res.redirect("/")
         }
         next()
     }
