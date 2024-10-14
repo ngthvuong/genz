@@ -4,11 +4,11 @@ require('dotenv').config()
 
 const express = require('express')
 const app = express()
+
 const port = process.env.PORT || 3060
 const path = require('path')
 const hbs = require('express-handlebars')
 const session = require('express-session')
-
 
 app.use(express.static(__dirname + '/public'))
 app.use('/media', express.static(__dirname + '/media'))
@@ -57,3 +57,5 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
     console.log(`server is running on port ${port}`)
 })
+
+require('./websocket')(app);
