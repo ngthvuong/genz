@@ -11,12 +11,11 @@ const session = require('express-session')
 
 
 app.use(express.static(__dirname + '/public'))
+app.use('/media', express.static(__dirname + '/media'))
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-
-const multer = require('multer');
-const upload = multer();
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -46,7 +45,8 @@ app.use((req, res, next) => {
         message: 'Page Not Found'
     })
 })
-app.use((req, res, next) => {
+app.use((err, req, res, next) => {
+    console.error(err);
     res.status(500).render('errorPage', {
         layout: 'single',
         title: "500 Error",

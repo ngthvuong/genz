@@ -9,8 +9,6 @@ const testRouter = require('./testRouter')
 
 const commonMiddleware = require('../middlewares/commonMiddleware')
 
-
-
 const router = express.Router()
 
 router.use(commonMiddleware.setShareVariables())

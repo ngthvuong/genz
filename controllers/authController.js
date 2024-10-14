@@ -1,6 +1,5 @@
 'use strict'
 
-const bcrypt = require('bcrypt')
 const errors = require("../services/responseErrors")
 const OTPSMS = require('../repositories/OTPSMS')
 const models = require('../models')
@@ -16,6 +15,7 @@ controller.showRegister = async (req, res) => {
     })
 }
 controller.register = async (req, res) => {
+
     try {
         let { phone, email, name, password, role } = req.body
 
@@ -35,10 +35,10 @@ controller.register = async (req, res) => {
             password: hashPassword(password),
         }
         req.session.authProcess = {
-            step: (req.body.role == 'charity') ? steps.PENDING : steps.VERIFYING
+            step: steps.VERIFYING
         }
 
-        const nextUrl = (req.body.role == 'charity') ? "/auth/license" : "/auth/verify";
+        const nextUrl = "/auth/verify";
         return res.json({ success: true, nextUrl })
 
     } catch (error) {
@@ -61,32 +61,23 @@ controller.verify = async (req, res) => {
             throw new Error("Không có quyền truy cập!")
         }
         const { pin } = req.body
+
         if (! await OTPSMS.verifyOTP(fullPhone(req.session.tempUser.phone), pin)) {
             throw new Error("Mã xác thực không chính xác!")
         }
 
-        req.session.tempUser.status = 'active'
+        req.session.tempUser.status = (req.session.tempUser.role == 'charity') ? 'inactive' : 'active'
+
         await models.User.create(req.session.tempUser)
 
         req.session.authProcess.step = steps.COMPLETED
         return res.json({ success: true, nextUrl: "/auth/completed" })
 
     } catch (error) {
+        console.log(error)
         errors.add({ msg: error.message })
         return res.json(errors.get())
     }
-}
-
-controller.showUploadLicense = async (req, res) => {
-    if (!req.session.tempUser || req.session.authProcess.step != steps.PENDING) {
-        return res.redirect('/auth/register')
-    }
-    return res.render('auth/license', {
-        title: "Đăng Ký"
-    })
-}
-controller.uploadLicense = async (req, res) => {
-    return res.json({ success: true, nextUrl: "/auth/completed" })
 }
 
 controller.showCompleted = async (req, res) => {
@@ -123,7 +114,7 @@ controller.login = async (req, res) => {
         req.session.user = user
         return res.json({ success: true, nextUrl: "/" })
     } catch (error) {
-        console.log(error)
+        console.error(error)
         errors.add({ msg: error.message })
         return res.json(errors.get())
     }

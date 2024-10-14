@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true,
     },
+    name: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
     password: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -32,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     status: {
-      type: DataTypes.ENUM('active', 'inactive'),
+      type: DataTypes.ENUM('pending', 'active', 'inactive'),
       allowNull: false
     },
     role: {

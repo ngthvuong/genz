@@ -3,7 +3,7 @@
     <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
         <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
             <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
-                <form id="verifyForm">
+                <form id="charityForm">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <a href="#" class="">
                             <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>{{appName}}</h3>
@@ -12,15 +12,15 @@
                     </div>
                     <h4 class="mt-4">Thông Tin Tài Khoản Merchant ZaloPay</h4>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="appID" id="appID" placeholder="App ID">
+                        <input type="text" class="form-control" name="merchantAppID" id="appID" placeholder="App ID">
                         <label for="appID">App ID</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="key1" id="key1" placeholder="Key1">
+                        <input type="text" class="form-control" name="merchantKey1" id="key1" placeholder="Key1">
                         <label for="key1">Key 1</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="key2" id="key2" placeholder="Key2">
+                        <input type="text" class="form-control" name="merchantKey2" id="key2" placeholder="Key2">
                         <label for="key2">Key 2</label>
                     </div>
                     <h4 class="mt-4">Thông Tin Giấy Phép Kinh Doanh</h4>
@@ -29,11 +29,14 @@
                         <label for="name">Tên Giấy Phép</label>
                     </div>
                     <div class="mb-3">
-                        <label for="image" class="form-label">Hình ảnh</label>
-                        <input class="form-control" type="file" id="image">
+                        <label for="licenseImage" class="form-label">Hình ảnh</label>
+                        <input class="form-control" type="file" id="licenseImage" name="licenseImage">
                     </div>
 
-                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Thêm</button>
+                    <div class="w-100 mt-5 d-flex justify-content-center gap-3">
+                        <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Thêm</button>
+                        <a class="btn btn-secondary text-white w-100 py-3 mb-4" href="/user/logout">Thoát</a>
+                    </div>
                 </form>
             </div>
         </div>
@@ -43,7 +46,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('verifyForm').addEventListener('submit', function (event) {
+        document.getElementById('charityForm').addEventListener('submit', function (event) {
             event.preventDefault();
 
             let formErrors = document.getElementById('formErrors')
@@ -52,14 +55,10 @@
             }
 
             const formData = new FormData(this)
-            const data = JSON.stringify(Object.fromEntries(formData.entries()));
 
-            fetch('/auth/verify', {
+            fetch('/user/license', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: data
+                body: formData
             })
                 .then(response => {
                     return response.json()
@@ -75,7 +74,7 @@
                         formErrors.classList = 'col md-12 alert alert-warning mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
-                        document.getElementById('verifyForm').appendChild(formErrors);
+                        document.getElementById('charityForm').appendChild(formErrors);
 
                     } else {
                         window.location.href = data.nextUrl

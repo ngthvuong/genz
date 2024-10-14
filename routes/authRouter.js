@@ -12,9 +12,6 @@ router.use(require('../middlewares/hbs').setLayoutName('single'))
 
 router.get('/register', controller.showRegister)
 router.post('/register',registerValid, controller.register)
-router.get('/license', controller.showUploadLicense)
-
-
 router.get('/verify', controller.showVerify)
 router.post('/verify',verifyValid, controller.verify)
 router.get('/completed', controller.showCompleted)

@@ -25,5 +25,3 @@ module.exports = {
     steps, saltRounds, fullPhone, hashPassword, comparePassword
 }
 
-
-

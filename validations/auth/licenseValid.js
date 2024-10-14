@@ -19,13 +19,13 @@ const fileValidation = (req, res, next) => {
 };
 
 const validation = handle([
-    body('appID')
+    body('merchantAppID')
         .trim()
         .notEmpty().withMessage("App ID là bắt buộc!"),
-    body('key1')
+    body('merchantKey1')
         .trim()
         .notEmpty().withMessage("Key 1 là bắt buộc!"),
-    body('key2')
+    body('merchantKey2')
         .trim()
         .notEmpty().withMessage("Key 2 là bắt buộc!"),
     body('name')
