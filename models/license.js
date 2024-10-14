@@ -18,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   License.init({
     name: {
-      type: DataTypes.STRING(512),
+      type: DataTypes.STRING(255),
       allowNull: false,
     },
     imgPath: {
-      type: DataTypes.TEXT(512),
+      type: DataTypes.TEXT,
       allowNull: false,
     },
   }, {

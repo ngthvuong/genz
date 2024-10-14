@@ -13,30 +13,40 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasOne(models.Charity, {
         foreignKey: 'userID',
+        as: 'charity',
         scope: { role: 'charity' }
       })
     }
   }
   User.init({
+    name: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
     phone: {
-      type: DataTypes.STRING(15),
+      type: DataTypes.STRING(20),
       allowNull: false,
       unique: true,
     },
-    name: {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
     password: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(255),
       allowNull: false,
     },
     avatarPath: {
-      type: DataTypes.STRING(512),
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    email: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      unique: true,
+    },
+    address: {
+      type: DataTypes.TEXT,
       allowNull: true
     },
     status: {
-      type: DataTypes.ENUM('pending', 'active', 'inactive'),
+      type: DataTypes.ENUM('inactive', 'pending', 'active'),
       allowNull: false
     },
     role: {

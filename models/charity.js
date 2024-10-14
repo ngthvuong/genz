@@ -24,8 +24,20 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Charity.init({
+    representative: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    establishedDate: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     merchantAppID: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(255),
       allowNull: false,
       set(value) {
         const encryptedValue = encrypt.encrypt(value);
@@ -37,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     merchantKey1: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(255),
       allowNull: false,
       set(value) {
         const encryptedValue = encrypt.encrypt(value);
@@ -49,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     merchantKey2: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(255),
       allowNull: false,
       set(value) {
         const encryptedValue = encrypt.encrypt(value);
