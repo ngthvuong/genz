@@ -23,9 +23,11 @@ controller.updateLicense = async (req, res) => {
         if (!req.file) {
             throw new Error("Vui lòng upload file")
         }
-        const { merchantAppID, merchantKey1, merchantKey2, name } = req.body
+        const { representative, establishedDate, merchantAppID, merchantKey1, merchantKey2, name } = req.body
 
         const charity = await models.Charity.create({
+            representative,
+            establishedDate,
             merchantAppID,
             merchantKey1,
             merchantKey2,

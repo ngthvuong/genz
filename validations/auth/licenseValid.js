@@ -19,6 +19,12 @@ const fileValidation = (req, res, next) => {
 };
 
 const validation = handle([
+    body('representative')
+        .trim()
+        .notEmpty().withMessage("Người đại diện là bắt buộc!"),
+    body('establishedDate')
+        .trim()
+        .notEmpty().withMessage("Ngày thành lập là bắt buộc!"),
     body('merchantAppID')
         .trim()
         .notEmpty().withMessage("App ID là bắt buộc!"),

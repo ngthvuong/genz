@@ -19,10 +19,16 @@ controller.register = async (req, res) => {
     try {
         let { phone, email, name, password, role } = req.body
 
-        const existingUser = await models.User.findOne({ where: { phone } });
-        if (existingUser) {
+        const existingPhoneUser = await models.User.findOne({ where: { phone } });
+
+        if (existingPhoneUser) {
             throw new Error("Số điện thoại này đã được đăng ký!")
         }
+        const existingEmailUser = await models.User.findOne({ where: { phone } });
+        if (existingEmailUser) {
+            throw new Error("Email này đã được đăng ký!")
+        }
+
         if (! await OTPSMS.sendOTP(fullPhone(phone))) {
             throw new Error("Có lỗi khi gởi OTP, vui lòng kiểm tra lại số Điện thoại!")
         }
