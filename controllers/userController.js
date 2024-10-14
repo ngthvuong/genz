@@ -32,7 +32,7 @@ controller.updateLicense = async (req, res) => {
             userID: req.session.user.id
         })
 
-        const licenseImage = await licenseStorage.upload(req)
+        const licenseImage = await licenseStorage.saveFile(req)
 
         await models.License.create({
             name,
