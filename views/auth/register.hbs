@@ -1,0 +1,98 @@
+<!-- Verify Sign Up Start -->
+<div class="container-fluid">
+    <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
+                <form id="registerForm">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <a href="#" class="">
+                            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>{{appName}}</h3>
+                        </a>
+                        <h3>Đăng Ký</h3>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="phone" id="phone" placeholder="Điện thoại">
+                        <label for="phone">Điện thoại</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="name" class="form-control" name="name" id="name" placeholder="Họ tên">
+                        <label for="name">Họ tên</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Mật khẩu">
+                        <label for="password">Mật khẩu</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Xác nhận mật khẩu">
+                        <label for="confirmPassword">Xác nhận mật khẩu</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="role" name="role" aria-label="Floating label select example"
+                            required>
+                            <option value="">Lựa chon</option>
+                            <option value="charity">Tổ chức quyên góp</option>
+                            <option value="donor">Người hỗ trợ</option>
+                            <option value="recipient">người nhận hỗ trợ</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <label for="role">Chọn loại người dùng</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4 mt-5">Đăng Ký</button>
+                    <p class="text-center mb-0">Bạn đã có tài khoản? <a href="/auth/login">Đăng Nhập</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Verify Sign Up End -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('registerForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let formErrors = document.getElementById('formErrors')
+            if (formErrors) {
+                formErrors.remove()
+            }
+
+            const formData = new FormData(this)
+            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+            fetch('/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(result => {
+                    if (result.errors) {
+
+                        let messages = ''
+                        result.errors.forEach(error => {
+                            messages += `<p>${error.msg}</p>`
+                        })
+                        formErrors = document.createElement('div')
+                        formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                        formErrors.id = "formErrors"
+                        formErrors.innerHTML = messages
+                        document.getElementById('registerForm').appendChild(formErrors);
+
+                    } else {
+                        window.location.href = result.nextUrl
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        })
+    })
+</script>

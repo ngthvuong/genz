@@ -1,7 +1,12 @@
 {
     "admin": {
         "report": [
+<<<<<<< HEAD
             "view"        ],
+=======
+            "view"
+        ],
+>>>>>>> 0a85bf9bc66f072958131c181c15a83016e1255b
         "user": [
             "verifyLicense"
         ]
@@ -17,8 +22,12 @@
     },
     "charity": {
         "report": [
+<<<<<<< HEAD
             "view",
             "rating"
+=======
+            "view"
+>>>>>>> 0a85bf9bc66f072958131c181c15a83016e1255b
         ],
         "campaign": [
             "create",

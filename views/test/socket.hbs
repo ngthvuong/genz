@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="messages">
+        <p>Initial message: hihi</p>
+    </div>
+
+
+    <script>
+
+        const ws = new WebSocket('ws://localhost:8878');
+
+        ws.onopen = () => {
+            console.log('Connected to WebSocket server');
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            const messagesDiv = document.getElementById('messages');
+            const newMessage = document.createElement('p');
+            newMessage.textContent = `${data.timestamp}: ${data.message}`;
+            messagesDiv.appendChild(newMessage);
+        };
+
+        ws.onclose = () => {
+            console.log('Disconnected from WebSocket server');
+        };
+    </script>
+</body>
+
+</html>
