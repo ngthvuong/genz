@@ -16,6 +16,8 @@ module.exports = (sequelize, DataTypes) => {
         as: 'charity',
         scope: { role: 'charity' }
       })
+      User.hasMany(models.Review, { foreignKey: 'userId'})
+      User.hasMany(models.Comment, { foreignKey: 'userId'})
     }
   }
   User.init({
