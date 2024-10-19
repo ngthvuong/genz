@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class CampaignImages extends Model {
+  class CampaignImage extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      CampaignImages.belongsTo(models.Campaign, { foreignKey: 'campaignId'})
+      CampaignImage.belongsTo(models.Campaign, { foreignKey: 'campaignId'})
     }
   }
-  CampaignImages.init({
+  CampaignImage.init({
     description: {
       type: DataTypes.TEXT,
       allowNull: true
@@ -23,10 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false
     }
-  }, 
-  {
+  }, {
     sequelize,
-    modelName: 'CampaignImages',
+    modelName: 'CampaignImage',
   });
-  return CampaignImages;
+  return CampaignImage;
 };
