@@ -11,19 +11,18 @@ class UserApprovedEvent extends CommonEvent {
 
     /**
      * set true to isFilter to filter users
-     * list this->userID should be filter on handle function
+     * list this->userIDs should be filter on handle function
      */
     isFilter = true
 
 
     isUpdateSession = true
-
     /**
      * 1. this.event is the second param when object is created.
      * 
      * 2. Return payload data that send to client
      * 
-     * 3. If isFilter is true, should be assign a list of userID to this->userID
+     * 3. If isFilter is true, should be assign a list of userID to this->userIDs
      */
     handler = async () => {
         this.userIDs = [this.event.user.id]
