@@ -1,6 +1,6 @@
 'use strict'
 
-const { getIoInstance, connectedClients } = require('../')
+const { getIoInstance, connectedClients, socketTokens} = require('../')
 
 class CommonEvent {
 
@@ -27,6 +27,7 @@ class CommonEvent {
             connectedClients.forEach((sockets, userID) => {
                 if (this.userIDs.includes(userID)) {
                     sockets.forEach((socketId) => {
+                        data.token = socketTokens.get(socketId)
                         io.emit('channel', data)
                         console.log(`Sent '${this.name}' to user ${userID} via socket ${socketId}`)
                     });

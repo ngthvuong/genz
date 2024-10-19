@@ -59,4 +59,13 @@ controller.showPendingApproval = async (req, res) => {
     })
 }
 
+controller.resetUserSession = async (req, res) => {
+    const { userID } = req.body
+    const user = await models.User.findOne({ id: userID })
+    if (user) {
+        req.session.user = user
+    }
+    return res.json({ success: true, user: req.session.user })
+}
+
 module.exports = controller

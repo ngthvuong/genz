@@ -5,6 +5,8 @@ const sharedSession = require('express-socket.io-session');
 const port = process.env.WS_PORT || 8878
 let io;
 const connectedClients = new Map();
+const socketTokens = new Map();
+
 
 const setupWebSocket = (app, session, corsConfig) => {
     const server = app.listen(port, () => {
@@ -20,7 +22,6 @@ const setupWebSocket = (app, session, corsConfig) => {
     }));
 
     io.on('connection', (socket) => {
-
         const user = socket.handshake.session?.user
         if (user) {
             const userID = user.id;
@@ -43,6 +44,22 @@ const setupWebSocket = (app, session, corsConfig) => {
                 }
             }
         });
+        socket.on('setToken', (data) => {
+            if(data && data.token){
+                if(!socketTokens.has(socket.id)){
+                    socketTokens.set(socket.id, data.token)
+                }
+                socket.emit('setToken', {
+                    result: true
+                })
+            }else{
+                socket.emit('setToken', {
+                    result: false
+                })
+                socket.disconnect()
+            }
+        })
+
         socket.on('channel', (data) => {
             console.log("channel data")
             console.log(data)
@@ -59,4 +76,4 @@ const getIoInstance = () => {
     return io
 };
 
-module.exports = { setupWebSocket, getIoInstance, connectedClients };
+module.exports = { setupWebSocket, getIoInstance, connectedClients, socketTokens };

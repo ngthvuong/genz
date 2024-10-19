@@ -44,11 +44,28 @@ controller.user = async (req, res) => {
 }
 
 controller.event = async (req, res) => {
+
+    await models.User.update(
+        {
+            status: 'active'
+        },
+        { where: { id: 1 } })
+
     const UserApprovedEvent = require("../websocket/events/userApprovedEvent")
     await new UserApprovedEvent({
         user: { id: 1 }
     }).dispatch()
 
     return res.send("hihi this is event page")
+}
+
+controller.eventRollback = async (req, res) => {
+    await models.User.update(
+        {
+            status: 'pending'
+        },
+        { where: { id: 1 } })
+    return res.send("hihi this is event rollback page")
+
 }
 module.exports = controller
