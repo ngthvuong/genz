@@ -28,19 +28,27 @@ controller.transfer = async (req, res) => {
 controller.user = async (req, res) => {
     const charity = user({
         name: "hihi",
-        role:"charity"
+        role: "charity"
     })
     console.log(await charity.register())
     console.log(await charity.avgReview())
     console.log(await charity.role)
 
     models.User.create({
-        phone:'0909976102',
+        phone: '0909976102',
         password: '12321123',
-        status:'active',
-        role:'charity'
+        status: 'active',
+        role: 'charity'
     })
     return res.json("hihi")
 }
 
+controller.event = async (req, res) => {
+    const UserApprovedEvent = require("../websocket/events/userApprovedEvent")
+    await new UserApprovedEvent({
+        user: { id: 1 }
+    }).dispatch()
+
+    return res.send("hihi this is event page")
+}
 module.exports = controller

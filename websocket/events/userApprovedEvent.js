@@ -4,6 +4,11 @@ const CommonEvent = require('./commonEvent')
 const models = require('../../models')
 
 class UserApprovedEvent extends CommonEvent {
+
+    /**
+     * name of event
+     */
+    name = 'userApprovedEvent'
     /**
      * only send to auth client socket
      */
@@ -15,8 +20,6 @@ class UserApprovedEvent extends CommonEvent {
      */
     isFilter = true
 
-
-    isUpdateSession = true
     /**
      * 1. this.event is the second param when object is created.
      * 
@@ -24,10 +27,10 @@ class UserApprovedEvent extends CommonEvent {
      * 
      * 3. If isFilter is true, should be assign a list of userID to this->userIDs
      */
-    handler = async () => {
-        this.userIDs = [this.event.user.id]
-        this.additionalSession = {user : this.event.user}
-        
+    handle = async () => {
+        const userID = this.event.user.id
+        this.userIDs = [userID]
+
         return {
             userID,
             status: 'active'

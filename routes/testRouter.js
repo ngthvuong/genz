@@ -7,6 +7,8 @@ const router = express.Router()
 
 router.get('/transfer', controller.transfer)
 router.get('/user', controller.user)
+router.get('/event', controller.event)
+
 router.get('/socket', (req, res) =>{
     res.render("test/socket")
 })

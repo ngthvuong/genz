@@ -8,26 +8,15 @@
 </head>
 
 <body>
-    <div class="col-6" id="messages">
-        <p>Initial message: messages</p>
+    <div class="col-6" id="approvals">
+        <p>Initial message: approvals</p>
     </div>
-    <div class="col-6" id="payments">
-        <p>Initial message: payment</p>
-    </div>
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-    <script src="/js/websocket.js"></script>
     <script>
-        eventWS.registerListener('paymentSuccess', 'testWebSocket', (data) => {
-            const messagesDiv = document.getElementById('payments');
+        eventWS.registerListener('userApprovedEvent', 'testWebSocket', (data) => {
+            const messagesDiv = document.getElementById('approvals');
             const newMessage = document.createElement('p');
-            newMessage.textContent = `${data.timestamp}: $${data.amount}`;
-            messagesDiv.appendChild(newMessage);
-        })
-        eventWS.registerListener('userApproval', 'testWebSocket', (data) => {
-            const messagesDiv = document.getElementById('messages');
-            const newMessage = document.createElement('p');
-            newMessage.textContent = `${data.timestamp}: ${data.message}`;
-            messagesDiv.appendChild(newMessage);
+            newMessage.textContent = `This approved userID is ${data.userID}`;
+           messagesDiv.appendChild(newMessage);
         })
         eventWS.send('userApproval', {
             status: 'active'

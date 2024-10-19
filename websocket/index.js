@@ -24,8 +24,8 @@ const setupWebSocket = (app, session, corsConfig) => {
         const user = socket.handshake.session?.user
         if (user) {
             const userID = user.id;
-            if (!clients.has(userID)) {
-                clients.set(userID, new Set());
+            if (!connectedClients.has(userID)) {
+                connectedClients.set(userID, new Set());
             }
             connectedClients.get(userID).add(socket.id);
 
@@ -42,33 +42,11 @@ const setupWebSocket = (app, session, corsConfig) => {
                     connectedClients.delete(userID);
                 }
             }
-            clearInterval(userApprovalInterval);
-            clearInterval(paymentSuccessInterval);
         });
         socket.on('channel', (data) => {
             console.log("channel data")
             console.log(data)
         })
-
-        // Send data to the client every 5 seconds
-        const userApprovalInterval = setInterval(() => {
-            socket.emit('channel', {
-                eventName: 'userApproval',
-                payload: {
-                    message: 'Hello Message from server!',
-                    timestamp: new Date()
-                }
-            });
-        }, 2000)
-        const paymentSuccessInterval = setInterval(() => {
-            socket.emit('channel', {
-                eventName: 'paymentSuccess',
-                payload: {
-                    amount: 'Hello Payment $1000 from server!',
-                    timestamp: new Date()
-                }
-            });
-        }, 4000)
     });
 
     return server;
