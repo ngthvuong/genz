@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Transaction.belongsTo(models.campaign, {foreignKey:'campaignID'})
-      Transaction.belongsTo(models.paymentmethod, {foreignKey:'paymentMethodID'})
+      Transaction.belongsTo(models.Campaign, {foreignKey:'campaignID'})
+      Transaction.belongsTo(models.PaymentMethod, {foreignKey:'paymentMethodID'})
     }
   }
   Transaction.init({
