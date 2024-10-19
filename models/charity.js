@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       Charity.hasOne(models.License, {
         foreignKey: 'charityID'
       })
-      Charity.hasMany(models.Campaign, { foreignKey: 'charityId'})
+      Charity.hasMany(models.Campaign, { foreignKey: 'charityID'})
     }
   }
   Charity.init({

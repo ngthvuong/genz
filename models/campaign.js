@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Campaign.hasMany(models.CampaignImage, { foreignKey: 'campaignId'})
-      Campaign.hasMany(models.Review, { foreignKey: 'campaignId'})
-      Campaign.hasMany(models.Comment, { foreignKey: 'campaignId'})
-      Campaign.belongsTo(models.Charity, { foreignKey: 'charityId'})
+      Campaign.hasMany(models.CampaignImage, { foreignKey: 'campaignID'})
+      Campaign.hasMany(models.Review, { foreignKey: 'campaignID'})
+      Campaign.hasMany(models.Comment, { foreignKey: 'campaignID'})
+      Campaign.belongsTo(models.Charity, { foreignKey: 'charityID'})
     }
   }
   Campaign.init({

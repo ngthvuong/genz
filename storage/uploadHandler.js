@@ -52,6 +52,8 @@ class UploadHandler {
         const storage = multer.memoryStorage();
         if (this.type == "single") {
             this.upload = multer({ storage, fileFilter: this.fileFilter.bind(this) }).single(this.fieldName);
+        } else if (this.type === "multiple") {
+            this.upload = multer({ storage, fileFilter: this.fileFilter.bind(this) }).array(this.fieldName);
         } else {
             throw new Error('Unsupported upload type');
         }
@@ -71,6 +73,8 @@ class UploadHandler {
         });
         if (this.type == "single") {
             this.upload = multer({ storage: this.config }).single(this.fieldName);
+        } else if (this.type === "multiple") {
+            this.upload = multer({ storage: this.config }).array(this.fieldName);
         } else {
             throw new Error('Unsupported upload type');
         }
