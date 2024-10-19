@@ -8,31 +8,32 @@
 </head>
 
 <body>
-    <div id="messages">
-        <p>Initial message: hihi</p>
+    <div class="col-6" id="messages">
+        <p>Initial message: messages</p>
     </div>
-
-
+    <div class="col-6" id="payments">
+        <p>Initial message: payment</p>
+    </div>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="/js/websocket.js"></script>
     <script>
-
-        const ws = new WebSocket('ws://localhost:8878');
-
-        ws.onopen = () => {
-            console.log('Connected to WebSocket server');
-        };
-
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
+        eventWS.registerListener('paymentSuccess', 'testWebSocket', (data) => {
+            const messagesDiv = document.getElementById('payments');
+            const newMessage = document.createElement('p');
+            newMessage.textContent = `${data.timestamp}: $${data.amount}`;
+            messagesDiv.appendChild(newMessage);
+        })
+        eventWS.registerListener('userApproval', 'testWebSocket', (data) => {
             const messagesDiv = document.getElementById('messages');
             const newMessage = document.createElement('p');
             newMessage.textContent = `${data.timestamp}: ${data.message}`;
             messagesDiv.appendChild(newMessage);
-        };
-
-        ws.onclose = () => {
-            console.log('Disconnected from WebSocket server');
-        };
+        })
+        eventWS.send('userApproval', {
+            status: 'active'
+        })
     </script>
+
 </body>
 
 </html>

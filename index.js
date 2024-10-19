@@ -9,6 +9,7 @@ const port = process.env.PORT || 3060
 const path = require('path')
 const hbs = require('express-handlebars')
 const session = require('express-session')
+const cors = require('cors')
 
 app.use(express.static(__dirname + '/public'))
 app.use('/media', express.static(__dirname + '/media'))
@@ -17,15 +18,22 @@ app.use('/media', express.static(__dirname + '/media'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use(session({
+const sessionMiddleware = session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        maxAge: 20 * 60 * 1000
+        maxAge: 20 * 60 * 1000 // 20 minutes
     }
-}))
+});
+app.use(sessionMiddleware)
+
+const corsConfig = {
+    origin: 'http://localhost:3060',
+    credentials: true
+}
+app.use(cors(corsConfig));
 
 app.engine('hbs', hbs.engine({
     extname: '.hbs',
@@ -54,8 +62,10 @@ app.use((err, req, res, next) => {
     })
 })
 
+const { setupWebSocket } = require('./websocket')
+setupWebSocket(app, sessionMiddleware, corsConfig)
+
 app.listen(port, () => {
     console.log(`server is running on port ${port}`)
 })
 
-require('./websocket')(app);
