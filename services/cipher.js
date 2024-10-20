@@ -1,6 +1,6 @@
 const crypto = require('crypto')
 const algorithm = 'aes-256-gcm'
-const key = process.env.ENCRYPTION_KEY
+const key = process.env.ENCRYPTION_KEY || "478acae15b8972420798e31d010d11b6"
 
 const cipher = {}
 
