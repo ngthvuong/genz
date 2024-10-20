@@ -29,10 +29,17 @@ const sessionMiddleware = session({
 });
 app.use(sessionMiddleware)
 
+const allowedOrigins = process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
 const corsConfig = {
-    origin: 'http://localhost:3060',
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
     credentials: true
-}
+};
 app.use(cors(corsConfig));
 
 app.engine('hbs', hbs.engine({
