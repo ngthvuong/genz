@@ -47,6 +47,7 @@ app.engine('hbs', hbs.engine({
     defaultLayout: 'app',
     layoutsDir: __dirname + '/views/layouts',
     partialsDir: __dirname + '/views/partials',
+    runtimeOptions: { allowProtoPropertiesByDefault: true },
 }))
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'views'))
