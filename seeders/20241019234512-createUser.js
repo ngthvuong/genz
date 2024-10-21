@@ -63,6 +63,51 @@ module.exports = {
         status: 'active',
         role: "recipient"
       },
+      {
+        name: "Ninh Võ 1",
+        phone: "0909093065",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093062.jpg",
+        email: "ninvo1@genz.com",
+        status: 'active',
+        role: "charity"
+      },
+      {
+        name: "Ninh Võ 2",
+        phone: "0909093066",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093062.jpg",
+        email: "ninvo2@genz.com",
+        status: 'active',
+        role: "charity"
+      },
+      {
+        name: "Ninh Võ 3",
+        phone: "0909093067",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093062.jpg",
+        email: "ninvo3@genz.com",
+        status: 'active',
+        role: "charity"
+      },
+      {
+        name: "Ninh Võ 4",
+        phone: "0909093068",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093062.jpg",
+        email: "ninvo4@genz.com",
+        status: 'active',
+        role: "charity"
+      },
+      {
+        name: "Ninh Võ 5",
+        phone: "0909093069",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093062.jpg",
+        email: "ninvo5@genz.com",
+        status: 'active',
+        role: "charity"
+      },
     ])
   },
 

@@ -49,11 +49,11 @@ controller.event = async (req, res) => {
         {
             status: 'active'
         },
-        { where: { id: 1 } })
+        { where: { id: 4 } })
 
     const UserApprovedEvent = require("../websocket/events/userApprovedEvent")
     await new UserApprovedEvent({
-        user: { id: 1 }
+        user: { id: 4 }
     }).dispatch()
 
     return res.send("hihi this is event page")
@@ -64,7 +64,7 @@ controller.eventRollback = async (req, res) => {
         {
             status: 'pending'
         },
-        { where: { id: 1 } })
+        { where: { id: 4 } })
     return res.send("hihi this is event rollback page")
 
 }
