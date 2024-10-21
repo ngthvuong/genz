@@ -1,0 +1,18 @@
+.logo_image {
+    width: 40px;
+    height: 40px;
+}
+
+.left_banner {
+    width: 250px;
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: auto;
+}
+
+.left_banner img {
+    width: 250px;
+    height: 250px;
+}

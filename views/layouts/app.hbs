@@ -29,7 +29,11 @@
 
     <!-- Template Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
-    <link href="/css/223_250_276_300.css" rel="stylesheet">
+    <link href="/css/22880223.css" rel="stylesheet">
+    <link href="/css/22880250.css" rel="stylesheet">
+    <link href="/css/22880276.css" rel="stylesheet">
+    <link href="/css/22880300.css" rel="stylesheet">
+
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script src="/js/websocket.js"></script>
@@ -135,10 +139,10 @@
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img class="rounded-circle me-lg-2" src="/img/user.svg" alt=""
                                 style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">John Doe</span>
+                            <span class="d-none d-lg-inline-flex">{{user.name}}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">My Profile</a>
+                            <a href="/user/profile" class="dropdown-item">My Profile</a>
                             <a href="/user/logout" class="dropdown-item">Thoát</a>
                         </div>
                     </div>
