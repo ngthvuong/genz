@@ -4,7 +4,7 @@ const zaloPay = require("../../repositories/zaloPay")
 
 const payment = {}
 
-payment.transfer = async (methodCode, data) => {
+payment.transfer = async (campaignID, methodCode, data) => {
     //1. store temporary transfer information
     //create new transactionID
     const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0')

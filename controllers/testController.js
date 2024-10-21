@@ -4,17 +4,18 @@ const payment = require("../services/payment")
 const user = require("../services/user")
 const models = require("../models")
 const { password } = require("pg/lib/defaults")
+const charity = require("../services/user/userFactory/charity")
 
 
 const controller = {}
 
 controller.transfer = async (req, res) => {
 
-    const transaction = await payment.transfer('MASTERCARD', {
+    const transaction = await payment.transfer(campaignID, 'MASTERCARD', {
         appUser: '0909976102',
         amount: '111111',
         item: '[{"itemid":"1","itemname":"Chiến Dich 1"}]',
-        description: "Genz - Vuong Đóng góp abc",
+        description: "Genz -  Đóng góp abc",
     })
 
     if (transaction.error) {
