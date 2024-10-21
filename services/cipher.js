@@ -9,14 +9,22 @@ cipher.encrypt = (text) => {
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv)
     let encrypted = cipher.update(text, 'utf8', 'hex')
     encrypted += cipher.final('hex')
-    return `${iv.toString('hex')}:${encrypted}`
+    const authTag = cipher.getAuthTag().toString('hex');
+    return `${iv.toString('hex')}:${encrypted}:${authTag}`
 }
 
 cipher.decrypt = (encryptedText) => {
-    const [iv, encrypted] = encryptedText.split(':')
+    const [iv, encrypted, authTag] = encryptedText.split(':')
     const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), Buffer.from(iv, 'hex'))
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8')
-    decrypted += decipher.final('utf8')
+    decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+    let decrypted;
+    try {
+        decrypted = decipher.update(encrypted, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+    } catch (error) {
+        console.error("Decryption failed:", error.message);
+        throw new Error("Decryption failed due to invalid data or authentication tag");
+    }
     return decrypted
 }
 

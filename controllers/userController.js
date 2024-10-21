@@ -2,6 +2,8 @@
 const models = require('../models')
 const errors = require("../services/responseErrors")
 const licenseStorage = require("../storage/licenseStorage")
+const avatarStorage = require("../storage/avatarStorage")
+const { hashPassword } = require('../services/authService')
 
 const controller = {}
 
@@ -61,11 +63,79 @@ controller.showPendingApproval = async (req, res) => {
 
 controller.resetUserSession = async (req, res) => {
     const { userID } = req.body
-    const user = await models.User.findOne({ id: userID })
+
+    const user = await models.User.findOne({ where: { id: userID } })
     if (user) {
         req.session.user = user
     }
     return res.json({ success: true, user: req.session.user })
+}
+
+controller.showProfile = async (req, res) => {
+    const userID = req.session.user ? req.session.user.id : 0;
+    const user = await models.User.findOne({
+        where: { id: userID },
+        include: [
+            {
+                model: models.Charity,
+                include: [
+                    {
+                        model: models.License
+                    }
+                ]
+            }
+        ]
+    })
+
+    if (!user) {
+        return res.redirect("/")
+    }
+
+    return res.render('user/profile', {
+        title: "Thông Tin Tài Khoản",
+        user: user
+    })
+}
+
+controller.editProfile = async (req, res) => {
+    try {
+        const userID = req.session.user ? req.session.user.id : 0;
+        const { name, address, isChangePassword, password } = req.body
+        const updateData = {}
+        if (name) {
+            updateData.name = name
+        }
+        if (address) {
+            updateData.address = address
+        }
+
+        if (isChangePassword) {
+            updateData.password = hashPassword(password)
+        }
+
+        if (req.file) {
+            const avatarImage = await avatarStorage.saveFile(req)
+            updateData.avatarPath = avatarImage.path
+        }
+
+
+        if (await models.User.update(updateData, { where: { id: userID } })) {
+            const user = await models.User.findOne({ where: { id: userID } })
+            return res.json({
+                success: true, data: {
+                    user
+                }
+            })
+        }
+
+        errors.add({ msg: "có lỗi trong quá trình cập nhật dữ liệu người dùng" })
+        return res.json(errors.get())
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
 }
 
 module.exports = controller

@@ -26,8 +26,6 @@
 <script>
     eventWS.registerListener('userApprovedEvent', 'pendingApprovalLicense', (payload) => {
         const userID = "{{ user.id }}"
-        console.log("User ID:", "{{ user.id }}");
-
         const formData = new FormData()
         formData.append('userID', userID)
         const data = JSON.stringify(Object.fromEntries(formData.entries()));
