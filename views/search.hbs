@@ -1,0 +1,17 @@
+<div class="rows m-3">
+    <h4>Kết quả "<span class="text-info">{{keyword}}</span>"</h4>
+</div>
+
+<div class="row m-3">
+    {{#each campaigns}}
+    {{>campaignItem}}
+    {{/each}}
+</div>
+<div class="row m-3">
+    <nav aria-label="Page navigation example" id="pagination">
+        {{{
+        createPagination pagination paginationClass="pagination justify-content-center"
+        leftText="Previous" rightText="Next"
+        }}}
+    </nav>
+</div>

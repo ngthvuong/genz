@@ -11,10 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Campaign.hasMany(models.CampaignImage, { foreignKey: 'campaignID'})
-      Campaign.hasMany(models.Review, { foreignKey: 'campaignID'})
-      Campaign.hasMany(models.Comment, { foreignKey: 'campaignID'})
-      Campaign.belongsTo(models.Charity, { foreignKey: 'charityID'})
+      Campaign.hasMany(models.CampaignImage, { foreignKey: 'campaignID' })
+      Campaign.hasOne(models.CampaignImage, { foreignKey: 'campaignID', as: 'firstImage' })
+
+      Campaign.hasMany(models.Review, { foreignKey: 'campaignID' })
+      Campaign.hasMany(models.Comment, { foreignKey: 'campaignID' })
+      Campaign.belongsTo(models.Charity, { foreignKey: 'charityID' })
     }
   }
   Campaign.init({
@@ -32,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     goal: {
       type: DataTypes.TEXT,
-      allowNull: false 
+      allowNull: false
     },
     budget: {
       type: DataTypes.DECIMAL(19, 4),

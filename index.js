@@ -10,6 +10,7 @@ const path = require('path')
 const hbs = require('express-handlebars')
 const session = require('express-session')
 const cors = require('cors')
+const { createPagination } = require("express-handlebars-paginate")
 
 app.use(express.static(__dirname + '/public'))
 app.use('/media', express.static(__dirname + '/media'))
@@ -42,12 +43,17 @@ const corsConfig = {
 };
 app.use(cors(corsConfig));
 
+const helpers = require('./helpers');
 app.engine('hbs', hbs.engine({
     extname: '.hbs',
     defaultLayout: 'app',
     layoutsDir: __dirname + '/views/layouts',
     partialsDir: __dirname + '/views/partials',
     runtimeOptions: { allowProtoPropertiesByDefault: true },
+    helpers: {
+        createPagination,
+        ...helpers
+    }
 }))
 app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'views'))

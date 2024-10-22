@@ -128,9 +128,8 @@ controller.editProfile = async (req, res) => {
             })
         }
 
-        errors.add({ msg: "có lỗi trong quá trình cập nhật dữ liệu người dùng" })
-        return res.json(errors.get())
-
+        throw new Error("có lỗi trong quá trình cập nhật dữ liệu người dùng")
+        
     } catch (error) {
         console.log(error)
         errors.add({ msg: error.message })
