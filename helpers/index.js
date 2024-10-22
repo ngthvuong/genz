@@ -15,8 +15,16 @@ handlebars.registerHelper('formatAmount', function (amount) {
     return Number(amount).toLocaleString();
 });
 
-handlebars.registerHelper('getFirstImagePath', function (images) {
-    return (images && images[0]) ? images[0].imagePath : '/img/logo.svg';
+handlebars.registerHelper('convertUserRole', function (role) {
+    let VNRole = "Quản Trị Viên"
+    if (role == "charity") {
+        VNRole = "Tổ Chức Quyên Góp"
+    } else if (role == "donor") {
+        VNRole = "Người Đóng Góp"
+    } else if (role == "recipient") {
+        VNRole = "Người Nhận Quyên Góp"
+    }
+    return VNRole;
 });
 
 handlebars.registerHelper('createStarList', function (stars) {
@@ -50,4 +58,6 @@ module.exports = {
     dateTimeFormat: handlebars.helpers.dateTimeFormat,
     getFirstImagePath: handlebars.helpers.getFirstImagePath,
     createStarList: handlebars.helpers.createStarList,
+    convertUserRole: handlebars.helpers.convertUserRole,
+
 };

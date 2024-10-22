@@ -4,7 +4,7 @@
     <div class="row g-4">
         <div class="col-sm-12">
             <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Thông Tin Cơ Bản</h6>
+                <h5 class="mb-4">Thông Tin Cơ Bản</h5>
                 <div class="showInfo">
                     <div class="row mb-3 avatar">
                         <img id="profileAvatar" src="{{avatarPath}}" />
@@ -88,7 +88,7 @@
         {{#if Charity}}
         <div class="col-sm-12">
             <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Thông Tin Tổ Chức</h6>
+                <h5 class="mb-4">Thông Tin Tổ Chức</h5>
                 <div class="showInfo">
                     <div class="row mb-3">
                         <div class="col-3 col-xl-2">Người Đại Điện: </div>
@@ -96,7 +96,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-3 col-xl-2">Ngày Thành Lập: </div>
-                        <div class="col-9 col-xl-10 fw-bold">{{Charity.establishedDate}}</div>
+                        <div class="col-9 col-xl-10 fw-bold">{{dateFormat Charity.establishedDate}}</div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-3 col-xl-2">Merchant ID: </div>
@@ -104,14 +104,15 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-3 col-xl-2">Merchant Key1: </div>
-                        <div class="col-9 col-xl-10 fw-bold" id="profileAddress">{{Charity.merchantKey1}}</div>
+                        <div class="col-9 col-xl-10 fw-bold">{{Charity.merchantKey1}}</div>
                     </div>
-                                        <div class="row mb-3">
+                    <div class="row mb-3">
                         <div class="col-3 col-xl-2">Merchant Key2: </div>
-                        <div class="col-9 col-xl-10 fw-bold" id="profileAddress">{{Charity.merchantKey2}}</div>
+                        <div class="col-9 col-xl-10 fw-bold">{{Charity.merchantKey2}}</div>
                     </div>
+                    <h6 class="col-3 col-xl-2 mt-4">Giấy Phép: </h6>
                     <div class="row mb-3 avatar">
-                        <img id="profileAvatar" src="{{Charity.License.imgPath}}" />
+                        <img class="col-9 col-xl-10 fw-bold" src="{{Charity.License.imgPath}}" />
                     </div>
                 </div>
             </div>
