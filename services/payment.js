@@ -1,6 +1,6 @@
 'use strict'
 
-const zaloPay = require("../../repositories/zaloPay")
+const zaloPay = require("../repositories/zaloPay")
 
 const payment = {}
 

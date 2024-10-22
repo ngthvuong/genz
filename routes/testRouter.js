@@ -6,7 +6,6 @@ const controller = require('../controllers/testController')
 const router = express.Router()
 
 router.get('/transfer', controller.transfer)
-router.get('/user', controller.user)
 router.get('/event', controller.event)
 router.get('/event-rollback', controller.eventRollback)
 
