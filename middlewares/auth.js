@@ -13,6 +13,9 @@ auth.isLogged = () => {
         if (req.session.user.status == 'pending' && req.session.user.role == 'charity') {
             return res.redirect("/user/approval")
         }
+        if (req.session.user.status == 'reject' && req.session.user.role == 'charity') {
+            return res.redirect("/user/reject")
+        }
         res.locals.user = req.session.user;
         res.locals.user.permission = require("../config/permissionConfig.json")[res.locals.user.role]
         // console.log(res.locals.user)
@@ -37,6 +40,17 @@ auth.isLoggedPending = () => {
             return res.redirect("/auth/login")
         }
         if (req.session.user.status != 'pending') {
+            return res.redirect("/")
+        }
+        next()
+    }
+}
+auth.isLoggedReject = () => {
+    return (req, res, next) => {
+        if (!req.session.user) {
+            return res.redirect("/auth/login")
+        }
+        if (req.session.user.status != 'reject') {
             return res.redirect("/")
         }
         next()

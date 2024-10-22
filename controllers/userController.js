@@ -17,7 +17,7 @@ controller.showUpdateLicense = async (req, res) => {
         title: "Bổ Sung Giấy Phép"
     })
 }
-controller.updateLicense = async (req, res) => {
+controller.createLicense = async (req, res) => {
     try {
         if (!req.session.user || req.session.user.role != 'charity') {
             throw new Error("Không có quyền truy cập!")
@@ -35,7 +35,6 @@ controller.updateLicense = async (req, res) => {
             merchantKey2,
             userID: req.session.user.id
         })
-
         const licenseImage = await licenseStorage.saveFile(req)
 
         await models.License.create({
@@ -60,6 +59,59 @@ controller.showPendingApproval = async (req, res) => {
         user: req.session.user
     })
 }
+controller.showRejectApproval = async (req, res) => {
+    return res.render('auth/reject', {
+        title: "Cập Nhật Giấy Phép"
+    })
+}
+
+controller.updateLicense = async (req, res) => {
+    try {
+        if (!req.session.user || req.session.user.role != 'charity') {
+            throw new Error("Không có quyền truy cập!")
+        }
+        if (!req.file) {
+            throw new Error("Vui lòng upload file")
+        }
+        const { representative, establishedDate, merchantAppID, merchantKey1, merchantKey2, name } = req.body
+
+
+        if (! await models.Charity.update({
+            representative,
+            establishedDate,
+            merchantAppID,
+            merchantKey1,
+            merchantKey2
+        }, {
+            where: { userID: req.session.user.id }
+        })) {
+            throw new Error("Có lỗi trong quá trình cập nhật thông tin tổ chức")
+        }
+
+        const charity = await models.Charity.findOne({ where: { userID: req.session.user.id } })
+
+        const licenseImage = await licenseStorage.saveFile(req)
+        if (! await models.License.update({
+            name,
+            imgPath: licenseImage.path,
+            charityID: charity.id
+        }, {
+            where: { charityID: charity.id }
+        })) {
+            throw new Error("Có lỗi trong quá trình cập nhật giấy phép")
+        }
+
+        await models.User.update({ status: 'pending' }, { where: { id: req.session.user.id } })
+        req.session.user.status = 'pending'
+
+        return res.json({ success: true, nextUrl: "/auth/approval" })
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+
 
 controller.resetUserSession = async (req, res) => {
     const { userID } = req.body
@@ -129,7 +181,7 @@ controller.editProfile = async (req, res) => {
         }
 
         throw new Error("có lỗi trong quá trình cập nhật dữ liệu người dùng")
-        
+
     } catch (error) {
         console.log(error)
         errors.add({ msg: error.message })

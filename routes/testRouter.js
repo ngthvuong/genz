@@ -7,6 +7,8 @@ const router = express.Router()
 
 router.get('/transfer', controller.transfer)
 router.get('/event', controller.event)
+router.get('/event-reject', controller.eventReject)
+
 router.get('/event-rollback', controller.eventRollback)
 
 

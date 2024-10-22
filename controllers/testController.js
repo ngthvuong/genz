@@ -30,11 +30,27 @@ controller.event = async (req, res) => {
         {
             status: 'active'
         },
-        { where: { id: 12 } })
+        { where: { id: 3 } })
 
     const UserApprovedEvent = require("../websocket/events/userApprovedEvent")
     await new UserApprovedEvent({
-        user: { id: 12 }
+        user: { id: 3 }
+    }).dispatch()
+
+    return res.send("hihi this is event page")
+}
+
+controller.eventReject = async (req, res) => {
+
+    await models.User.update(
+        {
+            status: 'reject'
+        },
+        { where: { id: 3 } })
+
+    const userRejectedEvent = require("../websocket/events/userRejectedEvent")
+    await new userRejectedEvent({
+        user: { id: 3 }
     }).dispatch()
 
     return res.send("hihi this is event page")

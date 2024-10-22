@@ -49,4 +49,30 @@
                 console.error('Error:', error)
             })
     })
+
+    eventWS.registerListener('userRejectedEvent', 'pendingApprovalLicense', (payload) => {
+        const userID = "{{ user.id }}"
+        const formData = new FormData()
+        formData.append('userID', userID)
+        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+        fetch('/user/resetSession', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(result => {
+                if (!result.errors) {
+                    window.location.reload()
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    })
 </script>
