@@ -6,6 +6,8 @@ const homeRouter = require('./homeRouter')
 const callbackRouter = require('./callbackRouter')
 const authRouter = require('./authRouter')
 const testRouter = require('./testRouter')
+const reportRouter = require('./reportRouter')
+
 
 const commonMiddleware = require('../middlewares/commonMiddleware')
 
@@ -15,6 +17,8 @@ router.use(commonMiddleware.setShareVariables())
 router.use('/user', userRouter)
 router.use('/callback', callbackRouter)
 router.use('/auth', authRouter)
+router.use('/report', reportRouter)
+
 router.use('/test', testRouter)
 router.use('/', homeRouter)
 

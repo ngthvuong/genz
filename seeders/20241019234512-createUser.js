@@ -1,7 +1,7 @@
 'use strict';
 const { User } = require('../models');
 
-const { steps, fullPhone, hashPassword, comparePassword } = require('../services/authService')
+const { hashPassword } = require('../services/authService')
 
 
 /** @type {import('sequelize-cli').Migration} */

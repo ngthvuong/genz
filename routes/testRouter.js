@@ -6,6 +6,8 @@ const controller = require('../controllers/testController')
 const router = express.Router()
 
 router.get('/transfer', controller.transfer)
+router.get('/heatmap', controller.heatmap)
+
 router.get('/event', controller.event)
 router.get('/event-reject', controller.eventReject)
 

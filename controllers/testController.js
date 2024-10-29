@@ -65,4 +65,8 @@ controller.eventRollback = async (req, res) => {
     return res.send("hihi this is event rollback page")
 
 }
+controller.heatmap = async (req, res) => {
+    res.render("test/heatmap")
+}
+
 module.exports = controller

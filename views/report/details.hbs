@@ -1,0 +1,153 @@
+{{#with campaign}}
+<div class="rows m-3">
+    <h4>Chiến Dịch Từ Thiện</h4>
+</div>
+<div class="row m-3">
+    <div class="col-4">
+        <img class="w-100 h-auto" src="/media/campaigns/1_1.jpg" alt="">
+    </div>
+    <div class="rows col-8 text-dark">
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Chiến dịch</div>
+            <div class="col-8">{{name}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Địa điểm</div>
+            <div class="col-8">{{location}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Ngày bắt đầu</div>
+            <div class="col-8">{{dateFormat startDate}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Ngày kết thúc</div>
+            <div class="col-8">{{dateFormat endDate}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Tổ chức từ thiện</div>
+            <div class="col-8">{{Charity.User.name}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Ngân sách dự kiến</div>
+            <div class="col-8">{{formatAmount budget}} VNĐ</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Tình trạng</div>
+            <div class="col-8">{{campaignStatusText status}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Đánh Giá</div>
+            <div class="col-8">{{averageRating}}/5 <i class="fas fa-star text-warning"></i></div>
+        </div>
+    </div>
+</div>
+<div class="row m-3">
+    <div class="col-4">
+    </div>
+    <div class="rows col-8 text-dark d-flex justify-content-between">
+        <a class="btn reportButton statementBtn" href="#">SAO KÊ</a>
+        <a class="btn btn-success fw-bold reportButton donateBtn inactive" href="javascript:void(0)">ĐÓNG GÓP</a>
+    </div>
+</div>
+<div class="row m-3">
+    <div class="col-12 fw-bolder text-white d-flex">
+        <div class="campaign_more_info_container col-12 fw-bolder text-white d-flex justify-content-around px-0"
+            id="campaign_more_info_tags">
+            <button class="w-100 btn btn-info text-white campaign_more_info_tag" type="button"
+                data-content="#descriptionContent">
+                Mô Tả
+            </button>
+            <button class="w-100 btn btn-info text-white campaign_more_info_tag" type="button"
+                data-content="#reviewContent">
+                Đánh Giá
+            </button>
+            <button class="w-100 btn btn-info text-white campaign_more_info_tag" type="button"
+                data-content="#commentContent">
+                Bình Luận
+            </button>
+        </div>
+    </div>
+    <div class="col-12" id="moreDetailContent">
+        <div id="descriptionContent" class="collapse border border-dark p-2 show">
+            {{{description}}}
+        </div>
+        <div id="reviewContent" class="collapse border border-dark p-2">
+            <div class="col-12 my-3">
+                <button type="button" class="btn btn-success reviewContentSubmit" data-bs-toggle="modal"
+                    data-bs-target="#reviewModal">
+                    Thêm Đánh Giá Của Bạn
+                </button>
+            </div>
+            {{#each Reviews}}
+            <div class="row col-12 my-2">
+                <div class="col-1">
+                    <img class="w-100 px-1" src="{{User.avatarPath}}" onerror="this.src='/img/logo.svg';" />
+                </div>
+                <div class="rows col-11">
+                    <div class="fw-bold text-dark">{{User.name}}</div>
+                    <div>{{{createStarList rating}}}</div>
+                    <div>{{message}}</div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        <div id="commentContent" class="collapse border border-dark p-2">
+            <div class="rows col-12 my-3 d-flex">
+                <textarea class="form-control" name="mesage" id="commentContentMessage" rows="2"></textarea>
+                <button class="btn btn-success commentContentSubmit col-1 ms-1">Gởi</button>
+            </div>
+            {{#each Comments}}
+            <div class="row col-12 mb-2">
+                <div class="col-1">
+                    <img class="w-100 px-1" src="{{User.avatarPath}}" onerror="this.src='/img/logo.svg';" />
+                </div>
+                <div class="rows col-11">
+                    <div class="fw-bold text-dark">{{User.name}}</div>
+                    <div>{{content}}</div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+{{/with}}
+
+<!-- Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModal">Thêm Đánh Giá Của Bạn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector("#campaign_more_info_tags").addEventListener("click", (event) => {
+        const campaignMoreInfoTag = event.target.closest(".campaign_more_info_tag")
+        console.log(campaignMoreInfoTag)
+        if (campaignMoreInfoTag) {
+            document.querySelectorAll(".campaign_more_info_tag").forEach((tag) => {
+                tag.classList.remove("active")
+            })
+            document.querySelectorAll("#moreDetailContent .collapse").forEach((tag) => {
+                tag.classList.remove("show")
+            })
+
+            campaignMoreInfoTag.classList.add("active")
+            contentId = campaignMoreInfoTag.dataset.content
+            console.log(contentId)
+            document.querySelector(contentId).classList.add("show")
+        }
+
+    })
+</script>

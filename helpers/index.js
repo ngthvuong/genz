@@ -14,6 +14,25 @@ handlebars.registerHelper('dateTimeFormat', function (date) {
 handlebars.registerHelper('formatAmount', function (amount) {
     return Number(amount).toLocaleString();
 });
+handlebars.registerHelper('campaignStatusText', function (status) {
+    let statusText = "Đã kết thúc"
+    switch (status) {
+        case 'Planning':
+            statusText = "Lập kế hoạch"
+            break
+        case 'Running':
+            statusText = "Đang thực hiện"
+            break
+        case 'Closed':
+            statusText = "Đã kết thúc"
+            break
+        case 'Finished':
+            statusText = "Đã đóng"
+            break
+    }
+    return statusText
+});
+
 
 handlebars.registerHelper('convertUserRole', function (role) {
     let VNRole = "Quản Trị Viên"
@@ -59,5 +78,9 @@ module.exports = {
     getFirstImagePath: handlebars.helpers.getFirstImagePath,
     createStarList: handlebars.helpers.createStarList,
     convertUserRole: handlebars.helpers.convertUserRole,
+    campaignStatusText: handlebars.helpers.campaignStatusText,
+
+
+
 
 };
