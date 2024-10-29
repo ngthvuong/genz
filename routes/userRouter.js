@@ -37,6 +37,7 @@ router.post('/reject',
 )
 
 router.post('/resetSession', sessionValid, controller.resetUserSession)
+router.use(require('../middlewares/hbs').setLayoutName('app'))
 
 router.use(require('../middlewares/auth').isLogged())
 router.get('/profile', controller.showProfile)
