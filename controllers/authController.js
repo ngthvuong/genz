@@ -15,7 +15,6 @@ controller.showRegister = async (req, res) => {
     })
 }
 controller.register = async (req, res) => {
-
     try {
         let { phone, email, name, password, role } = req.body
 
