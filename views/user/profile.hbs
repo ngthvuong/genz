@@ -7,7 +7,7 @@
                 <h5 class="mb-4">Thông Tin Cơ Bản</h5>
                 <div class="showInfo">
                     <div class="row mb-3 avatar">
-                        <img id="profileAvatar" src="{{avatarPath}}" />
+                        <img id="profileAvatar" src="{{avatarPath}}" onerror="this.src='/img/logo.svg';" />
                     </div>
                     <div class="row mb-3">
                         <div class="col-3 col-xl-2">Tên Tài Khoản: </div>
@@ -155,8 +155,6 @@
                     return response.json()
                 })
                 .then(result => {
-                    console.log(result)
-
                     if (result.errors) {
 
                         let messages = ''
@@ -172,7 +170,9 @@
                     } else {
                         document.getElementById("profileName").textContent = result.data.user.name
                         document.getElementById("profileAddress").textContent = result.data.user.address
-                        document.getElementById("profileAvatar").src = result.data.user.avatarPath
+                        if (result.data.user.avatarPath) {
+                            document.getElementById("profileAvatar").src = result.data.user.avatarPath
+                        }
 
                         document.getElementById("closeEditProfileModal").click()
                     }

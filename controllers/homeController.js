@@ -23,7 +23,6 @@ controller.search = async (req, res) => {
         return res.redirect(`${req.path}?${query.toString()}`)
 
     }
-
     const optionCount = {
         where: {
             name: {
@@ -62,7 +61,9 @@ controller.search = async (req, res) => {
         queryParams: req.query
     }
 
-    const maxPage = Math.ceil(parseFloat(totalRows) / limit);
+
+    const maxPage = Math.floor(parseFloat(totalRows) / limit) + 1;
+
     if (page > maxPage) {
         query.set("page", maxPage)
         return res.redirect(`${req.path}?${query.toString()}`)
