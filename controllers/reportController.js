@@ -69,7 +69,6 @@ controller.show = async (req, res) => {
 
 controller.showDetails = async (req, res) => {
     const id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
-    console.log(id)
     const campaign = await models.Campaign.findOne({
         where: {
             id,
@@ -82,7 +81,7 @@ controller.showDetails = async (req, res) => {
                 include: [
                     { model: models.User }
                 ]
-            },{
+            }, {
                 model: models.Review,
                 include: models.User
             },
@@ -94,7 +93,7 @@ controller.showDetails = async (req, res) => {
 
 
     })
-    if(!campaign){
+    if (!campaign) {
         return res.redirect("/")
     }
 
@@ -103,11 +102,21 @@ controller.showDetails = async (req, res) => {
     res.render('report/details', { campaign })
 }
 
+controller.review = async (req, res) => {
+    const id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
+
+}
+
+controller.comment = async (req, res) => {
+    const id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
+}
+
 controller.showStatement = async (req, res) => {
+    const id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
 
 }
 
 controller.download = async (req, res) => {
-    
+    const id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
 }
 module.exports = controller

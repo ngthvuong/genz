@@ -1,7 +1,7 @@
 'use strict'
 
 const errors = require("../services/responseErrors")
-const OTPSMS = require('../repositories/OTPSMS')
+const OTPSMS = require('../thirdParties/OTPSMS')
 const models = require('../models')
 const { steps, fullPhone, hashPassword, comparePassword } = require('../services/authService')
 
