@@ -2,7 +2,6 @@
 
 const express = require('express')
 const controller = require('../controllers/homeController')
-const models = require('../models')
 
 const router = express.Router()
 

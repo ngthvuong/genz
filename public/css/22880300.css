@@ -2,7 +2,11 @@
     max-width: 1300px;
     margin: auto !important;
 }
-
+.footer{
+    position: absolute;
+    width:-webkit-fill-available;
+    bottom: 0;
+}
 .logo_image {
     width: 40px;
     height: 40px;
@@ -46,6 +50,7 @@
 ul.pagination {
     display: flex;
     gap: 5px;
+    margin-bottom: 20px;
 }
 
 ul.pagination>li>a {
