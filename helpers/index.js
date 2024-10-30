@@ -14,6 +14,11 @@ handlebars.registerHelper('dateTimeFormat', function (date) {
 handlebars.registerHelper('formatAmount', function (amount) {
     return Number(amount).toLocaleString();
 });
+
+handlebars.registerHelper('nToBr', function (string) {
+    return string.replace(/\n/g, "<br>");
+});
+
 handlebars.registerHelper('campaignStatusText', function (status) {
     let statusText = "Đã kết thúc"
     switch (status) {
@@ -79,8 +84,6 @@ module.exports = {
     createStarList: handlebars.helpers.createStarList,
     convertUserRole: handlebars.helpers.convertUserRole,
     campaignStatusText: handlebars.helpers.campaignStatusText,
-
-
-
+    nToBr: handlebars.helpers.nToBr,
 
 };

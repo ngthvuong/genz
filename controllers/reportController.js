@@ -3,6 +3,7 @@
 const models = require("../models")
 const { Op } = require('sequelize')
 const campaignService = require("../services/campaignService")
+const errors = require("../services/responseErrors")
 
 
 const controller = {}
@@ -83,32 +84,147 @@ controller.showDetails = async (req, res) => {
                 ]
             }, {
                 model: models.Review,
-                include: models.User
+                include: models.User,
+                separate: true,
+                order: [['createdAt', 'DESC']]
             },
             {
                 model: models.Comment,
-                include: models.User
+                include: models.User,
+                separate: true,
+                order: [['createdAt', 'DESC']]
             }
         ]
-
-
     })
     if (!campaign) {
         return res.redirect("/")
     }
 
-    campaignService.averageRatingItem(campaign)
+    const userID = res.locals.user.id
+    const userReview = await models.Review.findOne({
+        where: {
+            userID,
+            campaignID: id
+        }
+    })
 
-    res.render('report/details', { campaign })
+    campaignService.averageRatingItem(campaign)
+    res.render('report/details', { campaign, userReview })
 }
 
 controller.review = async (req, res) => {
-    const id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
+    try {
+        const { userID, campaignID, reviewMessage, reviewRating } = req.body
 
+        const checkUser = await models.User.findOne({
+            attributes: ["id"],
+            where: { id: userID }
+        })
+        if (!checkUser) {
+            throw new Error("Người dùng không tồn tại!")
+        }
+
+        const checkCampaign = await models.Campaign.findOne({
+            attributes: ["id"],
+            where: {
+                id: campaignID,
+                status: { [Op.ne]: "Planning" }
+            }
+        })
+        if (!checkCampaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const checkReview = await models.Review.findOne({
+            attributes: ["id"],
+            where: {
+                campaignID,
+                userID
+            }
+        })
+        if (checkReview) {
+            throw new Error("Bạn đã đánh giá cho chiến dịch này!")
+        }
+
+        const review = await models.Review.create({
+            message: reviewMessage,
+            rating: reviewRating,
+            campaignID,
+            userID
+        })
+        const newReview = await models.Review.findOne({
+            where: { id: review.id },
+            include: [
+                {
+                    model: models.User,
+                    attributes: ["id", "name", "avatarPath"]
+                }
+            ]
+        })
+        const CampaignCreatedReviewEvent = require("../websocket/events/campaignCreatedReviewEvent")
+        await new CampaignCreatedReviewEvent({
+            newReview: newReview.toJSON()
+        }).dispatch()
+
+        return res.json({ success: true, data: newReview.toJSON() })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
 }
 
 controller.comment = async (req, res) => {
-    const id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
+    try {
+        const { userID, campaignID, commentContent } = req.body
+
+        const checkUser = await models.User.findOne({
+            attributes: ["id"],
+            where: { id: userID }
+        })
+        if (!checkUser) {
+            throw new Error("Người dùng không tồn tại!")
+        }
+
+        const checkCampaign = await models.Campaign.findOne({
+            attributes: ["id"],
+            where: {
+                id: campaignID,
+                status: { [Op.ne]: "Planning" }
+            }
+        })
+        if (!checkCampaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const comment = await models.Comment.create({
+            content: commentContent,
+            campaignID,
+            userID,
+        })
+
+        const newComment = await models.Comment.findOne({
+            where: { id: comment.id },
+            include: [
+                {
+                    model: models.User,
+                    attributes: ["id", "name", "avatarPath"]
+                }
+            ]
+        })
+        const CampaignCreatedCommentEvent = require("../websocket/events/campaignCreatedCommentEvent")
+        await new CampaignCreatedCommentEvent({
+            newComment: newComment.toJSON()
+        }).dispatch()
+        
+        return res.json({ success: true, data: comment.toJSON() })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
 }
 
 controller.showStatement = async (req, res) => {

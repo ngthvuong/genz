@@ -72,69 +72,78 @@
             {{{description}}}
         </div>
         <div id="reviewContent" class="collapse border border-dark p-2">
-            <div class="col-12 my-3">
+            {{#unless ../userReview}}
+            <div class="col-12 my-3" id="showReviewModal">
                 <button type="button" class="btn btn-success reviewContentSubmit" data-bs-toggle="modal"
                     data-bs-target="#reviewModal">
                     Thêm Đánh Giá Của Bạn
                 </button>
             </div>
-            {{#each Reviews}}
-            <div class="row col-12 my-2">
-                <div class="col-1">
-                    <img class="w-100 px-1" src="{{User.avatarPath}}" onerror="this.src='/img/logo.svg';" />
+            {{/unless}}
+            <div id="reviewContainer">
+                {{#each Reviews}}
+                <div class="row col-12 my-2">
+                    <div class="col-1">
+                        <img class="w-100 px-1" src="{{User.avatarPath}}" onerror="this.src='/img/logo.svg';" />
+                    </div>
+                    <div class="rows col-11">
+                        <div class="fw-bold text-dark">{{User.name}}</div>
+                        <div>{{{createStarList rating}}}</div>
+                        <div>{{message}}</div>
+                    </div>
                 </div>
-                <div class="rows col-11">
-                    <div class="fw-bold text-dark">{{User.name}}</div>
-                    <div>{{{createStarList rating}}}</div>
-                    <div>{{message}}</div>
-                </div>
+                {{/each}}
             </div>
-            {{/each}}
+
         </div>
         <div id="commentContent" class="collapse border border-dark p-2">
-            <div class="rows col-12 my-3 d-flex">
-                <textarea class="form-control" name="mesage" id="commentContentMessage" rows="2"></textarea>
-                <button class="btn btn-success commentContentSubmit col-1 ms-1">Gởi</button>
-            </div>
-            {{#each Comments}}
-            <div class="row col-12 mb-2">
-                <div class="col-1">
-                    <img class="w-100 px-1" src="{{User.avatarPath}}" onerror="this.src='/img/logo.svg';" />
+            <form class="rows col-12 my-3 d-flex" onsubmit="submitComment(event)">
+                <textarea class="form-control" name="commentContent" id="commentContent" rows="2"></textarea>
+                <button type="submit" class="btn btn-success commentContentSubmit col-1 ms-1">Gởi</button>
+            </form>
+            <div id="commentContainer">
+                {{#each Comments}}
+                <div class="row col-12 mb-2">
+                    <div class="col-1">
+                        <img class="w-100 px-1" src="{{User.avatarPath}}" onerror="this.src='/img/logo.svg';" />
+                    </div>
+                    <div class="rows col-11">
+                        <div class="fw-bold text-dark">{{User.name}}</div>
+                        <div>{{{nToBr content}}}</div>
+                    </div>
                 </div>
-                <div class="rows col-11">
-                    <div class="fw-bold text-dark">{{User.name}}</div>
-                    <div>{{content}}</div>
-                </div>
+                {{/each}}
             </div>
-            {{/each}}
+
         </div>
     </div>
 </div>
 {{/with}}
 
-<!-- Modal -->
-<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reviewModal">Thêm Đánh Giá Của Bạn</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
+{{#unless userReview}}
+{{>reviewModal}}
+{{/unless}}
 
 <script>
+    function createStarList(stars) {
+        let str = '<div class="ratting">';
+        let fullStars = Math.floor(stars);
+        let halfStar = stars - fullStars;
+
+        for (let i = 0; i < fullStars; i++) {
+            str += '<i class="fas fa-star text-warning"></i>';
+        }
+        if (halfStar > 0) {
+            str += '<i class="fas fa-star-half-alt text-warning"></i>';
+        }
+        for (let i = fullStars + (halfStar > 0 ? 1 : 0); i < 5; i++) {
+            str += '<i class="far fa-star text-warning"></i>';
+        }
+        str += '</div>';
+        return str;
+    }
     document.querySelector("#campaign_more_info_tags").addEventListener("click", (event) => {
         const campaignMoreInfoTag = event.target.closest(".campaign_more_info_tag")
-        console.log(campaignMoreInfoTag)
         if (campaignMoreInfoTag) {
             document.querySelectorAll(".campaign_more_info_tag").forEach((tag) => {
                 tag.classList.remove("active")
@@ -145,9 +154,77 @@
 
             campaignMoreInfoTag.classList.add("active")
             contentId = campaignMoreInfoTag.dataset.content
-            console.log(contentId)
             document.querySelector(contentId).classList.add("show")
         }
 
     })
+    const submitComment = (event) => {
+        event.preventDefault();
+        const contentDom = event.target.querySelector('textarea[name="commentContent"]')
+        console.log(contentDom.value)
+        if (!contentDom.value) {
+            contentDom.focus()
+            return
+        }
+
+        const formData = new FormData(event.target)
+        formData.append("campaignID", "{{ campaign.id }}")
+        formData.append("userID", "{{ user.id }}")
+
+        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+        fetch('/report/comment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                contentDom.value = ""
+                contentDom.focus()
+
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    }
+
+    eventWS.registerListener('campaignCreatedReviewEvent', 'reportDetails', (payload) => {
+        const { newReview } = payload
+        let newReviewDom = document.createElement("div")
+        newReviewDom.className = "row col-12 my-2"
+        newReviewDom.innerHTML = `
+            <div class="col-1">
+                <img class="w-100 px-1" src="${newReview.User.avatarPath}" onerror="this.src='/img/logo.svg';" />
+            </div>
+            <div class="rows col-11">
+                <div class="fw-bold text-dark">${newReview.User.name}</div>
+                <div>${createStarList(parseInt(newReview.rating))}</div>
+                <div>${newReview.message}</div>
+            </div>
+        `
+        document.querySelector("#reviewContainer").prepend(newReviewDom)
+    })
+
+    eventWS.registerListener('campaignCreatedCommentEvent', 'reportDetails', (payload) => {
+        console.log(payload)
+        const { newComment } = payload
+        let newCommentDom = document.createElement("div")
+        newCommentDom.className = "row col-12 mb-2"
+        newCommentDom.innerHTML = `
+            <div class="col-1">
+                <img class="w-100 px-1" src="${newComment.User.avatarPath}" onerror="this.src='/img/logo.svg';" />
+            </div>
+            <div class="rows col-11">
+                <div class="fw-bold text-dark">${newComment.User.name}</div>
+                <div>${newComment.content.replace(/\n/g, "<br>")}</div>
+            </div>
+        `
+        document.querySelector("#commentContainer").prepend(newCommentDom)
+    })
+
 </script>

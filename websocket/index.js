@@ -30,7 +30,7 @@ const setupWebSocket = (app, session, corsConfig) => {
             }
             connectedClients.get(userID).add(socket.id);
 
-            socket.join('connectedGroup');            
+            socket.join('connectedGroup');
         } else {
             socket.join('guestGroup');
         }
@@ -45,14 +45,14 @@ const setupWebSocket = (app, session, corsConfig) => {
             }
         });
         socket.on('setToken', (data) => {
-            if(data && data.token){
-                if(!socketTokens.has(socket.id)){
+            if (data && data.token) {
+                if (!socketTokens.has(socket.id)) {
                     socketTokens.set(socket.id, data.token)
                 }
                 socket.emit('setToken', {
                     result: true
                 })
-            }else{
+            } else {
                 socket.emit('setToken', {
                     result: false
                 })

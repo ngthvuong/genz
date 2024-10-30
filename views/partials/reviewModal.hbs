@@ -1,0 +1,96 @@
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModal" aria-hidden="true">
+    <form onSubmit="submitRating(event)" id="campaignReviewForm">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewModal">Thêm Đánh Giá Của Bạn</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="campaignReviewBody">
+                    <div class="ratting mb-2">
+                        <i class="far fa-star text-warning reviewRatingItem" data-point="1"></i>
+                        <i class="far fa-star text-warning reviewRatingItem" data-point="2"></i>
+                        <i class="far fa-star text-warning reviewRatingItem" data-point="3"></i>
+                        <i class="far fa-star text-warning reviewRatingItem" data-point="4"></i>
+                        <i class="far fa-star text-warning reviewRatingItem" data-point="5"></i>
+                    </div>
+                    <input type="hidden" name="reviewRating" id="reviewRating" />
+                    <div class="form-group">
+                        <label for="reviewMessage">Thêm cảm nhận của bạn</label>
+                        <textarea class="form-control" name="reviewMessage" id="reviewMessage" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        id="closeReviewModal">Đóng</button>
+                    <button type="submit" class="btn btn-primary" id="submitReviewModal">Gửi Đánh
+                        Giá</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    document.querySelectorAll(".reviewRatingItem").forEach(reviewRatingItem => {
+        reviewRatingItem.addEventListener("click", (event) => {
+            const targetedPoint = parseInt(event.target.dataset.point)
+            document.querySelector("#reviewRating").value = targetedPoint
+            document.querySelectorAll(".reviewRatingItem").forEach(item => {
+                if (parseInt(item.dataset.point) <= targetedPoint) {
+                    item.classList.add("fas")
+                    item.classList.remove("far")
+                } else {
+                    item.classList.add("far")
+                    item.classList.remove("fas")
+                }
+            })
+        })
+    })
+
+    const submitRating = (event) => {
+        event.preventDefault();
+        let formErrors = document.getElementById('formErrors')
+        if (formErrors) {
+            formErrors.remove()
+        }
+
+        const formData = new FormData(event.target)
+        formData.append("campaignID", "{{ campaign.id }}")
+        formData.append("userID", "{{ user.id }}")
+
+        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+        fetch('/report/review', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                if (data.errors) {
+
+                    let messages = ''
+                    data.errors.forEach(error => {
+                        messages += `<p>${error.msg}</p>`
+                    })
+                    formErrors = document.createElement('div')
+                    formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                    formErrors.id = "formErrors"
+                    formErrors.innerHTML = messages
+                    document.getElementById('campaignReviewBody').appendChild(formErrors);
+
+                } else {
+                    document.querySelector("#showReviewModal").remove();
+                    document.querySelector("#submitReviewModal").remove();
+                    document.getElementById('campaignReviewBody').innerHTML = "<p>- Chân thành cám ơn đánh giá của bạn!</p>"
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    }
+</script>

@@ -1,6 +1,6 @@
 'use strict'
 
-const { getIoInstance, connectedClients, socketTokens} = require('../')
+const { getIoInstance, connectedClients, socketTokens } = require('../')
 
 class CommonEvent {
 
@@ -19,10 +19,16 @@ class CommonEvent {
             eventName: this.name,
             payload
         }
+
         if (!this.isAuth) {
             io.emit('channel', data)
         } else if (!this.isFilter) {
-            io.to('connectedGroup').emit('channel', data)
+            connectedClients.forEach((sockets) => {
+                sockets.forEach((socketId) => {
+                    data.token = socketTokens.get(socketId)
+                    io.emit('channel', data)
+                });
+            });
         } else {
             connectedClients.forEach((sockets, userID) => {
                 if (this.userIDs.includes(userID)) {
