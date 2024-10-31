@@ -36,8 +36,8 @@
 
     <div class="col-12 px-0" id="moreDetailTransaction">
         <div id="contributionTransaction" class="collapse border border-dark p-2 show">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Responsive Table</h6>
+            <div class="bg-light rounded p-4">
+                <h6 class="mb-4">Các Khoản Đóng Góp</h6>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -65,8 +65,8 @@
             </div>
         </div>
         <div id="distributionTransaction" class="collapse border border-dark p-2">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Responsive Table</h6>
+            <div class="bg-light rounded p-4">
+                <h6 class="mb-4">Các Khoản Hỗ Trợ</h6>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -113,6 +113,124 @@
             contentId = campaignMoreInfoTag.dataset.content
             document.querySelector(contentId).classList.add("show")
         }
-
     })
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const itemPerPage = 10;
+
+        let contributionCount = parseInt("{{campaign.Contributions.length}}")
+        let contributionLoad = contributionCount < 10 ? false : true
+        const contributionDom = document.querySelector("#contributionTransaction")
+        const loadMoreContribution = async () => {
+            const formData = new FormData()
+            formData.append("offset", contributionCount)
+            formData.append("limit", itemPerPage)
+            formData.append("campaignID", "{{campaign.id}}")
+
+            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+            fetch('/report/contribution/load', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.success) {
+                        const { contributions } = data
+                        if (contributions.length >= 10) {
+                            contributionLoad = true
+                        }
+                        const tbody = contributionDom.querySelector("tbody")
+                        contributions.forEach(contribution => {
+                            const row = document.createElement("tr")
+                            row.innerHTML = `
+                                <th scope="row">${++contributionCount}</th>
+                                <td>${dateFormat(contribution.madeAt)}</td>
+                                <td>${contribution.sender}</td>
+                                <td>${formatAmount(contribution.amount)}</td>
+                                <td>${contribution.message}</td>
+                            `
+                            tbody.append(row)
+                        })
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        }
+        const onScrollContributionBox = async (event, callback) => {
+            if (contributionLoad) {
+                const { scrollTop, scrollHeight, clientHeight } = event.target
+                if (scrollTop + clientHeight >= scrollHeight) {
+                    contributionLoad = false
+                    await loadMoreContribution()
+                }
+            }
+        }
+        contributionDom.addEventListener("scroll", onScrollContributionBox)
+
+
+        let distributionCount = parseInt("{{campaign.Distributions.length}}")
+        let distributionLoad = distributionCount < 10 ? false : true
+        const distributionDom = document.querySelector("#distributionTransaction")
+        const loadMoreDistribution = async () => {
+            const formData = new FormData()
+            formData.append("offset", distributionCount)
+            formData.append("limit", itemPerPage)
+            formData.append("campaignID", "{{campaign.id}}")
+
+            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+            fetch('/report/distribution/load', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.success) {
+                        const { distributions } = data
+                        if (distributions.length >= 10) {
+                            distributionLoad = true
+                        }
+                        const tbody = distributionDom.querySelector("tbody")
+                        distributions.forEach(distribution => {
+                            const row = document.createElement("tr")
+                            row.innerHTML = `
+                                <th scope="row">${++distributionCount}</th>
+                                <td>${dateFormat(distribution.madeAt)}</td>
+                                <td>${distribution.receiver}</td>
+                                <td>${formatAmount(distribution.amount)}</td>
+                                <td>${distribution.message}</td>
+                            `
+                            tbody.append(row)
+                        })
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        }
+        const onScrollDistributionBox = async (event, callback) => {
+            if (distributionLoad) {
+                const { scrollTop, scrollHeight, clientHeight } = event.target
+                if (scrollTop + clientHeight >= scrollHeight) {
+                    distributionLoad = false
+                    await loadMoreDistribution()
+                }
+            }
+        }
+        distributionDom.addEventListener("scroll", onScrollDistributionBox)
+    })
+
+
 </script>

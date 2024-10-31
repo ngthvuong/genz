@@ -1,6 +1,6 @@
 'use strict'
 
-const campaign = require("../models/campaign")
+const models = require("../models")
 
 const campaignService = {}
 
@@ -26,22 +26,19 @@ campaignService.averageRatingItem = (campaign) => {
     }
 }
 
-campaignService.calTotalParams = (campaign) => {
-    const contributionAmount = campaign.Contributions.length
-    const distributionAmount = campaign.Distributions.length
-    campaign.totalContribution = 0
-    campaign.totalDistribution = 0
-
-    if (contributionAmount) {
-        campaign.Contributions.forEach(Contribution => {
-            campaign.totalContribution += parseInt(Contribution.amount)
-        })
-    }
-    if (distributionAmount) {
-        campaign.Distributions.forEach(Distribution => {
-            campaign.totalContribution += parseInt(Distribution.amount)
-        })
-    }
+campaignService.calTotalParams = async (campaign) => {
+    campaign.totalContribution = await models.Transaction.sum('amount', {
+        where: {
+            campaignID: campaign.id,
+            type: "Contribution"
+        }
+    })
+    campaign.totalDistribution = await models.Transaction.sum('amount', {
+        where: {
+            campaignID: campaign.id,
+            type: "Distribution"
+        }
+    })
     campaign.totalRemaining = campaign.totalContribution - campaign.totalDistribution
 }
 

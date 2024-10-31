@@ -254,12 +254,14 @@ controller.showStatement = async (req, res) => {
                 model: models.Transaction,
                 separate: true,
                 as: "Contributions",
+                order: [["createdAt", "DESC"]],
                 limit: 10
             },
             {
                 model: models.Transaction,
                 separate: true,
                 as: "Distributions",
+                order: [["createdAt", "DESC"]],
                 limit: 10
             }
         ]
@@ -271,6 +273,74 @@ controller.showStatement = async (req, res) => {
     campaignService.calTotalParams(campaign)
 
     return res.render("report/statement", { campaign })
+}
+controller.loadContributions = async (req, res) => {
+    try {
+        const { offset, limit, campaignID } = req.body
+
+        const checkCampaign = await models.Campaign.findOne({
+            attributes: ["id"],
+            where: {
+                id: campaignID,
+                status: { [Op.ne]: "Planning" }
+            }
+        })
+        if (!checkCampaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const contributions = await models.Transaction.findAll({
+            where: {
+                campaignID,
+                type: "Contribution"
+            },
+            order: [["createdAt", "DESC"]],
+            limit,
+            offset,
+        })
+
+
+        return res.json({ success: true, contributions })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+controller.loadDistributions = async (req, res) => {
+    try {
+        const { offset, limit, campaignID } = req.body
+
+        const checkCampaign = await models.Campaign.findOne({
+            attributes: ["id"],
+            where: {
+                id: campaignID,
+                status: { [Op.ne]: "Planning" }
+            }
+        })
+        if (!checkCampaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const distributions = await models.Transaction.findAll({
+            where: {
+                campaignID,
+                type: "Distribution"
+            },
+            order: [["createdAt", "DESC"]],
+            limit,
+            offset,
+        })
+
+
+        return res.json({ success: true, distributions })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
 }
 
 controller.download = async (req, res) => {

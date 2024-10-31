@@ -125,23 +125,6 @@
 {{/unless}}
 
 <script>
-    function createStarList(stars) {
-        let str = '<div class="ratting">';
-        let fullStars = Math.floor(stars);
-        let halfStar = stars - fullStars;
-
-        for (let i = 0; i < fullStars; i++) {
-            str += '<i class="fas fa-star text-warning"></i>';
-        }
-        if (halfStar > 0) {
-            str += '<i class="fas fa-star-half-alt text-warning"></i>';
-        }
-        for (let i = fullStars + (halfStar > 0 ? 1 : 0); i < 5; i++) {
-            str += '<i class="far fa-star text-warning"></i>';
-        }
-        str += '</div>';
-        return str;
-    }
     document.querySelector("#campaign_more_info_tags").addEventListener("click", (event) => {
         const campaignMoreInfoTag = event.target.closest(".campaign_more_info_tag")
         if (campaignMoreInfoTag) {
