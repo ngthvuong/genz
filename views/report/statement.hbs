@@ -1,7 +1,8 @@
 {{#with campaign}}
 <div class="rows m-3 position-relative">
     <h4>Sao Kê Chiến Dịch Từ Thiện</h4>
-    <a class="btn btn-success report_statement_download" href="javascript:void(0)">Tải Về</a>
+    <a class="btn btn-success report_statement_download" onclick="exportStatement()" href="javascript:void(0)">Tải
+        Về</a>
 </div>
 <div class="rows m-3">
     <h5>Tổng Quan</h5>
@@ -232,5 +233,37 @@
         distributionDom.addEventListener("scroll", onScrollDistributionBox)
     })
 
+    const exportStatement = () => {
+        const formData = new FormData()
+        formData.append("campaignID", "{{campaign.id}}")
 
+        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+        fetch('/report/download', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.blob()
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob)
+                const aDom = document.createElement("a")
+                aDom.href = url
+                aDom.download = `{{campaign.name}}.xlsx`
+                document.body.appendChild(aDom)
+                aDom.click()
+                aDom.remove()
+                window.URL.revokeObjectURL(url)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
 </script>

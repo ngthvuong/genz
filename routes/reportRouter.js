@@ -19,6 +19,8 @@ router.post('/distribution/load', controller.loadDistributions)
 router.get('/export/:id', controller.download)
 router.post('/review', reviewValid, controller.review)
 router.post('/comment', commentValid, controller.comment)
+router.post('/download', controller.download)
+
 
 
 

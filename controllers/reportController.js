@@ -344,6 +344,156 @@ controller.loadDistributions = async (req, res) => {
 }
 
 controller.download = async (req, res) => {
-    const id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
+    try {
+        const { campaignID } = req.body
+
+        const checkCampaign = await models.Campaign.findOne({
+            attributes: ["id"],
+            where: {
+                id: campaignID,
+                status: { [Op.ne]: "Planning" }
+            }
+        })
+        if (!checkCampaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const campaign = await models.Campaign.findOne({
+            where: {
+                id: campaignID
+            },
+            include: [
+                {
+                    model: models.Charity,
+                    attributes: ["id"],
+                    include: [
+                        { model: models.User }
+                    ]
+                },
+                {
+                    model: models.Transaction,
+                    separate: true,
+                    as: "Contributions",
+                    order: [["createdAt", "DESC"]],
+                },
+                {
+                    model: models.Transaction,
+                    separate: true,
+                    as: "Distributions",
+                    order: [["createdAt", "DESC"]],
+                }
+            ],
+        })
+
+        const ExcelJS = require('exceljs')
+        const workbook = new ExcelJS.Workbook()
+        const contributionSheet = workbook.addWorksheet("Đóng Góp")
+        const distributionSheet = workbook.addWorksheet("Hỗ Trợ")
+        const headerConfig = [
+            {
+                header: "ID",
+                key: "id",
+                width: 8,
+                style: {
+                    alignment: {
+                        horizontal: 'center',
+                        indent: 1
+                    }
+                }
+            },
+            {
+                header: "Ngày",
+                key: "madeAt",
+                width: 20,
+                style: {
+                    alignment: {
+                        horizontal: 'center',
+                        indent: 1
+                    }
+                }
+            },
+            {
+                header: "Người Gởi",
+                key: "sender",
+                width: 30,
+                style: {
+                    alignment: {
+                        indent: 1
+                    }
+                }
+            },
+            {
+                header: "Người Nhận",
+                key: "receiver",
+                width: 30,
+                style: {
+                    alignment: {
+                        indent: 1
+                    }
+                }
+            },
+            {
+                header: "Số Tiền",
+                key: "amount",
+                width: 30,
+                style: {
+                    numFmt: '"₫" #,##0',
+                    alignment: {
+                        horizontal: 'right',
+                        indent: 1
+                    }
+                }
+            },
+            {
+                header: "Mô Tả",
+                key: "message",
+                width: 100,
+                style: {
+                    alignment: {
+                        wrapText: true,
+                        indent: 1
+
+                    }
+                }
+            },
+        ]
+
+        contributionSheet.columns = headerConfig
+        distributionSheet.columns = headerConfig
+
+        campaign.Contributions.forEach((contribution, index) => {
+
+            contributionSheet.addRow({
+                id: index + 1,
+                madeAt: contribution.madeAt,
+                sender: contribution.sender || "",
+                receiver: contribution.receiver || "",
+                amount: parseInt(contribution.amount),
+                message: contribution.message || "",
+            })
+        })
+        campaign.Distributions.forEach((distribution, index) => {
+
+            distributionSheet.addRow({
+                id: index + 1,
+                madeAt: distribution.madeAt,
+                sender: distribution.sender || "",
+                receiver: distribution.receiver || "",
+                amount: parseInt(distribution.amount),
+                message: distribution.message || "",
+            })
+        })
+
+        res.setHeader('Content-Disposition', 'attachment; filename=data.xlsx')
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+        await workbook.xlsx.write(res)
+        res.end()
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
 }
 module.exports = controller
