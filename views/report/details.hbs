@@ -45,7 +45,7 @@
     <div class="col-4">
     </div>
     <div class="rows col-8 text-dark d-flex justify-content-between">
-        <a class="btn reportButton statementBtn" href="#">SAO KÊ</a>
+        <a class="btn reportButton statementBtn" href="/report/statement/{{id}}">SAO KÊ</a>
         <a class="btn btn-success fw-bold reportButton donateBtn inactive" href="javascript:void(0)">ĐÓNG GÓP</a>
     </div>
 </div>
@@ -62,7 +62,7 @@
                 Đánh Giá
             </button>
             <button class="w-100 btn btn-info text-white campaign_more_info_tag" type="button"
-                data-content="#commentContent">
+                data-content="#commentContentBox">
                 Bình Luận
             </button>
         </div>
@@ -96,7 +96,7 @@
             </div>
 
         </div>
-        <div id="commentContent" class="collapse border border-dark p-2">
+        <div id="commentContentBox" class="collapse border border-dark p-2">
             <form class="rows col-12 my-3 d-flex" onsubmit="submitComment(event)">
                 <textarea class="form-control" name="commentContent" id="commentContent" rows="2"></textarea>
                 <button type="submit" class="btn btn-success commentContentSubmit col-1 ms-1">Gởi</button>
@@ -161,7 +161,6 @@
     const submitComment = (event) => {
         event.preventDefault();
         const contentDom = event.target.querySelector('textarea[name="commentContent"]')
-        console.log(contentDom.value)
         if (!contentDom.value) {
             contentDom.focus()
             return
@@ -195,9 +194,11 @@
 
     eventWS.registerListener('campaignCreatedReviewEvent', 'reportDetails', (payload) => {
         const { newReview } = payload
-        let newReviewDom = document.createElement("div")
-        newReviewDom.className = "row col-12 my-2"
-        newReviewDom.innerHTML = `
+
+        if (newReview.Campaign.id == "{{campaign.id}}") {
+            let newReviewDom = document.createElement("div")
+            newReviewDom.className = "row col-12 my-2"
+            newReviewDom.innerHTML = `
             <div class="col-1">
                 <img class="w-100 px-1" src="${newReview.User.avatarPath}" onerror="this.src='/img/logo.svg';" />
             </div>
@@ -207,15 +208,29 @@
                 <div>${newReview.message}</div>
             </div>
         `
-        document.querySelector("#reviewContainer").prepend(newReviewDom)
+            document.querySelector("#reviewContainer").prepend(newReviewDom)
+
+            document.querySelector("#showReviewModal")?.remove()
+            const modalElement = document.querySelector("#reviewModal")
+            if (modalElement) {
+                const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement)
+                modal.hide()
+                modalElement.addEventListener('hidden.bs.modal', () => {
+                    modalElement.remove();
+                });
+            }
+
+        }
+
     })
 
     eventWS.registerListener('campaignCreatedCommentEvent', 'reportDetails', (payload) => {
-        console.log(payload)
         const { newComment } = payload
-        let newCommentDom = document.createElement("div")
-        newCommentDom.className = "row col-12 mb-2"
-        newCommentDom.innerHTML = `
+
+        if (newComment.Campaign.id == "{{campaign.id}}") {
+            let newCommentDom = document.createElement("div")
+            newCommentDom.className = "row col-12 mb-2"
+            newCommentDom.innerHTML = `
             <div class="col-1">
                 <img class="w-100 px-1" src="${newComment.User.avatarPath}" onerror="this.src='/img/logo.svg';" />
             </div>
@@ -224,7 +239,8 @@
                 <div>${newComment.content.replace(/\n/g, "<br>")}</div>
             </div>
         `
-        document.querySelector("#commentContainer").prepend(newCommentDom)
+            document.querySelector("#commentContainer").prepend(newCommentDom)
+        }
     })
 
 </script>

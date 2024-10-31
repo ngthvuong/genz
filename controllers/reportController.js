@@ -158,6 +158,10 @@ controller.review = async (req, res) => {
                 {
                     model: models.User,
                     attributes: ["id", "name", "avatarPath"]
+                },
+                {
+                    model: models.Campaign,
+                    attributes: ["id", "name"]
                 }
             ]
         })
@@ -210,6 +214,10 @@ controller.comment = async (req, res) => {
                 {
                     model: models.User,
                     attributes: ["id", "name", "avatarPath"]
+                },
+                {
+                    model: models.Campaign,
+                    attributes: ["id", "name"]
                 }
             ]
         })
@@ -217,7 +225,7 @@ controller.comment = async (req, res) => {
         await new CampaignCreatedCommentEvent({
             newComment: newComment.toJSON()
         }).dispatch()
-        
+
         return res.json({ success: true, data: comment.toJSON() })
 
     } catch (error) {
@@ -229,7 +237,40 @@ controller.comment = async (req, res) => {
 
 controller.showStatement = async (req, res) => {
     const id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
+    const campaign = await models.Campaign.findOne({
+        where: {
+            id,
+            status: { [Op.ne]: "Planning" }
+        },
+        include: [
+            {
+                model: models.Charity,
+                attributes: ["id"],
+                include: [
+                    { model: models.User }
+                ]
+            },
+            {
+                model: models.Transaction,
+                separate: true,
+                as: "Contributions",
+                limit: 10
+            },
+            {
+                model: models.Transaction,
+                separate: true,
+                as: "Distributions",
+                limit: 10
+            }
+        ]
+    })
+    if (!campaign) {
+        return res.redirect("/")
+    }
 
+    campaignService.calTotalParams(campaign)
+
+    return res.render("report/statement", { campaign })
 }
 
 controller.download = async (req, res) => {

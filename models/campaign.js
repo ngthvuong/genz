@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       Campaign.hasMany(models.Review, { foreignKey: 'campaignID' })
       Campaign.hasMany(models.Comment, { foreignKey: 'campaignID' })
       Campaign.belongsTo(models.Charity, { foreignKey: 'charityID' })
+
+      Campaign.hasMany(models.Transaction, { foreignKey: 'campaignID', as: 'Contributions', scope: { type: 'Contribution' } })
+      Campaign.hasMany(models.Transaction, { foreignKey: 'campaignID', as: 'Distributions', scope: { type: 'Distribution' } })
+
     }
   }
   Campaign.init({

@@ -3,7 +3,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="reviewModal">Thêm Đánh Giá Của Bạn</h5>
+                    <h5 class="modal-title">Thêm Đánh Giá Của Bạn</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="campaignReviewBody">
@@ -30,6 +30,15 @@
         </div>
     </form>
 </div>
+<div id="reviewResult" class="toast align-items-center position-fixed bottom-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body">
+            - Chân thành cám ơn đánh giá của bạn!
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+
 <script>
     document.querySelectorAll(".reviewRatingItem").forEach(reviewRatingItem => {
         reviewRatingItem.addEventListener("click", (event) => {
@@ -84,9 +93,9 @@
                     document.getElementById('campaignReviewBody').appendChild(formErrors);
 
                 } else {
-                    document.querySelector("#showReviewModal").remove();
-                    document.querySelector("#submitReviewModal").remove();
-                    document.getElementById('campaignReviewBody').innerHTML = "<p>- Chân thành cám ơn đánh giá của bạn!</p>"
+                    const toastDom = document.querySelector("#reviewResult")
+                    const toast = new bootstrap.Toast(toastDom)
+                    toast.show()
                 }
             })
             .catch(error => {

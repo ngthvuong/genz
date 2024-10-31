@@ -1,0 +1,118 @@
+{{#with campaign}}
+<div class="rows m-3 position-relative">
+    <h4>Sao Kê Chiến Dịch Từ Thiện</h4>
+    <a class="btn btn-success report_statement_download" href="javascript:void(0)">Tải Về</a>
+</div>
+<div class="rows m-3">
+    <h5>Tổng Quan</h5>
+    <div class="row mt-2">
+        <div class="col-3">Tổng Thu</div>
+        <div class="col-4 text-end">{{formatAmount totalContribution}} VNĐ</div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-3">Tổng Chi</div>
+        <div class="col-4 text-end">{{formatAmount totalDistribution}} VNĐ</div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-3">Còn Lại</div>
+        <div class="col-4 text-end">{{formatAmount totalRemaining}} VNĐ</div>
+    </div>
+</div>
+<div class="rows m-3">
+    <h5>Chi Tiết</h5>
+</div>
+<div class="row m-3">
+    <div class="campaign_more_info_container col-12 fw-bolder text-white d-flex justify-content-around px-0"
+        id="report_more_info_tags">
+        <button class="w-100 btn btn-info text-white report_more_info_tag active" type="button"
+            data-content="#contributionTransaction">
+            Thống Kê Khoản Thu
+        </button>
+        <button class="w-100 btn btn-info text-white report_more_info_tag" type="button"
+            data-content="#distributionTransaction">
+            Thống Kê Khoản Chi
+        </button>
+    </div>
+
+    <div class="col-12 px-0" id="moreDetailTransaction">
+        <div id="contributionTransaction" class="collapse border border-dark p-2 show">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Responsive Table</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="w-10" style="width: 10%;">#</th>
+                                <th scope="col" class="w-15" style="width: 15%;">Ngày</th>
+                                <th scope="col" class="w-20" style="width: 20%;">Người Gửi</th>
+                                <th scope="col" class="w-15" style="width: 15%;">Số tiền</th>
+                                <th scope="col" class="w-40" style="width: 40%;">Thông Tin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each Contributions}}
+                            <tr>
+                                <th scope="row">{{incrementedIndex @index}}</th>
+                                <td>{{dateFormat madeAt}}</td>
+                                <td>{{sender}}</td>
+                                <td>{{formatAmount amount}}</td>
+                                <td>{{message}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="distributionTransaction" class="collapse border border-dark p-2">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Responsive Table</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 10%;">#</th>
+                                <th scope="col" style="width: 15%;">Ngày</th>
+                                <th scope="col" style="width: 20%;">Người Nhận</th>
+                                <th scope="col" style="width: 15%;">Số tiền</th>
+                                <th scope="col" style="width: 40%;">Thông Tin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each Distributions}}
+                            <tr>
+                                <th scope="row">{{incrementedIndex @index}}</th>
+                                <td>{{dateFormat madeAt}}</td>
+                                <td>{{receiver}}</td>
+                                <td>{{formatAmount amount}}</td>
+                                <td>{{message}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{/with}}
+
+<script>
+    document.querySelector("#report_more_info_tags").addEventListener("click", (event) => {
+        const campaignMoreInfoTag = event.target.closest(".report_more_info_tag")
+        if (campaignMoreInfoTag) {
+            document.querySelectorAll(".report_more_info_tag").forEach((tag) => {
+                tag.classList.remove("active")
+            })
+            document.querySelectorAll("#moreDetailTransaction .collapse").forEach((tag) => {
+                tag.classList.remove("show")
+            })
+
+            campaignMoreInfoTag.classList.add("active")
+            contentId = campaignMoreInfoTag.dataset.content
+            document.querySelector(contentId).classList.add("show")
+        }
+
+    })
+</script>
