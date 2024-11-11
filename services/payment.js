@@ -4,11 +4,9 @@ const zaloPay = require("../thirdParties/zaloPay")
 
 const payment = {}
 
-payment.transfer = async (campaignID, methodCode, data) => {
+payment.transfer = async (appTransId, campaignID, methodCode, data) => {
     //1. store temporary transfer information
-    //create new transactionID
-    const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
-    const appTransId = '210930123456_' + Date.now() + "_" + randomNum
+   
 
     //2. get merchant info
     const merchantInfo = {}
@@ -34,6 +32,7 @@ payment.transfer = async (campaignID, methodCode, data) => {
 }
 
 payment.callback = async (data) => {
+    return zaloPay.checkCallbackData(data)
     // get and assign temporary transfer information
 
     if(zaloPay.checkCallbackData(data)){

@@ -62,7 +62,9 @@ module.exports = {
             receiver: campaign.Charity.User.name,
             type: "Contribution",
             paymentMethodID: paymentMethod.id,
-            campaignID: campaign.id
+            campaignID: campaign.id,
+            status: 'Success',
+            apptransid: '210930123456'            
           },
         )
       }
@@ -76,7 +78,9 @@ module.exports = {
             receiver: "Xã A",
             type: "Distribution",
             paymentMethodID: paymentMethod.id,
-            campaignID: campaign.id
+            campaignID: campaign.id,
+            status: 'Success',
+            apptransid: '210930123456'
           },
         )
       }
