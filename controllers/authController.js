@@ -3,7 +3,7 @@
 const errors = require("../services/responseErrors")
 const OTPSMS = require('../thirdParties/OTPSMS')
 const models = require('../models')
-const { steps, fullPhone, hashPassword, comparePassword } = require('../services/authService')
+const { steps, fullPhoneWithoutPrefix, hashPassword, comparePassword } = require('../services/authService')
 
 
 const controller = {}
@@ -27,8 +27,8 @@ controller.register = async (req, res) => {
         if (existingEmailUser) {
             throw new Error("Email này đã được đăng ký!")
         }
-
-        if (! await OTPSMS.sendOTP(fullPhone(phone))) {
+        const OTPInfo = await OTPSMS.sendOTP(fullPhoneWithoutPrefix(phone))
+        if (! OTPInfo.request_id) {
             throw new Error("Có lỗi khi gởi OTP, vui lòng kiểm tra lại số Điện thoại!")
         }
 
@@ -38,6 +38,7 @@ controller.register = async (req, res) => {
             name,
             role,
             password: hashPassword(password),
+            OTPInfo,
         }
         req.session.authProcess = {
             step: steps.VERIFYING
@@ -67,7 +68,7 @@ controller.verify = async (req, res) => {
         }
         const { pin } = req.body
 
-        if (! await OTPSMS.verifyOTP(fullPhone(req.session.tempUser.phone), pin)) {
+        if (! await OTPSMS.verifyOTP(req.session.tempUser.OTPInfo, pin)) {
             throw new Error("Mã xác thực không chính xác!")
         }
 

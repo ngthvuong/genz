@@ -68,7 +68,6 @@ zaloPay.createOrder = async (appTransId, data) => {
         + '|' + fields.get('item')
 
     fields.set('mac', crypto.createHmac(hmac_algorithm, zaloPay.merchantInfo.key1).update(hmac_input).digest('hex'))
-    console.log(fields)
     try {
         const response = await axios.post(endpoint, fields.toString(), {
             headers: {
