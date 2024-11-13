@@ -1,7 +1,7 @@
 'use strict'
 
 const errors = require("../services/responseErrors")
-const OTPSMS = require('../thirdParties/OTPSMS')
+const OTPService = require('../services/OTPService')
 const models = require('../models')
 const { steps, fullPhoneWithoutPrefix, hashPassword, comparePassword } = require('../services/authService')
 
@@ -27,8 +27,11 @@ controller.register = async (req, res) => {
         if (existingEmailUser) {
             throw new Error("Email này đã được đăng ký!")
         }
-        const OTPInfo = await OTPSMS.sendOTP(fullPhoneWithoutPrefix(phone))
-        if (! OTPInfo.request_id) {
+
+        const notifyChannel = 'phone'
+        const notifyService = OTPService.init(notifyChannel)
+        const OTPInfo = await notifyService.sendOTP({ phone: fullPhoneWithoutPrefix(phone), email })
+        if (!OTPInfo.request_id) {
             throw new Error("Có lỗi khi gởi OTP, vui lòng kiểm tra lại số Điện thoại!")
         }
 
@@ -39,6 +42,7 @@ controller.register = async (req, res) => {
             role,
             password: hashPassword(password),
             OTPInfo,
+            notifyChannel
         }
         req.session.authProcess = {
             step: steps.VERIFYING
@@ -61,6 +65,44 @@ controller.showVerify = async (req, res) => {
         title: "Xác Thực Tài Khoản"
     })
 }
+
+controller.resendOTP = async (req, res) => {
+    try {
+        let { notifyChannel } = req.body
+
+        const existingPhoneUser = await models.User.findOne({ where: { phone } });
+
+        if (existingPhoneUser) {
+            throw new Error("Số điện thoại này đã được đăng ký!")
+        }
+        const existingEmailUser = await models.User.findOne({ where: { phone } });
+        if (existingEmailUser) {
+            throw new Error("Email này đã được đăng ký!")
+        }
+
+        req.session.tempUser.notifyChannel = notifyChannel
+        delete req.session.tempUser.OTPInfo
+
+        const notifyService = OTPService.init(notifyChannel)
+        const OTPInfo = await notifyService.sendOTP({
+            email: req.session.tempUser.email,
+            phone: fullPhoneWithoutPrefix(req.session.tempUser.phone)
+        })
+        if (!OTPInfo.request_id) {
+            throw new Error("Có lỗi khi gởi OTP, vui lòng kiểm tra lại số Điện thoại!")
+        }
+
+        req.session.tempUser.OTPInfo = OTPInfo
+
+        return res.json({ success: true })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+
 controller.verify = async (req, res) => {
     try {
         if (!req.session.tempUser || req.session.authProcess.step != steps.VERIFYING) {
@@ -68,7 +110,10 @@ controller.verify = async (req, res) => {
         }
         const { pin } = req.body
 
-        if (! await OTPSMS.verifyOTP(req.session.tempUser.OTPInfo, pin)) {
+        const notifyChannel = req.session.tempUser.notifyChannel
+        const notifyService = OTPService.init(notifyChannel)
+
+        if (! await notifyService.verifyOTP(req.session.tempUser.OTPInfo, pin)) {
             throw new Error("Mã xác thực không chính xác!")
         }
 
