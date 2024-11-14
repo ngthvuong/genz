@@ -5,8 +5,8 @@ const Nexmo = require("../../../thirdParties/OTPSMS")
 const mobileOTP = {}
 
 
-mobileOTP.sendOTP = async (destinations) => {
-    return await Nexmo.sendOTP(destinations.phone)
+mobileOTP.sendOTP = async (user) => {
+    return await Nexmo.sendOTP(user.phone)
 }
 
 mobileOTP.verifyOTP = async (OTPInfo, pin) => {

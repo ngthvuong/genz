@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
     role: {
       type: DataTypes.ENUM('admin', 'donor', 'recipient', 'charity'),
       allowNull: false
+    }, 
+    notifyChannel: {
+      type: DataTypes.ENUM('email', 'phone'),
+      allowNull: false
     }
   }, {
     sequelize,

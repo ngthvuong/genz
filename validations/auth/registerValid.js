@@ -30,6 +30,8 @@ const validation = handle([
         }),
     body('role')
         .trim()
-        .notEmpty().withMessage("Loại người dùng là bắt buộc!"),
+        .notEmpty().withMessage("Loại người dùng là bắt buộc!")
+        .isIn(['donor', 'recipient', 'charity'])
+        .withMessage("Vai trò phải là một trong các giá trị hợp lệ!"),
 ])
 module.exports = validation

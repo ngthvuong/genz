@@ -21,7 +21,8 @@ router.get('/socket', (req, res) =>{
 
 router.use(require('../middlewares/auth').isLogged())
 router.get('/permission', controller.permission)
-
+router.get('/sendmail', controller.sendMailOtp)
+router.get('/verifyotp/:pin', controller.verifyotp)
 
 
 module.exports = router

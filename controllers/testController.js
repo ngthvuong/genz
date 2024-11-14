@@ -1,6 +1,8 @@
 'use strict'
 
 const payment = require("../services/payment")
+const OTPService = require("../services/OTPService")
+
 const models = require("../models")
 const { password } = require("pg/lib/defaults")
 
@@ -85,6 +87,23 @@ controller.heatmap = async (req, res) => {
 
 controller.permission = async (req, res) => {
     res.render("test/permission")
+}
+
+controller.sendMailOtp = async (req, res) => {
+    const OTPNotify = OTPService.init("email")
+    const result = await OTPNotify.sendOTP({ email: "ngthvuong@gmail.com" })
+    req.session.test = result
+    res.send("hihi")
+}
+controller.verifyotp = async (req, res) => {
+    const { pin } = req.params
+    console.log(pin)
+
+    const OTPNotify = OTPService.init("email")
+
+    const result = await OTPNotify.verifyOTP(req.session.test, pin)
+    console.log(result)
+    res.send("hihi 2")
 }
 
 module.exports = controller
