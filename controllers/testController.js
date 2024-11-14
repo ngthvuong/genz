@@ -8,8 +8,9 @@ const { password } = require("pg/lib/defaults")
 const controller = {}
 
 controller.transfer = async (req, res) => {
-
-    const transaction = await payment.transfer(1, 'MASTERCARD', {
+    const charity = await models.Charity.findOne();
+    console.log(charity)
+    const transaction = await payment.transfer("1111" + Date.now(), charity, 'MASTERCARD', {
         appUser: '0909976102',
         amount: '111111',
         item: '[{"itemid":"1","itemname":"Chiến Dich 1"}]',
@@ -22,6 +23,19 @@ controller.transfer = async (req, res) => {
         })
     }
     return res.redirect(transaction.order_url)
+}
+
+controller.callback = async (req, res) => {
+    const charity = await models.Charity.findOne();
+    console.log(charity)
+    const transaction = await payment.callback(charity, req.query)
+    console.log(transaction)
+
+
+    if (transaction) {
+        return res.send("hihi")
+    }
+    return res.send("hhuhu")
 }
 
 controller.event = async (req, res) => {

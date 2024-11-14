@@ -6,6 +6,8 @@ const controller = require('../controllers/testController')
 const router = express.Router()
 
 router.get('/transfer', controller.transfer)
+router.get('/callback', controller.callback)
+
 router.get('/heatmap', controller.heatmap)
 
 router.get('/event', controller.event)

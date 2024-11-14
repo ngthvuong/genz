@@ -94,7 +94,7 @@ zaloPay.checkCallbackData = async (data) => {
         + '|' + data.status
     const hmac = crypto.createHmac(hmac_algorithm, zaloPay.merchantInfo.key2).update(hmac_input).digest('hex')
 
-    return hmac == fields.get('checksum')
+    return hmac == data.checksum
 }
 
 zaloPay.getOrder = async (appTransId) => {

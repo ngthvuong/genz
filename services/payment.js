@@ -6,7 +6,7 @@ const payment = {}
 
 payment.transfer = async (appTransId, charity, methodCode, data) => {
 
-    zaloPay.setMerchantInfo(charity.appid, charity.key1, charity.key2)
+    zaloPay.setMerchantInfo(charity.merchantAppID, charity.merchantKey1, charity.merchantKey2)
     zaloPay.setMethod(methodCode)
     const transaction = await zaloPay.createOrder(appTransId, data)
 
@@ -18,12 +18,12 @@ payment.transfer = async (appTransId, charity, methodCode, data) => {
 }
 
 payment.callback = async (charity, data) => {
-    zaloPay.setMerchantInfo(charity.appid, charity.key1, charity.key2)
+    zaloPay.setMerchantInfo(charity.merchantAppID, charity.merchantKey1, charity.merchantKey2)
     return zaloPay.checkCallbackData(data)
 }
 
 payment.getOrder = async (charity, appTransId) => {
-    zaloPay.setMerchantInfo(charity.appid, charity.key1, charity.key2)    
+    zaloPay.setMerchantInfo(charity.merchantAppID, charity.merchantKey1, charity.merchantKey2)    
     const transaction = await zaloPay.getOrder(appTransId)
 
     if (!transaction.return_code) {
