@@ -23,8 +23,6 @@ OTPSMS.sendOTP = async (phoneNumber) => {
             'Authorization': `Basic ${basicApiKey}`
         }
     })
-    console.log(response.data)
-
     return response.data
 
 }

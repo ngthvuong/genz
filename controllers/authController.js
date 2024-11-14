@@ -16,14 +16,13 @@ controller.showRegister = async (req, res) => {
 }
 controller.register = async (req, res) => {
     try {
-        let { phone, email, name, password, role } = req.body
-
+        let { phone, email, name, password, role, notifyChannel } = req.body
         const existingPhoneUser = await models.User.findOne({ where: { phone } });
 
         if (existingPhoneUser) {
             throw new Error("Số điện thoại này đã được đăng ký!")
         }
-        const existingEmailUser = await models.User.findOne({ where: { phone } });
+        const existingEmailUser = await models.User.findOne({ where: { email } });
         if (existingEmailUser) {
             throw new Error("Email này đã được đăng ký!")
         }
@@ -34,25 +33,24 @@ controller.register = async (req, res) => {
             name,
             role,
             password: hashPassword(password),
-            OTPInfo,
-            notifyChannel : 'phone'
+            notifyChannel: notifyChannel
         }
 
         const notifyService = OTPService.init(req.session.tempUser.notifyChannel)
         const OTPInfo = await notifyService.sendOTP(req.session.tempUser)
-        if (!OTPInfo.request_id) {
-            throw new Error("Có lỗi khi gởi OTP, vui lòng kiểm tra lại số Điện thoại!")
+        if (!OTPInfo) {
+            throw new Error("Có lỗi khi gởi OTP, vui lòng kiểm tra lại thông tin xác thực!")
         }
         req.session.tempUser.OTPInfo = OTPInfo
-        
+
         req.session.authProcess = {
             step: steps.VERIFYING
         }
 
         const nextUrl = "/auth/verify";
         return res.json({ success: true, nextUrl })
-
     } catch (error) {
+        console.log(error)
         errors.add({ msg: error.message })
         return res.json(errors.get())
     }
@@ -63,7 +61,8 @@ controller.showVerify = async (req, res) => {
         return res.redirect('/auth/register')
     }
     res.render('auth/verify', {
-        title: "Xác Thực Tài Khoản"
+        title: "Xác Thực Tài Khoản",
+        tempUser: req.session.tempUser
     })
 }
 
@@ -75,13 +74,13 @@ controller.resendOTP = async (req, res) => {
 
         const notifyService = OTPService.init(req.session.tempUser.notifyChannel)
         const OTPInfo = await notifyService.sendOTP(req.session.tempUser)
-        if (!OTPInfo.request_id) {
+        if (!OTPInfo) {
             throw new Error("Có lỗi khi gởi OTP, vui lòng kiểm tra lại số Điện thoại!")
         }
 
         req.session.tempUser.OTPInfo = OTPInfo
 
-        return res.json({ success: true , message: `Mã code đã được gởi lại.`})
+        return res.json({ success: true, message: `Mã code đã được gởi lại.` })
 
     } catch (error) {
         console.log(error)
