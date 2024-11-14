@@ -80,11 +80,50 @@ zaloPay.createOrder = async (appTransId, data) => {
     }
 }
 zaloPay.checkCallbackData = async (data) => {
-    return true
+    if (Object.keys(zaloPay.merchantInfo).length === 0) {
+        throw new Error("Merchant information is missing for ZaloPay.");
+    }
+
+    const hmac_input = ''
+        + data.appid
+        + '|' + data.apptransid
+        + '|' + data.pmcid
+        + '|' + data.bankcode
+        + '|' + data.amount
+        + '|' + data.discountamount
+        + '|' + data.status
+    const hmac = crypto.createHmac(hmac_algorithm, zaloPay.merchantInfo.key2).update(hmac_input).digest('hex')
+
+    return hmac == fields.get('checksum')
 }
 
 zaloPay.getOrder = async (appTransId) => {
-    return true
+    if (Object.keys(zaloPay.merchantInfo).length === 0) {
+        throw new Error("Merchant information is missing for ZaloPay.");
+    }
+
+    const endpoint = process.env.ZALO_GET_ORDER_URL
+    const fields = new URLSearchParams({
+        app_id: zaloPay.merchantInfo.appid,
+        app_trans_id: appTransId
+    })
+
+    const hmac_input = ''
+        + fields.get('app_id')
+        + '|' + fields.get('app_trans_id')
+        + '|' + zaloPay.merchantInfo.key1
+
+    fields.set('mac', crypto.createHmac(hmac_algorithm, zaloPay.merchantInfo.key1).update(hmac_input).digest('hex'))
+    try {
+        const response = await axios.post(endpoint, fields.toString(), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        return response.data //response.data.return_code 1 Thành công 2 Thất bại 3 Đơn hàng chưa thanh toán hoặc giao dịch đang xử lý
+    } catch (error) {
+        return { error: error }
+    }
 }
 
 module.exports = {
