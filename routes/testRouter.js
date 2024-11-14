@@ -13,10 +13,12 @@ router.get('/event-reject', controller.eventReject)
 
 router.get('/event-rollback', controller.eventRollback)
 
-
 router.get('/socket', (req, res) =>{
     res.render("test/socket")
 })
+
+router.use(require('../middlewares/auth').isLogged())
+router.get('/permission', controller.permission)
 
 
 

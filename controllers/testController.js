@@ -69,4 +69,8 @@ controller.heatmap = async (req, res) => {
     res.render("test/heatmap")
 }
 
+controller.permission = async (req, res) => {
+    res.render("test/permission")
+}
+
 module.exports = controller
