@@ -4,9 +4,9 @@ const zaloPay = require("../thirdParties/zaloPay")
 
 const payment = {}
 
-payment.transfer = async (appTransId, merchant, methodCode, data) => {
+payment.transfer = async (appTransId, charity, methodCode, data) => {
 
-    zaloPay.setMerchantInfo(merchant.appid, merchant.key1, merchant.key2)
+    zaloPay.setMerchantInfo(charity.appid, charity.key1, charity.key2)
     zaloPay.setMethod(methodCode)
     const transaction = await zaloPay.createOrder(appTransId, data)
 
@@ -17,13 +17,13 @@ payment.transfer = async (appTransId, merchant, methodCode, data) => {
     return transaction
 }
 
-payment.callback = async (merchant, data) => {
-    zaloPay.setMerchantInfo(merchant.appid, merchant.key1, merchant.key2)
+payment.callback = async (charity, data) => {
+    zaloPay.setMerchantInfo(charity.appid, charity.key1, charity.key2)
     return zaloPay.checkCallbackData(data)
 }
 
-payment.getOrder = async (merchant, appTransId) => {
-    zaloPay.setMerchantInfo(merchant.appid, merchant.key1, merchant.key2)    
+payment.getOrder = async (charity, appTransId) => {
+    zaloPay.setMerchantInfo(charity.appid, charity.key1, charity.key2)    
     const transaction = await zaloPay.getOrder(appTransId)
 
     if (!transaction.return_code) {
