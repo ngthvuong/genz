@@ -1,0 +1,142 @@
+<h4>Tạo mới chiến dịch</h4>
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Thông tin chiến dịch</h6>
+                <form id="createCampaignForm" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <label for="inputCampaignName" class="col-sm-2 col-form-label">Tên chiến dịch</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputCampaignName" name="campaignName" placeholder="Nhập thông tin chi tiết chiến dịch" value="{{campaign.name}}">
+                        </div>
+                    </div>
+                     <div class="row mb-3">
+                        <label for="inputCampaignLocation" class="col-sm-2 col-form-label">Địa điểm</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputCampaignLocation" name="campaignLocation" placeholder="Nhập địa điểm cho chiến dịch">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputCampaignStartDate" class="col-sm-2 col-form-label">Ngày bắt đầu</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="inputCampaignStartDate" name="campaignStartDate" min="" required>
+                        </div>
+                    </div>
+                     <div class="row mb-3">
+                        <label for="inputCampaignEndDate" class="col-sm-2 col-form-label">Ngày kết thúc</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="inputCampaignEndDate" name="campaignEndDate" min="" required>
+                        </div>
+                    </div>
+                     <div class="row mb-3">
+                        <label for="inputCampaignGoal" class="col-sm-2 col-form-label">Mục tiêu chiến dịch</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="inputCampaignGoal" name="campaignGoal" placeholder="Nhập mục tiêu chiến dịch"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputCampaignBudget" class="col-sm-2 col-form-label">Ngân sách dự kiến</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="inputCampaignBudget" name="campaignBudget" placeholder="Nhập ngân sách dự kiến" min="0" 
+                            max="99999999999999" step="1" required>
+                            <span class="input-group-text" id="inputGroupAddon">VND</span>
+                        </div>
+                    </div>
+                     <div class="row mb-3">
+                        <label for="inputCampaignDescription" class="col-sm-2 col-form-label">Mô tả chiến dịch</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="inputCampaignDescription" name="campaignDescription" placeholder="Nhập mô tả chiến dịch"></textarea>
+                        </div>
+                    </div>                    
+                    <fieldset class="row mb-3">
+                        <legend class="col-form-label col-sm-2 pt-0">Trạng thái chiến dịch</legend>
+                        <div class="col-sm-10">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios1" value="Planning" checked="">
+                                <label class="form-check-label" for="gridRadios1">
+                                    Planning
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios2" value="Running">
+                                <label class="form-check-label" for="gridRadios2">
+                                    Running
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios3" value="Finished">
+                                <label class="form-check-label" for="gridRadios3">
+                                    Finished
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios4"  value="Closed">
+                                <label class="form-check-label" for="gridRadios4">
+                                    Closed
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="mb-3">
+                                <label for="formFile" class="form-label">Tải lên hình ảnh chiến dịch</label>
+                                <input class="form-control" type="file" id="formFile" name="campaignPicture">
+                    </div>                  
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                    <button type="button" class="btn btn-primary">Hủy bỏ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Lấy ngày hôm nay và gán vào thuộc tính 'min' của input
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('inputCampaignStartDate').setAttribute('min', today);
+    document.getElementById('inputCampaignEndDate').setAttribute('min', today);
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('createCampaignForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let formErrors = document.getElementById('formErrors')
+            if (formErrors) {
+                formErrors.remove()
+            }
+
+            const formData = new FormData(this)
+            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+            console.log(data)
+
+            fetch('/campaign/create', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.errors) {
+
+                        let messages = ''
+                        data.errors.forEach(error => {
+                            messages += `<p>${error.msg}</p>`
+                        })
+                        formErrors = document.createElement('div')
+                        formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                        formErrors.id = "formErrors"
+                        formErrors.innerHTML = messages
+                        document.getElementById('createCampaignForm').appendChild(formErrors);
+
+                    } else {
+                        window.location.href = data.redirectURL
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        })
+    })
+</script>

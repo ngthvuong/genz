@@ -1,0 +1,98 @@
+Đây là báo tạo thành công 1 chiến dịch mới ACB
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Thông tin chiến dịch</h6>
+                <form action="/campaign/create" method="POST">
+                    <div class="row mb-3">
+                        <label for="inputCampaignName" class="col-sm-2 col-form-label">Tên chiến dịch</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputCampaignName" placeholder="Nhập thông tin chi tiết chiến dịch">
+                        </div>
+                    </div>
+                     <div class="row mb-3">
+                        <label for="inputCampaignLocation" class="col-sm-2 col-form-label">Địa điểm</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputCampaignLocation" placeholder="Nhập địa điểm cho chiến dịch">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputCampaignStartDate" class="col-sm-2 col-form-label">Ngày bắt đầu</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="inputCampaignStartDate" min="" required>
+                        </div>
+                    </div>
+                     <div class="row mb-3">
+                        <label for="inputCampaignEndDate" class="col-sm-2 col-form-label">Ngày kết thúc</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="inputCampaignEndDate" min="" required>
+                        </div>
+                    </div>
+                     <div class="row mb-3">
+                        <label for="inputCampaignGoal" class="col-sm-2 col-form-label">Mục tiêu chiến dịch</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="inputCampaignGoal" placeholder="Nhập mục tiêu chiến dịch"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputCampaignBudget" class="col-sm-2 col-form-label">Ngân sách dự kiến</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="inputCampaignBudget" placeholder="Nhập ngân sách dự kiến" min="0" 
+                            max="99999999999999" step="1" required>
+                            <span class="input-group-text" id="inputGroupAddon">VND</span>
+                        </div>
+                    </div>
+                     <div class="row mb-3">
+                        <label for="inputCampaignDescription" class="col-sm-2 col-form-label">Mô tả chiến dịch</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="inputCampaignDescription" placeholder="Nhập mô tả chiến dịch"></textarea>
+                        </div>
+                    </div>                    
+                    <fieldset class="row mb-3">
+                        <legend class="col-form-label col-sm-2 pt-0">Radios</legend>
+                        <div class="col-sm-10">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked="">
+                                <label class="form-check-label" for="gridRadios1">
+                                    Planning
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+                                <label class="form-check-label" for="gridRadios2">
+                                    Running
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="option3">
+                                <label class="form-check-label" for="gridRadios3">
+                                    Finished
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios4" value="option4">
+                                <label class="form-check-label" for="gridRadios4">
+                                    Closed
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="mb-3">
+                                <label for="formFile" class="form-label">Tải lên hình ảnh chiến dịch</label>
+                                <input class="form-control" type="file" id="formFile">
+                    </div>                  
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                    <button type="submit" class="btn btn-primary">Hủy bỏ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Lấy ngày hôm nay và gán vào thuộc tính 'min' của input
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('inputCampaignStartDate').setAttribute('min', today);
+    document.getElementById('inputCampaignEndDate').setAttribute('min', today);
+</script>
