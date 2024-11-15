@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
   NewsFeed.init({
     title: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true,
     },
     content: {
       type: DataTypes.TEXT,

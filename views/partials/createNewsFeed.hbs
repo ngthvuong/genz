@@ -1,0 +1,102 @@
+{{#if charity}}
+<div class="container-fluid px-4">
+    <div>
+        <input class="btn btn-sm btn-success" type="button" value="Tạo Bài Viết" onClick="toggleNewsFeedForm()">
+    </div>
+    <div class="rows d-none mt-3" id="newsFeedFormBox">
+        <h4>Thêm Bảng Tin Mới</h4>
+        <form class="col-12" id="newsFeedForm">
+            <div class="form-floating mb-3">
+                <select class="form-select" id="campaignID" name="campaignID" aria-label="Bảng tin về chiến dịch">
+                    <option value="" selected="">Chọn chiến dịch</option>
+                    {{#each charity.Campaigns}}
+                    <option value="{{id}}">{{name}}</option>
+                    {{/each}}
+                </select>
+                <label for="floatingSelect">Bảng tin về chiến dịch</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="title" name="title" placeholder="Nhập tiêu đề tin">
+                <label for="title">Tiêu đề</label>
+            </div>
+            <div class="form-floating mb-3">
+                <textarea class="form-control" placeholder="Nhập nội dung tin..." id="content" name="content"
+                    style="height: 200px;"></textarea>
+                <label for="floatingTextarea">Nhập nội dung tin...</label>
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Chèn hình ảnh</label>
+                <input class="form-control" type="file" id="image" name="image">
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Đăng Tin</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="reviewResult" class="toast align-items-center position-fixed bottom-0 end-0 text-white bg-success" role="alert"
+    aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body">
+            - Khởi tạo chiến dịch thành công!
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+<script>
+    const toggleNewsFeedForm = () => {
+        const newsFeedFormBox = document.getElementById("newsFeedFormBox")
+        if (newsFeedFormBox.classList.contains("d-none")) {
+            newsFeedFormBox.classList.remove("d-none")
+        } else {
+            newsFeedFormBox.classList.add("d-none")
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('newsFeedForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let formErrors = document.getElementById('formErrors')
+            if (formErrors) {
+                formErrors.remove()
+            }
+
+            const formData = new FormData(this)
+
+            fetch('/news-feed/create', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.errors) {
+
+                        let messages = ''
+                        data.errors.forEach(error => {
+                            messages += `<p>${error.msg}</p>`
+                        })
+                        formErrors = document.createElement('div')
+                        formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                        formErrors.id = "formErrors"
+                        formErrors.innerHTML = messages
+                        document.getElementById('newsFeedForm').appendChild(formErrors);
+
+                    } else {
+                        const toastDom = document.querySelector("#reviewResult")
+                        const toast = new bootstrap.Toast(toastDom)
+                        toast.show()
+                        this.reset()
+                        toggleNewsFeedForm()
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        })
+    })
+
+</script>
+{{/if}}

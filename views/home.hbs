@@ -1,45 +1,88 @@
-<!-- Form Start -->
+{{> createNewsFeed}}
 <div class="container-fluid pt-4 px-4">
-    <h4>user.permission.report.rating</h4>
-    {{#if user.permission.report.rating}}
-    <p>you can rating</p>
-    {{else}}
-    <p>you can not rating</p>
-    {{/if}}
-
-    <h4>user.permission.user.verifyLicense</h4>
-    {{#if user.permission.user.verifyLicense}}
-    <p>you can verifyLicense</p>
-    {{else}}
-    <p>you can not verifyLicense</p>
-    {{/if}}
-
-    <h4>user.permission.campaign.all</h4>
-    {{#if user.permission.campaign.all}}
-    <p>you can campaign all</p>
-    {{else}}
-    <p>you can not campaign all</p>
-    {{/if}}
-
-    <h4>user.permission.donate.all</h4>
-    {{#if user.permission.donate.all}}
-    <p>you can donate all</p>
-    {{else}}
-    <p>you can not donate all</p>
-    {{/if}}
-
-    <h4>user.permission.news.create</h4>
-    {{#if user.permission.news.create}}
-    <p>you can news create</p>
-    {{else}}
-    <p>you can not news create</p>
-    {{/if}}
-
-    <h4>user.permission.transaction.all</h4>
-    {{#if user.permission.transaction.all}}
-    <p>you can transaction all</p>
-    {{else}}
-    <p>you can not transaction all</p>
-    {{/if}}
+    <div class="rows">
+        <h4 class="col-12 col-md-6 mx-auto mb-4">Tin Mới Cập Nhật</h4>
+        <div id="newsFeedContainer"></div>
+    </div>
 </div>
-<!-- Form End -->
+<script>
+    const itemPerPage = 3
+    const data = []
+    let newsFeedCount = 0
+    let newsFeedLoad = true
+    const newsFeedContainerDom = document.querySelector("#newsFeedContainer")
+
+    const renderNewsFeed = (newsFeed) => {
+        const row = document.createElement("div")
+        row.classList = "rows col-12 col-md-6 mx-auto mb-5"
+        row.innerHTML = `
+            <div class="d-flex justify-content-between">
+                <p class="col-8 fw-bold text-dark"># ${newsFeed.title}</p>
+                <span class="col-4 text-end">${dateTimeFormat(newsFeed.publishedAt)}</span>
+            </div>
+            
+            <div class="col-12 p-4 text-dark border border-1">
+                ${newsFeed.content.replace(/\n/g, "<br>")}
+            </div>
+            <div class="col-12">
+                <img class="w-100" src="${newsFeed.imagePath}" />
+            
+            </div>
+        `
+        return row
+    }
+
+    const loadMoreNewsFeed = async () => {
+        newsFeedLoad = false
+        const formData = new FormData()
+        formData.append("offset", newsFeedCount)
+        formData.append("limit", itemPerPage)
+
+        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+        fetch('/news-feed/load', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                if (data.success) {
+                    const { newsFeeds } = data
+                    if (newsFeeds.length >= itemPerPage) {
+                        newsFeedLoad = true
+                    }
+                    newsFeeds.forEach(newsFeed => {
+                        ++newsFeedCount
+                        const row = renderNewsFeed(newsFeed)
+                        newsFeedContainerDom.append(row)
+                    })
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    }
+    const onScrollNewsFeedBox = async () => {
+        if (newsFeedLoad) {
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement
+            if (scrollTop + clientHeight >= scrollHeight - 50) {
+                newsFeedLoad = false
+                await loadMoreNewsFeed()
+            }
+        }
+    }
+    loadMoreNewsFeed()
+    window.addEventListener("scroll", onScrollNewsFeedBox)
+
+    eventWS.registerListener('newsFeedCreateEvent', 'home', (payload) => {
+        if (payload.newNewsFeed) {
+            const row = renderNewsFeed(payload.newNewsFeed)
+            newsFeedContainerDom.prepend(row)
+        }
+    })
+</script>

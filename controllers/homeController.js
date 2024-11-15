@@ -8,7 +8,20 @@ const campaignService = require("../services/campaignService")
 const controller = {}
 
 controller.show = async (req, res) => {
-    res.render('home')
+    const userID = req.session.user.id
+    const charity = await models.Charity.findOne({
+        where: {
+            userID
+        },
+        include: [
+            {
+                model: models.Campaign,
+                attributes:["id", "name"]
+            }
+        ]
+    })
+
+    res.render('home', {charity})
 }
 
 controller.search = async (req, res) => {
@@ -37,7 +50,7 @@ controller.search = async (req, res) => {
 
     const options = {
         ...optionCount,
-        include : [
+        include: [
             {
                 model: models.CampaignImage,
                 as: 'firstImage'
