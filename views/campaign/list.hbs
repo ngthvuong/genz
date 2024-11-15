@@ -1,0 +1,12 @@
+this is list page: 
+
+<a href="/campaign/create">Tạo chiến dịch</a>
+
+{{#each campaigns}}
+ <h2> {{name}}</h2>
+ <p><a href="campaign/edit/{{id}}">{{id}}</a></p>
+    <!--{{#each Contributions}}
+        <p>{{sender}}: {{amount}}</p>
+
+    {{/each}}-->
+{{/each}}
