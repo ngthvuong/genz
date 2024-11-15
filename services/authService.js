@@ -13,6 +13,9 @@ const saltRounds = 8
 const fullPhone = (phone) => {
     return phone.replace(/^0/, '+84')
 }
+const fullPhoneWithoutPrefix = (phone) => {
+    return phone.replace(/^0/, '84')
+}
 
 const hashPassword = (password) => {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds))
@@ -22,6 +25,6 @@ const comparePassword = (password, hashedCode) => {
 }
 
 module.exports = {
-    steps, saltRounds, fullPhone, hashPassword, comparePassword
+    steps, saltRounds, fullPhone, fullPhoneWithoutPrefix, hashPassword, comparePassword
 }
 

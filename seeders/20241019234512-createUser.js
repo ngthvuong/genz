@@ -25,7 +25,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093060.jpg",
         email: "admin@genz.com",
         status: 'active',
-        role: "admin"
+        role: "admin",
+        notifyChannel: "phone"
       },
       {
         name: "Hoàng Lê",
@@ -34,7 +35,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093061.jpg",
         email: "hoangle@genz.com",
         status: 'active',
-        role: "donor"
+        role: "donor",
+        notifyChannel: "phone"
       },
       {
         name: "Ninh Võ",
@@ -43,7 +45,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093062.jpg",
         email: "ninvo@genz.com",
         status: 'active',
-        role: "charity"
+        role: "charity",
+        notifyChannel: "phone"
       },
       {
         name: "Tín Nguyễn",
@@ -52,7 +55,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093063.jpg",
         email: "tinnguyen@genz.com",
         status: 'pending',
-        role: "charity"
+        role: "charity",
+        notifyChannel: "phone"
       },
       {
         name: "Vương Nguyễn",
@@ -61,7 +65,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093064.jpg",
         email: "vuongnguyen@genz.com",
         status: 'active',
-        role: "recipient"
+        role: "recipient",
+        notifyChannel: "phone"
       },
       {
         name: "Ninh Võ 1",
@@ -70,7 +75,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093062.jpg",
         email: "ninvo1@genz.com",
         status: 'active',
-        role: "charity"
+        role: "charity",
+        notifyChannel: "phone"
       },
       {
         name: "Ninh Võ 2",
@@ -79,7 +85,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093062.jpg",
         email: "ninvo2@genz.com",
         status: 'active',
-        role: "charity"
+        role: "charity",
+        notifyChannel: "phone"
       },
       {
         name: "Ninh Võ 3",
@@ -88,7 +95,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093062.jpg",
         email: "ninvo3@genz.com",
         status: 'active',
-        role: "charity"
+        role: "charity",
+        notifyChannel: "phone"
       },
       {
         name: "Ninh Võ 4",
@@ -97,7 +105,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093062.jpg",
         email: "ninvo4@genz.com",
         status: 'active',
-        role: "charity"
+        role: "charity",
+        notifyChannel: "phone"
       },
       {
         name: "Ninh Võ 5",
@@ -106,7 +115,8 @@ module.exports = {
         avatarPath: "/media/avatars/0909093062.jpg",
         email: "ninvo5@genz.com",
         status: 'active',
-        role: "charity"
+        role: "charity",
+        notifyChannel: "phone"
       },
     ])
   },

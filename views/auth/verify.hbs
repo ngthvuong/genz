@@ -3,18 +3,29 @@
     <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
         <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
             <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
-                <form id="verifyForm">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <a href="#" class="">
-                            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>{{appName}}</h3>
-                        </a>
-                        <h3>Xác Thực Tài Khoản</h3>
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <a href="#" class="">
+                        <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>{{appName}}</h3>
+                    </a>
+                    <h3>Xác Thực Tài Khoản</h3>
+                </div>
+                <form id="resendOTPForm" class="d-flex gap-1 justify-content-between mb-5">
+                    <div class="col-9 form-floating">
+                        <select class="form-select" id="notifyChannel" name="notifyChannel"
+                            aria-label="Floating label select example" required>
+                            <option value="phone">Điện Thoại</option>
+                            <option value="email">Email</option>
+                        </select>
+                        <label for="role">Chọn kênh xác thực</label>
                     </div>
-                    <div class="form-floating mb-3">
+                    <button type="submit" class="btn btn-success py-3 col-3">Gởi Lại</button>
+                </form>
+                <form id="verifyForm">
+                    <div class="form-floating mb-2">
                         <input type="text" class="form-control" name="pin" id="pin" placeholder="Mã xác thực">
                         <label for="pin">Mã xác thực</label>
                     </div>
-                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4 mt-5">Xác Thực</button>
+                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4 mt-2">Xác Thực</button>
                 </form>
             </div>
         </div>
@@ -23,6 +34,13 @@
 <!-- Sign Up End -->
 
 <script>
+    const notifyChannelSelect = document.getElementById("notifyChannel")
+    let currentNotifyChannel = "{{tempUser.notifyChannel}}"
+    let currentNotifyChannelOption = notifyChannelSelect.querySelector(`option[value="${currentNotifyChannel}"]`)
+    if(currentNotifyChannelOption){
+        currentNotifyChannelOption.selected = true
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('verifyForm').addEventListener('submit', function (event) {
             event.preventDefault();
@@ -60,6 +78,53 @@
 
                     } else {
                         window.location.href = data.nextUrl
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        })
+
+        document.getElementById('resendOTPForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let formErrors = document.getElementById('formErrors')
+            if (formErrors) {
+                formErrors.remove()
+            }
+
+            const formData = new FormData(this)
+            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+            fetch('/auth/resend-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.errors) {
+                        let messages = ''
+                        data.errors.forEach(error => {
+                            messages += `<p>${error.msg}</p>`
+                        })
+                        formErrors = document.createElement('div')
+                        formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                        formErrors.id = "formErrors"
+                        formErrors.innerHTML = messages
+                        document.getElementById('verifyForm').appendChild(formErrors);
+
+                    } else {
+                        let messages = `<p>${data.message}</p>`
+                        formErrors = document.createElement('div')
+                        formErrors.classList = 'col md-12 alert alert-success mt-3'
+                        formErrors.id = "formErrors"
+                        formErrors.innerHTML = messages
+                        document.getElementById('verifyForm').appendChild(formErrors);
                     }
                 })
                 .catch(error => {

@@ -4,47 +4,33 @@ const zaloPay = require("../thirdParties/zaloPay")
 
 const payment = {}
 
-payment.transfer = async (campaignID, methodCode, data) => {
-    //1. store temporary transfer information
-    //create new transactionID
-    const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
-    const appTransId = '210930123456_' + Date.now() + "_" + randomNum
+payment.transfer = async (appTransId, charity, methodCode, data) => {
 
-    //2. get merchant info
-    const merchantInfo = {}
-    merchantInfo.appid = '2554'
-    merchantInfo.key1 = 'sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn'
-    merchantInfo.key2 = 'trMrHtvjo6myautxDUiAcYsVtaeQ8nhf'
-    //3. create order
-    zaloPay.setMerchantInfo(merchantInfo.appid, merchantInfo.key1, merchantInfo.key2)
+    zaloPay.setMerchantInfo(charity.merchantAppID, charity.merchantKey1, charity.merchantKey2)
     zaloPay.setMethod(methodCode)
     const transaction = await zaloPay.createOrder(appTransId, data)
 
-    //4. check creating order successfully
     if (transaction.return_code && transaction.return_code != 1) {
-        //5. delete temporary transfer information
-
         return { error: transaction.sub_return_message }
     }
 
-    //6. storing transaction information
-
-    //7. return order_url of zalo gateway
     return transaction
 }
 
-payment.callback = async (data) => {
-    // get and assign temporary transfer information
+payment.callback = async (charity, data) => {
+    zaloPay.setMerchantInfo(charity.merchantAppID, charity.merchantKey1, charity.merchantKey2)
+    return zaloPay.checkCallbackData(data)
+}
 
-    if(zaloPay.checkCallbackData(data)){
-        // if(success)
-            //store data
+payment.getOrder = async (charity, appTransId) => {
+    zaloPay.setMerchantInfo(charity.merchantAppID, charity.merchantKey1, charity.merchantKey2)    
+    const transaction = await zaloPay.getOrder(appTransId)
 
-        // delete temporary transfer information
-        // return success or canceled 
+    if (!transaction.return_code) {
+        return { error: transaction.sub_return_message }
     }
 
-    //return error
+    return transaction
 }
 
 module.exports = payment

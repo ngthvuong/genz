@@ -23,23 +23,32 @@
                         <label for="name">Họ tên</label>
                     </div>
                     <div class="form-floating mb-4">
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Mật khẩu">
+                        <input type="password" class="form-control" name="password" id="password"
+                            placeholder="Mật khẩu">
                         <label for="password">Mật khẩu</label>
                     </div>
                     <div class="form-floating mb-4">
-                        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Xác nhận mật khẩu">
+                        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword"
+                            placeholder="Xác nhận mật khẩu">
                         <label for="confirmPassword">Xác nhận mật khẩu</label>
                     </div>
                     <div class="form-floating mb-3">
                         <select class="form-select" id="role" name="role" aria-label="Floating label select example"
                             required>
-                            <option value="">Lựa chon</option>
+                            <option value="">Lựa chọn</option>
                             <option value="charity">Tổ chức quyên góp</option>
                             <option value="donor">Người hỗ trợ</option>
                             <option value="recipient">người nhận hỗ trợ</option>
-                            <option value="admin">Admin</option>
                         </select>
                         <label for="role">Chọn loại người dùng</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="notifyChannel" name="notifyChannel" aria-label="Floating label select example"
+                            required>
+                            <option value="phone">Điện Thoại</option>
+                            <option value="email">Email</option>
+                        </select>
+                        <label for="role">Chọn kênh xác thực</label>
                     </div>
                     <button type="submit" class="btn btn-primary py-3 w-100 mb-4 mt-5">Đăng Ký</button>
                     <p class="text-center mb-0">Bạn đã có tài khoản? <a href="/auth/login">Đăng Nhập</a></p>

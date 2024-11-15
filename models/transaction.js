@@ -39,8 +39,15 @@ module.exports = (sequelize, DataTypes) => {
     type: {
       type: DataTypes.ENUM('Contribution','Distribution'),
       allowNull: false
-    }
-   
+    },
+    status: {
+      type: DataTypes.ENUM('Pending','Success','Failed'),
+      allowNull: false
+    },
+    apptransid: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },   
   }, {
     sequelize,
     modelName: 'Transaction',

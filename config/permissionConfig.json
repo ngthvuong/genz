@@ -1,46 +1,82 @@
 {
     "admin": {
-        "report": [
-            "view"
-        ],
-        "user": [
-            "verifyLicense"
-        ]
+        "report": {
+            "rating" : false
+        },
+        "user": {
+            "verifyLicense": true
+        },
+        "campaign": {
+            "all" : false
+        },
+        "donate": {
+            "all" : false
+        },
+        "news": {
+            "create": false
+        },
+        "transaction": {
+            "all" : false
+        }
     },
     "donor": {
-        "report": [
-            "view",
-            "rating"
-        ],
-        "contribute": [
-            "transfer"
-        ]
+        "report": {
+            "rating" : true
+        },
+        "user": {
+            "verifyLicense": false
+        },
+        "campaign": {
+            "all" : false
+        },
+        "donate": {
+            "all" : true
+        },
+        "news": {
+            "create": false
+        },
+        "transaction": {
+            "all" : false
+        }
     },
     "charity": {
-        "report": [
-            "view"
-        ],
-        "campaign": [
-            "create",
-            "edit",
-            "delete",
-            "changeStatus"
-        ],
-        "contribute": [
-            "create",
-            "edit",
-            "delete"
-        ],
-        "distribute": [
-            "create",
-            "edit",
-            "delete"
-        ]
+        "report": {
+            "rating" : false
+        },
+        "user": {
+            "verifyLicense": false
+        },
+        "campaign": {
+            "all" : true
+        },
+        "donate": {
+            "all" : false
+        },
+        "news": {
+            "create": true
+        },
+        "transaction": {
+            "all" : true
+        }
     },
     "recipient": {
-        "report": [
-            "view",
-            "rating"
-        ]
+        "report": {
+            "rating" : true
+        },
+        "user": {
+            "verifyLicense": false
+        },
+        "campaign": {
+            "all" : false
+        },
+        "donate": {
+            "all" : false
+        },
+        "news": {
+            "create": false
+        },
+        "transaction": {
+            "all" : false
+        }
     }
 }
