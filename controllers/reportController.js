@@ -270,7 +270,7 @@ controller.showStatement = async (req, res) => {
         return res.redirect("/")
     }
 
-    campaignService.calTotalParams(campaign)
+    await campaignService.calTotalParams(campaign)
 
     return res.render("report/statement", { campaign })
 }

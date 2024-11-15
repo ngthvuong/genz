@@ -167,7 +167,7 @@
         const onScrollContributionBox = async (event, callback) => {
             if (contributionLoad) {
                 const { scrollTop, scrollHeight, clientHeight } = event.target
-                if (scrollTop + clientHeight >= scrollHeight) {
+                if (scrollTop + clientHeight >= scrollHeight - 50) {
                     contributionLoad = false
                     await loadMoreContribution()
                 }
@@ -224,7 +224,7 @@
         const onScrollDistributionBox = async (event, callback) => {
             if (distributionLoad) {
                 const { scrollTop, scrollHeight, clientHeight } = event.target
-                if (scrollTop + clientHeight >= scrollHeight) {
+                if (scrollTop + clientHeight >= scrollHeight - 50  ) {
                     distributionLoad = false
                     await loadMoreDistribution()
                 }
