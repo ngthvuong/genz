@@ -145,7 +145,12 @@ controller.updateCharityStatus = async (req, res) => {
     {
         approvedCharity.User.status ='active';
         approvedCharity.User.save();
-        console.log(approvedCharity.User)
+        
+        const UserApprovedEvent = require("../websocket/events/userApprovedEvent")
+        await new UserApprovedEvent({
+            user: approvedCharity.User
+        }).dispatch()
+
         return res.status(200).send('Tổ chức từ thiện đã được chấp nhận.');
     } else {
         return res.status(404).send('Tổ chức từ thiện không tìm thấy hoặc đã được phê duyệt.');
