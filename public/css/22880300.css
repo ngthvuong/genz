@@ -57,12 +57,17 @@ ul.pagination {
 
 ul.pagination>li>a {
     display: inline-block;
-    width: 80px;
+    min-width: 32px;
     text-align: center;
     background-color: #009cff;
     color: #fff;
     padding: 5px 7px;
     border-radius: 5px;
+}
+
+ul.pagination>li:first-child>a,
+ul.pagination>li:last-child>a {
+    width: 80px;
 }
 
 ul.pagination>li.active>a {
