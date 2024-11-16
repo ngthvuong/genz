@@ -1,8 +1,25 @@
 'use strict'
 
 const models = require("../models")
-
 const campaignService = {}
+
+campaignService.averageCharityRating = (charity) => {
+    charity.averageCharityRating = 0;
+
+    const numberCampaigns = charity.Campaigns.length;
+    if (numberCampaigns) {
+        let sumCharityRating = 0;
+
+        charity.Campaigns.forEach(campaign => {
+               campaignService.averageRatingItem (campaign)
+               sumCharityRating += campaign.averageRating
+        });
+        charity.averageCharityRating = sumCharityRating/numberCampaigns
+    }
+    if (charity.averageCharityRating === null || isNaN(charity.averageCharityRating)) {
+        charity.averageCharityRating = 0;
+    }
+}
 
 
 campaignService.averageRatingItems = (campaigns) => {

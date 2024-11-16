@@ -56,9 +56,12 @@ ul.pagination {
 }
 
 ul.pagination>li>a {
+    display: inline-block;
+    width: 80px;
+    text-align: center;
     background-color: #009cff;
     color: #fff;
-    padding: 2px 7px;
+    padding: 5px 7px;
     border-radius: 5px;
 }
 

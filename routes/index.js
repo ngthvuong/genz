@@ -10,6 +10,8 @@ const reportRouter = require('./reportRouter')
 const campaignRouter = require('./campaignRouter')
 const newsFeedRouter = require('./newsFeedRouter')
 
+const charityVerificationRouter = require('./charityVerificationRouter')
+const charityListRouter = require('./charityListRouter')
 
 
 const commonMiddleware = require('../middlewares/commonMiddleware')
@@ -27,5 +29,7 @@ router.use('/news-feed', newsFeedRouter)
 
 router.use('/test', testRouter)
 router.use('/', homeRouter)
+router.use('/charityVerification', charityVerificationRouter)
+router.use('/charity', charityListRouter)
 
 module.exports = router

@@ -1,0 +1,57 @@
+{{#with charity}}
+<div class="rows m-3">
+    <h4>Chi tiết tổ chức từ thiện</h4>
+</div>
+<div class="row m-3">
+    <div class="col-4">
+        <img class="w-100 h-auto" src="{{User.avatarPath}}" alt="{{User.name}}" onerror="this.src='/img/logo.svg';">
+    </div>
+    <div class="rows col-8 text-dark">
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Tổ chức: </div>
+            <div class="col-8">{{User.name}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Người đại diện: </div>
+            <div class="col-8">{{representative}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Số điện thoại: </div>
+            <div class="col-8">{{User.phone}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Email: </div>
+            <div class="col-8">{{User.email}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Địa chỉ: </div>
+            <div class="col-8">{{User.address}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Tình trạng: </div>
+            <div class="col-8">{{convertUserStatus User.status}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Ngày thành lập: </div>
+            <div class="col-8">{{dateFormat establishedDate}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Đánh Giá: </div>
+            <div class="col-8">{{roundToOneDecimal averageCharityRating}}/5 <i class="fas fa-star text-warning"></i></div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Giấy phép hoạt động số: </div>
+            <div class="col-8">{{License.name}}</div>
+        </div>
+        <div class="row col-12 mt-2">
+            <div class="col-4 fw-bold">Mô tả: </div>
+            <div class="col-8">{{description}}</div>
+        </div>
+    </div>
+</div>
+<div row m-3>
+    <div class="col-12">
+        <img class="license-img" src="{{License.imgPath}}" alt="" onerror="this.src='/img/logo.svg';">
+    </div>
+</div>
+{{/with}}

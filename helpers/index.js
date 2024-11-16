@@ -38,6 +38,26 @@ handlebars.registerHelper('campaignStatusText', function (status) {
     return statusText
 });
 
+handlebars.registerHelper('convertUserStatus', function (status) {
+    let statusText = "Đang hoạt động"
+    if(status == "inactive") {
+        statusText = 'Không hoạt động'
+    } 
+    else if (status =="pending") {
+        statusText = "Đang đợi phê duyệt"
+    }
+    else if (status == "reject") {
+        statusText = "Từ chối phê duyệt"
+    }
+    return statusText;
+})
+
+handlebars.registerHelper('roundToOneDecimal', function (number){
+    if (typeof number === 'number' && !isNaN(number)) {
+        return (Math.round(number * 10) / 10).toFixed(1);
+    }
+    return number;
+})
 
 handlebars.registerHelper('convertUserRole', function (role) {
     let VNRole = "Quản Trị Viên"
@@ -52,7 +72,7 @@ handlebars.registerHelper('convertUserRole', function (role) {
 });
 
 handlebars.registerHelper('createStarList', function (stars) {
-    let str = '<div class="ratting">'
+    let str = '<div class="rating d-flex justify-content-center">'
 
     let fullStars = Math.floor(stars)
     let halfStar = stars - fullStars
@@ -82,6 +102,8 @@ module.exports = {
     dateTimeFormat: handlebars.helpers.dateTimeFormat,
     getFirstImagePath: handlebars.helpers.getFirstImagePath,
     createStarList: handlebars.helpers.createStarList,
+    convertUserStatus: handlebars.helpers.convertUserStatus,
+    roundToOneDecimal: handlebars.helpers.roundToOneDecimal,
     convertUserRole: handlebars.helpers.convertUserRole,
     campaignStatusText: handlebars.helpers.campaignStatusText,
     nToBr: handlebars.helpers.nToBr,
