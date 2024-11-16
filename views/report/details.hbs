@@ -1,4 +1,3 @@
-{{#with campaign}}
 <div class="rows m-3">
     <h4>Chiến Dịch Từ Thiện</h4>
 </div>
@@ -9,35 +8,35 @@
     <div class="rows col-8 text-dark">
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Chiến dịch</div>
-            <div class="col-8">{{name}}</div>
+            <div class="col-8">{{campaign.name}}</div>
         </div>
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Địa điểm</div>
-            <div class="col-8">{{location}}</div>
+            <div class="col-8">{{campaign.location}}</div>
         </div>
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Ngày bắt đầu</div>
-            <div class="col-8">{{dateFormat startDate}}</div>
+            <div class="col-8">{{dateFormat campaign.startDate}}</div>
         </div>
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Ngày kết thúc</div>
-            <div class="col-8">{{dateFormat endDate}}</div>
+            <div class="col-8">{{dateFormat campaign.endDate}}</div>
         </div>
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Tổ chức từ thiện</div>
-            <div class="col-8">{{Charity.User.name}}</div>
+            <div class="col-8">{{campaign.Charity.User.name}}</div>
         </div>
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Ngân sách dự kiến</div>
-            <div class="col-8">{{formatAmount budget}} VNĐ</div>
+            <div class="col-8">{{formatAmount campaign.budget}} VNĐ</div>
         </div>
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Tình trạng</div>
-            <div class="col-8">{{campaignStatusText status}}</div>
+            <div class="col-8">{{campaignStatusText campaign.status}}</div>
         </div>
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Đánh Giá</div>
-            <div class="col-8">{{averageRating}}/5 <i class="fas fa-star text-warning"></i></div>
+            <div class="col-8">{{campaign.averageRating}}/5 <i class="fas fa-star text-warning"></i></div>
         </div>
     </div>
 </div>
@@ -46,9 +45,11 @@
     </div>
     <div class="rows col-8 text-dark d-flex justify-content-between">
         <a class="btn reportButton statementBtn" href="/report/statement/{{id}}">SAO KÊ</a>
-        <a class="btn btn-success fw-bold reportButton donateBtn" href="/transaction/transfer?campaignID={{id}}">
+        {{#if user.permission.donate.all}}
+        <a class="btn btn-success fw-bold reportButton donateBtn" href="/transaction/transfer?campaignID={{campaign.id}}">
             ĐÓNG GÓP
         </a>
+        {{/if}}
     </div>
 </div>
 <div class="row m-3">
@@ -71,19 +72,22 @@
     </div>
     <div class="col-12" id="moreDetailContent">
         <div id="descriptionContent" class="collapse border border-dark p-2 show">
-            {{{description}}}
+            {{{nToBr campaign.description}}}
         </div>
         <div id="reviewContent" class="collapse border border-dark p-2">
-            {{#unless ../userReview}}
+            {{#if user.permission.report.rating}}
+            {{#unless userReview}}
             <div class="col-12 my-3" id="showReviewModal">
                 <button type="button" class="btn btn-success reviewContentSubmit" data-bs-toggle="modal"
                     data-bs-target="#reviewModal">
                     Thêm Đánh Giá Của Bạn
                 </button>
             </div>
+            {{>reviewModal}}
             {{/unless}}
+            {{/if}}
             <div id="reviewContainer">
-                {{#each Reviews}}
+                {{#each campaign.Reviews}}
                 <div class="row col-12 my-2">
                     <div class="col-1">
                         <img class="w-100 px-1" src="{{User.avatarPath}}" onerror="this.src='/img/logo.svg';" />
@@ -104,7 +108,7 @@
                 <button type="submit" class="btn btn-success commentContentSubmit col-1 ms-1">Gởi</button>
             </form>
             <div id="commentContainer">
-                {{#each Comments}}
+                {{#each campaign.Comments}}
                 <div class="row col-12 mb-2">
                     <div class="col-1">
                         <img class="w-100 px-1" src="{{User.avatarPath}}" onerror="this.src='/img/logo.svg';" />
@@ -120,11 +124,6 @@
         </div>
     </div>
 </div>
-{{/with}}
-
-{{#unless userReview}}
-{{>reviewModal}}
-{{/unless}}
 
 <script>
     document.querySelector("#campaign_more_info_tags").addEventListener("click", (event) => {

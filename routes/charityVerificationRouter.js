@@ -4,6 +4,9 @@ const express = require('express')
 const controller =require('../controllers/charityVerificationController')
 const router = express.Router()
 
+router.use(require('../middlewares/auth').isLogged());
+const permission = require("../middlewares/permission")
+router.use(permission.check("user", "verifyLicense"))
 
 router.get('/', controller.showUnapprovedCharityList);
 router.get('/:id', controller.showPendingCharityDetails);
