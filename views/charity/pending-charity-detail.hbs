@@ -37,7 +37,8 @@
         </div>
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Đánh Giá: </div>
-            <div class="col-8">{{roundToOneDecimal averageCharityRating}}/5 <i class="fas fa-star text-warning"></i></div>
+            <div class="col-8">{{roundToOneDecimal averageCharityRating}}/5 <i class="fas fa-star text-warning"></i>
+            </div>
         </div>
         <div class="row col-12 mt-2">
             <div class="col-4 fw-bold">Giấy phép hoạt động số: </div>
@@ -53,7 +54,7 @@
     <div class="col-4">
     </div>
     <div class="rows col-8 text-dark d-flex justify-content-between">
-        <a class="btn rejectButton statementButton " href="#" >TỪ CHỐI</a>
+        <a class="btn rejectButton statementButton " href="#" onclick="rejectCharity('{{User.id}}')">TỪ CHỐI</a>
         <a class="btn approveButton statementButton" href="#" onclick="approveCharity('{{User.id}}')">CHẤP NHẬN</a>
     </div>
 </div>
@@ -66,22 +67,54 @@
 
 <script>
     function approveCharity(userId) {
-    fetch(`/charityVerification/charities/approve/${userId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('Tổ chức từ thiện đã được chấp nhận!');
-            window.location.href="/charityVerification";
+        const confirmation = confirm("Bạn có chắc chắn muốn chấp nhận tổ chức từ thiện này?");
+        if (confirmation) {
+            fetch(`/charityVerification/charities/approve/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Tổ chức từ thiện đã được chấp nhận!');
+                        window.location.href = "/charityVerification";
+                    } else {
+                        alert('Có lỗi xảy ra khi chấp nhận tổ chức từ thiện.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         } else {
-            alert('Có lỗi xảy ra khi chấp nhận tổ chức từ thiện.');
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
+    }
+</script>
+
+<script>
+    function rejectCharity(userId) {
+        const confirmation = confirm("Bạn có chắc chắn muốn từ chối tổ chức từ thiện này?");
+        if (confirmation) {
+            fetch(`/charityVerification/charities/reject/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Tổ chức từ thiện bị từ chối do thông tin không hợp lệ.!');
+                        window.location.href = "/charityVerification";
+                    } else {
+                        alert('Có lỗi xảy ra khi từ chối tổ chức từ thiện.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        } else {
+            return;
+        }
+    }
 </script>

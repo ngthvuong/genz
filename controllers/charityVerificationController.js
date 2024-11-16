@@ -126,7 +126,7 @@ controller.updateCharityStatus=async (req, res) => {
     }
 };
 
-controller.updateCharityStatus = async (req, res) => {
+controller.updateApprovedCharityStatus = async (req, res) => {
     let id = isNaN(req.params.id) ? 0 : parseInt(req.params.id);
 
     let approvedCharity = await models.Charity.findOne({
@@ -151,9 +151,40 @@ controller.updateCharityStatus = async (req, res) => {
             user: approvedCharity.User
         }).dispatch()
 
-        return res.status(200).send('Tổ chức từ thiện đã được chấp nhận.');
+        return res.status(200).send('Tổ chức từ thiện đã được phê duyệt.');
     } else {
         return res.status(404).send('Tổ chức từ thiện không tìm thấy hoặc đã được phê duyệt.');
+    }
+};
+
+controller.updateRejectedCharityStatus = async (req, res) => {
+    let id = isNaN(req.params.id) ? 0 : parseInt(req.params.id);
+
+    let rejectedCharity = await models.Charity.findOne({
+        include: [{
+            model: models.User,
+            where: {
+                id,
+                status: 'pending',
+                role: 'charity'
+            }
+        }
+        ]
+    })
+    
+    if(rejectedCharity)
+    {
+        rejectedCharity.User.status ='reject';
+        rejectedCharity.User.save();
+        
+        const userRejectedEvent = require("../websocket/events/userRejectedEvent")
+        await new userRejectedEvent({
+            user: rejectedCharity.User
+        }).dispatch()
+
+        return res.status(200).send('Tổ chức từ thiện bị từ chối do thông tin không hợp lệ.');
+    } else {
+        return res.status(404).send('Tổ chức từ thiện không tìm thấy hoặc đã bị từ chối.');
     }
 };
 
