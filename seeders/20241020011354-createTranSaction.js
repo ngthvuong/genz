@@ -64,7 +64,8 @@ module.exports = {
             paymentMethodID: paymentMethod.id,
             campaignID: campaign.id,
             status: 'Success',
-            apptransid: '210930123456'            
+            apptransid: '210930123456',
+            donorID: user.id           
           },
         )
       }

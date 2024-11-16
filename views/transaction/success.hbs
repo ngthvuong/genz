@@ -1,0 +1,28 @@
+{{#with transaction}}
+<div class="container mt-5">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Chuyển khoản thành công!</h4>
+        <p>Cảm ơn bạn đã đóng góp cho chiến dịch <strong>{{Campaign.name}}</strong>.</p>            
+        <p>Số tiền đóng góp: <strong>{{amount}} VNĐ</strong></p>
+        <hr>
+        <p class="mb-0">Nếu bạn cần thêm sự hỗ trợ, vui lòng liên hệ với chúng tôi qua email hoặc điện thoại.</p>
+        <a href="/" class="btn btn-primary mt-3">Quay lại trang chủ</a>
+    </div>
+    {{> invoiceItem}}
+    <div class="mt-4">
+        <button id="downloadPDF" class="btn btn-success">Tải hóa đơn PDF</button>
+    </div>
+</div>
+<script>
+    document.getElementById('downloadPDF').addEventListener('click', function() {
+        const element = document.getElementById('invoiceContent');  
+        const options = {
+            filename: `hoadon_${{apptransid}}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },  
+            html2canvas: { scale: 4 }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+        };
+        html2pdf().from(element).set(options).save();
+    });
+</script>
+{{/with}}

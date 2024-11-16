@@ -1,0 +1,14 @@
+<div class="rows m-3">
+    <h4>Lịch sử đóng góp</h4>
+</div>
+{{#if contributions.length}}
+<div class="rows m-3">
+    {{#each contributions}}
+       {{> invoiceItem}}
+    {{/each}}
+</div>
+{{else}}
+<div class="rows m-3">
+    - Không có lịch sử đóng góp nào!
+</div>
+{{/if}}

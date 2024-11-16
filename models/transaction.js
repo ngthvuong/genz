@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Transaction.belongsTo(models.Campaign, {foreignKey:'campaignID'})
       Transaction.belongsTo(models.PaymentMethod, {foreignKey:'paymentMethodID'})
+      Transaction.belongsTo(models.User, {foreignKey:'donorID'})
     }
   }
   Transaction.init({

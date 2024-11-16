@@ -46,7 +46,9 @@
     </div>
     <div class="rows col-8 text-dark d-flex justify-content-between">
         <a class="btn reportButton statementBtn" href="/report/statement/{{id}}">SAO KÊ</a>
-        <a class="btn btn-success fw-bold reportButton donateBtn inactive" href="javascript:void(0)">ĐÓNG GÓP</a>
+        <a class="btn btn-success fw-bold reportButton donateBtn" href="/transaction/transfer?campaignID={{id}}">
+            ĐÓNG GÓP
+        </a>
     </div>
 </div>
 <div class="row m-3">
