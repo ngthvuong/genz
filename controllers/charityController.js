@@ -64,7 +64,7 @@ controller.showCharityList = async (req,res) => {
         queryParams: req.query
     }
 
-    const maxPage = Math.ceil(parseFloat(totalRows) / limit);
+    const maxPage = parseFloat(totalRows) ? Math.ceil(parseFloat(totalRows) / limit) : 1;
     if (page > maxPage) {
         query.set("page", maxPage)
         return res.redirect(`${req.path}?${query.toString()}`)
