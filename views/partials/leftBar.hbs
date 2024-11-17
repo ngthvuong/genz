@@ -1,6 +1,6 @@
 <div class="navbar-nav w-100">
     {{#if user.permission.user.verifyLicense}}
-    <a href="/charityVerification" class="nav-item nav-link"><i class="fa  fa-gavel me-2"></i>Xác Thực Giấy Phép</a>
+    <a href="/charity-verification" class="nav-item nav-link"><i class="fa  fa-gavel me-2"></i>Xác Thực Giấy Phép</a>
     {{/if}}
 
     <a href="/charity" class="nav-item nav-link"><i class="fa fa-book me-2"></i>Tổ Chức Từ Thiện</a>
@@ -9,8 +9,9 @@
     <a href="/campaign" class="nav-item nav-link"><i class="fa fa-book me-2"></i>Quản Lý Chiến Dịch</a>
     {{/if}}
 
-    {{#if user.permission.donate.all}}
-    <a href="/transaction" class="nav-item nav-link"><i class="fa fa-gift me-2"></i>Đóng Góp</a>
-    {{/if}}
     <a href="/report" class="nav-item nav-link"><i class="fa fa-comments me-2"></i>Theo Dõi Báo Cáo</a>
+
+    {{#if user.permission.donate.all}}
+    <a href="/transaction" class="nav-item nav-link"><i class="fa fa-gift me-2"></i>Lịch Sử Đóng Góp</a>
+    {{/if}}
 </div>

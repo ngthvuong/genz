@@ -1,5 +1,5 @@
-<h1>Đóng góp cho chiến dịch: {{campaign.name}}</h1>
-<div class="container p-4 bg-light rounded">
+<div class="container p-4 rounded">
+    <h4 class="mb-4">Đóng góp cho chiến dịch: {{campaign.name}}</h4>
     <form id="transferForm" class="form-horizontal">
         <input type="hidden" name="campaignID" value="{{campaign.id}}">
         <h5 class="mb-3">Thông tin chiến dịch</h5>
@@ -18,7 +18,7 @@
         <h5 class="mb-3">Phương thức thanh toán</h5>
         <div class="form-group mb-3">
             <label for="paymentMethod">Chọn phương thức</label>
-            <select id="paymentMethod" name="paymentMethodID" class="form-select" required >
+            <select id="paymentMethod" name="paymentMethodID" class="form-select" required>
                 <option value="">-- Chọn phương thức --</option>
                 {{#each paymentMethods}}
                 <option value="{{id}}">{{name}}</option>
@@ -31,9 +31,10 @@
         </div>
         <div class="form-group mb-3">
             <label for="message">Tin nhắn</label>
-            <textarea name="message" id="message" rows="3" class="form-control" placeholder="Nhập tin nhắn cho đóng góp của bạn"></textarea>
+            <textarea name="message" id="message" rows="3" class="form-control"
+                placeholder="Nhập tin nhắn cho đóng góp của bạn"></textarea>
         </div>
-       
+
         <button type="button" class="btn btn-primary" onclick="showTransferModal()">Xác nhận đóng góp</button>
         <div class="rows" id="transferError"></div>
     </form>
@@ -60,7 +61,7 @@
 <script>
     function showTransferModal() {
         const amount = document.getElementById("amount").value;
-        const message = document.getElementById("message").value;        
+        const message = document.getElementById("message").value;
         const paymentMethodSelect = document.getElementById("paymentMethod");
         const paymentMethod = paymentMethodSelect.options[paymentMethodSelect.selectedIndex].text;
 
@@ -68,12 +69,12 @@
         document.getElementById("confirmPaymentMethod").textContent = paymentMethod;
         document.getElementById("confirmMessage").textContent = message;
 
-        
-        const transferModal = new bootstrap.Modal(document.getElementById("transferModal"));              
+
+        const transferModal = new bootstrap.Modal(document.getElementById("transferModal"));
         transferModal.show();
-            
+
     }
-    function submitTransfer() {        
+    function submitTransfer() {
         resetFormErrors();
         const form = document.getElementById("transferForm");
         const formData = new FormData(form);
@@ -83,25 +84,25 @@
             headers: { 'Content-Type': 'application/json' },
             body: data
         })
-        .then(response => response.json())
-        .then(result => {
-            console.log(result);
-            if (!result.errors) {
-                window.location.href = result.redirectUrl;
-            } else {
-                displayFormErrors(result.errors);                  
-                
-                const modalElement = document.querySelector("#transferModal")
-                console.log(modalElement)
-                if (modalElement) {
-                    const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement)
-                    console.log(modal)
-                    modal.hide()
-                    
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+                if (!result.errors) {
+                    window.location.href = result.redirectUrl;
+                } else {
+                    displayFormErrors(result.errors);
+
+                    const modalElement = document.querySelector("#transferModal")
+                    console.log(modalElement)
+                    if (modalElement) {
+                        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement)
+                        console.log(modal)
+                        modal.hide()
+
+                    }
                 }
-            }
-        })
-        .catch(error => console.error('Error:', error));
+            })
+            .catch(error => console.error('Error:', error));
     }
     function displayFormErrors(errors) {
         let messages = '';
@@ -111,8 +112,8 @@
         formErrors.innerHTML = messages;
         document.getElementById('transferError').appendChild(formErrors);
     }
-    function resetFormErrors(errors) {   
+    function resetFormErrors(errors) {
         document.getElementById('transferError').innerHTML = '';
     }
-    
+
 </script>

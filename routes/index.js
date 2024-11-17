@@ -24,7 +24,7 @@ router.use('/news-feed', newsFeedRouter)
 router.use('/transaction', transactionRouter)
 router.use('/test', testRouter)
 router.use('/', homeRouter)
-router.use('/charityVerification', charityVerificationRouter)
+router.use('/charity-verification', charityVerificationRouter)
 router.use('/charity', charityListRouter)
 
 module.exports = router

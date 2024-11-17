@@ -9,7 +9,10 @@ const controller = {};
 controller.showList = async (req, res) => {
     const donorID = req.session.user ? req.session.user.id : 0;
     const contributions = await models.Transaction.findAll({ 
-        where: { donorID }, 
+        where: { 
+            donorID,
+            status: "Success"
+         }, 
         include: [{ model: models.Campaign }],
         order: [["madeAt", "DESC"]]
     });
@@ -110,6 +113,11 @@ controller.callback = async (req, res) => {
                     include: [
                         { 
                             model: models.Charity,
+                            include: [
+                                {
+                                    model: models.User,
+                                }
+                            ]
                         }
                     ]
                 }

@@ -9,18 +9,19 @@ const errors = require("../services/responseErrors")
 const controller = {}
 
 controller.show = async (req, res) => {
-    const keyword = req.query.keyword ? req.query.keyword.trim() : "";
-    const page = req.query.page ? parseInt(req.query.page.trim()) : 1;
+    const keyword = req.query.keyword ? req.query.keyword.trim() : ""
+    const page = req.query.page ? parseInt(req.query.page.trim()) : 1
     const limit = 12
     const offset = (page - 1) * limit
 
     const query = new URLSearchParams(req.query)
+    let path = req.path == "/" ? req.path : ""
+
     if (page < 1) {
         query.delete("page")
-        return res.redirect(`${req.path}?${query.toString()}`)
+        return res.redirect(`${req.baseUrl}${path}?${query.toString()}`)
 
     }
-
     const optionCount = {
         where: {
             name: {
@@ -59,10 +60,11 @@ controller.show = async (req, res) => {
         queryParams: req.query
     }
 
-    const maxPage = Math.ceil(parseFloat(totalRows) / limit);
+    const maxPage = parseFloat(totalRows) ? Math.ceil(parseFloat(totalRows) / limit) : 1
+
     if (page > maxPage) {
         query.set("page", maxPage)
-        return res.redirect(`${req.path}?${query.toString()}`)
+        return res.redirect(`${req.baseUrl}${path}?${query.toString()}`)
     }
 
     res.render('report/list', { campaigns, keyword, pagination })

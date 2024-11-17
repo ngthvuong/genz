@@ -1,23 +1,26 @@
-const handlebars = require('handlebars');
-const moment = require('moment');
+const handlebars = require('handlebars')
+const moment = require('moment')
 
 handlebars.registerHelper('incrementedIndex', function (index) {
-    return index + 1;
-});
+    return index + 1
+})
 handlebars.registerHelper('dateFormat', function (date) {
-    return date ? moment(date).format('DD/MM/YYYY') : 'N/A';;
-});
+    return date ? moment(date).format('DD/MM/YYYY') : 'N/A'
+})
 handlebars.registerHelper('dateTimeFormat', function (date) {
-    return date ? moment(date).format('DD/MM/YYYY H:mm:ss') : 'N/A';
-});
+    return date ? moment(date).format('DD/MM/YYYY H:mm:ss') : 'N/A'
+})
 
 handlebars.registerHelper('formatAmount', function (amount) {
-    return Number(amount).toLocaleString();
-});
+    return Number(amount).toLocaleString(
+        'vi-VN',
+        { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+    )
+})
 
 handlebars.registerHelper('nToBr', function (string) {
-    return string.replace(/\n/g, "<br>");
-});
+    return string.replace(/\n/g, "<br>")
+})
 
 handlebars.registerHelper('campaignStatusText', function (status) {
     let statusText = "Đã kết thúc"
@@ -36,27 +39,27 @@ handlebars.registerHelper('campaignStatusText', function (status) {
             break
     }
     return statusText
-});
+})
 
 handlebars.registerHelper('convertUserStatus', function (status) {
     let statusText = "Đang hoạt động"
-    if(status == "inactive") {
+    if (status == "inactive") {
         statusText = 'Không hoạt động'
-    } 
-    else if (status =="pending") {
+    }
+    else if (status == "pending") {
         statusText = "Đang đợi phê duyệt"
     }
     else if (status == "reject") {
         statusText = "Từ chối phê duyệt"
     }
-    return statusText;
+    return statusText
 })
 
-handlebars.registerHelper('roundToOneDecimal', function (number){
+handlebars.registerHelper('roundToOneDecimal', function (number) {
     if (typeof number === 'number' && !isNaN(number)) {
-        return (Math.round(number * 10) / 10).toFixed(1);
+        return (Math.round(number * 10) / 10).toFixed(1)
     }
-    return number;
+    return number
 })
 
 handlebars.registerHelper('convertUserRole', function (role) {
@@ -68,8 +71,8 @@ handlebars.registerHelper('convertUserRole', function (role) {
     } else if (role == "recipient") {
         VNRole = "Người Nhận Quyên Góp"
     }
-    return VNRole;
-});
+    return VNRole
+})
 
 handlebars.registerHelper('createStarList', function (stars) {
     let str = '<div class="rating d-flex justify-content-center">'
@@ -93,7 +96,7 @@ handlebars.registerHelper('createStarList', function (stars) {
     str += '</div>'
 
     return str
-});
+})
 
 module.exports = {
     incrementedIndex: handlebars.helpers.incrementedIndex,
@@ -108,4 +111,4 @@ module.exports = {
     campaignStatusText: handlebars.helpers.campaignStatusText,
     nToBr: handlebars.helpers.nToBr,
 
-};
+}

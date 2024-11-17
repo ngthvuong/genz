@@ -3,9 +3,11 @@
     <div class="alert alert-success" role="alert">
         <h4 class="alert-heading">Chuyển khoản thành công!</h4>
         <p>Cảm ơn bạn đã đóng góp cho chiến dịch <strong>{{Campaign.name}}</strong>.</p>            
-        <p>Số tiền đóng góp: <strong>{{amount}} VNĐ</strong></p>
+        <p>Số tiền đóng góp: <strong>{{formatAmount amount}} VNĐ</strong></p>
         <hr>
-        <p class="mb-0">Nếu bạn cần thêm sự hỗ trợ, vui lòng liên hệ với chúng tôi qua email hoặc điện thoại.</p>
+        <p class="mb-0">
+            Nếu bạn cần thêm sự hỗ trợ, vui lòng liên hệ với chúng tôi qua email: {{Campaign.Charity.User.email}} hoặc điện thoại: {{Campaign.Charity.User.phone}}.
+        </p>
         <a href="/" class="btn btn-primary mt-3">Quay lại trang chủ</a>
     </div>
     {{> invoiceItem}}

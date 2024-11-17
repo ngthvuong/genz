@@ -69,7 +69,7 @@
     function approveCharity(userId) {
         const confirmation = confirm("Bạn có chắc chắn muốn chấp nhận tổ chức từ thiện này?");
         if (confirmation) {
-            fetch(`/charityVerification/charities/approve/${userId}`, {
+            fetch(`/charity-verification/charities/approve/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +78,7 @@
                 .then(response => {
                     if (response.ok) {
                         alert('Tổ chức từ thiện đã được chấp nhận!');
-                        window.location.href = "/charityVerification";
+                        window.location.href = "/charity-verification";
                     } else {
                         alert('Có lỗi xảy ra khi chấp nhận tổ chức từ thiện.');
                     }
@@ -96,7 +96,7 @@
     function rejectCharity(userId) {
         const confirmation = confirm("Bạn có chắc chắn muốn từ chối tổ chức từ thiện này?");
         if (confirmation) {
-            fetch(`/charityVerification/charities/reject/${userId}`, {
+            fetch(`/charity-verification/charities/reject/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,7 +105,7 @@
                 .then(response => {
                     if (response.ok) {
                         alert('Tổ chức từ thiện bị từ chối do thông tin không hợp lệ.!');
-                        window.location.href = "/charityVerification";
+                        window.location.href = "/charity-verification";
                     } else {
                         alert('Có lỗi xảy ra khi từ chối tổ chức từ thiện.');
                     }

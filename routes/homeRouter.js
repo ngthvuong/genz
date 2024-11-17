@@ -15,7 +15,6 @@ router.get('/sync-db', (req, res) => {
 
 router.use(require('../middlewares/auth').isLogged())
 router.get('/', controller.show)
-router.get('/search', controller.search)
 router.get('/error', require('../middlewares/hbs').setLayoutName('single'), controller.errorPage)
 
 
