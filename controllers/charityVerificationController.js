@@ -41,15 +41,14 @@ controller.showUnapprovedCharityList = async (req, res) => {
         include: [
             {
                 model: models.Charity,
-                seperate: true,
                 include: [
                     {
                         model: models.Campaign,
-                        seperate: true,
+                        separate: true,
                         include: [
                             {
                                 model: models.Review,
-                                seperate: true
+                                separate: true
                             }
                         ]
                     }

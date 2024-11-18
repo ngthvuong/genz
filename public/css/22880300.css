@@ -185,3 +185,19 @@ body {
 }
 
 /* Report */
+
+.Planning_status_color {
+    color: #198754;
+}
+
+.Running_status_color {
+    color: #33b0ff;
+}
+
+.Closed_status_color {
+    color: #b02a37;
+}
+
+.Finished_status_color {
+    color: #757575;
+}

@@ -1,38 +1,135 @@
-
 <div>
     <div class="container-fluid pt-4 px-4">
         <div class="d-flex justify-content-between align-items-center">
             <h4 class="mb-0">Quản Lý Chiến Dịch</h4>
-            <a href="/campaign/create" class="btn btn-primary">Tạo mới chiến dịch</a>
+            <a href="/campaign/create" class="btn btn-success">Tạo mới chiến dịch</a>
         </div>
-</div>
-{{> campaigns}}
-
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-12">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Thông tin chiến dịch</h6>
-                <form id="createCampaignForm" enctype="multipart/form-data">
-                    <div class="row mb-3">
-                        <label for="inputCampaignName" class="col-sm-2 col-form-label">Tên chiến dịch</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="inputCampaignName" name="campaignName" placeholder="Nhập thông tin chi tiết chiến dịch">
-                        </div>
-                    </div>
-                    <div class="container-fluid pt-4 px-4">
-                    {{#each campaigns}}
-                    <h2> {{name}}</h2>
-                    <p><a href="campaign/edit/{{id}}">{{id}}</a></p>
-                        <!--{{#each Contributions}}
-                            <p>{{sender}}: {{amount}}</p>
-
-                        {{/each}}-->
-                    {{/each}}
-                    </div>
-
-                    
+    </div>
+    <div class="px-4 table-responsive mt-5 d-flex align-items-center justify-content-between flex-wrap">
+        <span class="fw-bold text-dark fs-4">Bảng Danh Sách</span>
+        <div class="col-12 col-md-auto mt-2 d-flex align-items-center justify-content-between flex-wrap gap-1">
+            <div class="col-12 col-md-auto">
+                <form action="/campaign" method="GET" id="filterCampaignForm">
+                    <select name="status" id="status" class="form-select" onChange="filterCampaigns()">
+                        <option value="">Lọc Trạng Thái</option>
+                        <option value="Planning">Kế Hoạch</option>
+                        <option value="Running">Đang Thực Hiện</option>
+                        <option value="Closed">Đã Kết Thúc</option>
+                        <option value="Finished">Đã Hoàn Tất</option>
+                    </select>
                 </form>
             </div>
         </div>
     </div>
+    <div class="px-4 table-responsive">
+        {{#if campaigns.length}}
+        <table class="table">
+            <thead>
+                <tr class="align-middle">
+                    <th scope="col" class="w-10 text-center" style="width: 10%;">Hình Ảnh</th>
+                    <th scope="col" class="w-20" style="width: 30%;">Tên</th>
+                    <th scope="col" class="w-20 text-center" style="width: 15%;">Ngày Bắt Đầu</th>
+                    <th scope="col" class="w-20 text-center" style="width: 15%;">Ngày Kết Thúc</th>
+                    <th scope="col" class="w-10" style="width: 15%;">Trạng Thái</th>
+                    <th scope="col" class="w-15" style="width: 15%;">Lệnh</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each campaigns}}
+                <tr class="align-middle" id="campaignItemRow_{{id}}">
+                    <td class="text-center">
+                        <img class="image" style="width:50px" src="{{firstImage.imagePath}}" alt="{{name}}"
+                            onerror="this.src='/img/logo.svg';" />
+                    </td>
+                    <td>{{name}}</td>
+                    <td class="text-center">{{dateFormat startDate}}</td>
+                    <td class="text-center">{{dateFormat endDate}}</td>
+
+                    <td class="{{status}}_status_color">{{convertCampaignStatus status}}</td>
+                    <td>
+                        {{#if (neq status "Finished")}}
+                        <a class="btn btn-sm btn-primary" href="/campaign/edit/{{id}}">Sửa</a>
+                        {{else}}
+                        <a class="btn btn-sm btn-secondary pe-none" href="javascript:void(0)">Sửa</a>
+                        {{/if}}
+                        {{#if (eq status "Planning")}}
+                        <button class="btn btn-sm btn-danger" type="button"
+                            onclick="showDeletePopup({{id}})">Xóa</button>
+                        {{else}}
+                        <button class="btn btn-sm btn-secondary pe-none" href="#">Xóa</button>
+                        {{/if}}
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <div class="row m-3">
+            <nav aria-label="Page navigation example" id="pagination">
+                {{{
+                createPagination pagination paginationClass="pagination justify-content-center"
+                leftText="Previous" rightText="Next"
+                }}}
+            </nav>
+        </div>
+        {{else}}
+        <div class="col-12 my-4 px-0">
+            Không có chiến dịch nào phù hợp!
+        </div>
+        {{/if}}
+    </div>
 </div>
+<div class="modal fade" id="deleteCampaignModal" tabindex="-1" aria-labelledby="deleteCampaignModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCampaignModalLabel">Xóa Chiến Dịch</h5>
+            </div>
+            <div class="modal-body" id="deleteCampaignBody">
+                Bạn có chắc chắn muốn xóa chiến dịch này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="deleteCampaignButton"
+                    onclick="deleteCampaign(event)">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const showDeletePopup = (id) => {
+        const deleteModal = new bootstrap.Modal(document.getElementById("deleteCampaignModal"))
+        deleteModal.show()
+
+        const deleteCampaignButton = document.getElementById("deleteCampaignButton")
+        const deleteCampaignBody = document.getElementById("deleteCampaignBody")
+
+        deleteCampaignButton.setAttribute("data-id", id)
+    }
+    const deleteCampaign = (event) => {
+        const id = event.target.dataset.id
+        fetch(`/campaign/delete/${id}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                deleteCampaignButton.remove()
+
+                if (data.errors) {
+                    deleteCampaignBody.innerHTML = `<span class="text-danger">Có lỗi sảy ra, vui long thử lại!</span>`
+                } else {
+                    document.getElementById(`campaignItemRow_${id}`)?.remove()
+                    deleteCampaignBody.innerHTML = `<span class="text-primary">Đã xóa thành công!</span>`
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    }
+    const filterCampaigns = (event) => {
+        document.getElementById("filterCampaignForm").submit()
+    }
+    document.querySelector(`#status option[value="{{status}}"]`).selected = true
+</script>

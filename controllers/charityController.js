@@ -41,15 +41,14 @@ controller.showCharityList = async (req, res) => {
         include: [
             {
                 model: models.Charity,
-                seperate: true,
                 include: [
                     {
                         model: models.Campaign,
-                        seperate: true,
+                        separate: true,
                         include: [
                             {
                                 model: models.Review,
-                                seperate: true
+                                separate: true
                             }
                         ]
                     }
@@ -76,9 +75,6 @@ controller.showCharityList = async (req, res) => {
 
     const maxPage = parseFloat(totalRows) ? Math.ceil(parseFloat(totalRows) / limit) : 1
 
-    console.log("req.path")
-    console.log(req.path)
-    console.log(req.baseUrl)
     if (page > maxPage) {
         query.set("page", maxPage)
         return res.redirect(`${req.baseUrl}${path}?${query.toString()}`)

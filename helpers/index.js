@@ -4,9 +4,10 @@ const moment = require('moment')
 handlebars.registerHelper('incrementedIndex', function (index) {
     return index + 1
 })
-handlebars.registerHelper('dateFormat', function (date) {
-    return date ? moment(date).format('DD/MM/YYYY') : 'N/A'
-})
+handlebars.registerHelper('dateFormat', function (date, format = "DD/MM/YYYY") {
+    const formatDate = (typeof format === 'string') ? format : "DD/MM/YYYY"
+    return date ? moment(date).format(formatDate) : 'N/A'
+});
 handlebars.registerHelper('dateTimeFormat', function (date) {
     return date ? moment(date).format('DD/MM/YYYY H:mm:ss') : 'N/A'
 })
@@ -73,6 +74,17 @@ handlebars.registerHelper('convertUserRole', function (role) {
     }
     return VNRole
 })
+handlebars.registerHelper('convertCampaignStatus', function (role) {
+    let VNRole = "Đã Kết Thúc"
+    if (role == "Planning") {
+        VNRole = "Kế Hoạch"
+    } else if (role == "Running") {
+        VNRole = "Đang Thực Hiện"
+    } else if (role == "Closed") {
+        VNRole = "Đã Đóng"
+    }
+    return VNRole
+})
 
 handlebars.registerHelper('createStarList', function (stars) {
     let str = '<div class="rating d-flex justify-content-center">'
@@ -97,6 +109,9 @@ handlebars.registerHelper('createStarList', function (stars) {
 
     return str
 })
+handlebars.registerHelper('eq', (a, b) => a === b);
+handlebars.registerHelper('neq', (a, b) => a !== b);
+
 
 module.exports = {
     incrementedIndex: handlebars.helpers.incrementedIndex,
@@ -110,5 +125,11 @@ module.exports = {
     convertUserRole: handlebars.helpers.convertUserRole,
     campaignStatusText: handlebars.helpers.campaignStatusText,
     nToBr: handlebars.helpers.nToBr,
+    convertCampaignStatus: handlebars.helpers.convertCampaignStatus,
+    eq: handlebars.helpers.eq,
+    neq: handlebars.helpers.neq,
+
+
+
 
 }
