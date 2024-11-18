@@ -47,12 +47,17 @@ mailOTP.sendOTP = async (user) => {
 }
 
 mailOTP.verifyOTP = async (OTPInfo, pin) => {
-    const jwtInfo = jwt.verify(OTPInfo.token)
-    if(jwtInfo){
-        const { data } = jwt.verify(OTPInfo.token)   
-        return data.pin == pin
+    try{
+        const jwtInfo = jwt.verify(OTPInfo.token)
+        if(jwtInfo){
+            const { data } = jwt.verify(OTPInfo.token)   
+            return data.pin == pin
+        }
+        return false
+    }catch(error){
+        return false
     }
-    return false
+
 }
 
 module.exports = mailOTP

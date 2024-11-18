@@ -98,10 +98,13 @@ controller.verify = async (req, res) => {
 
         const notifyChannel = req.session.tempUser.notifyChannel
         const notifyService = OTPService.init(notifyChannel)
+
         if (! await notifyService.verifyOTP(req.session.tempUser.OTPInfo, pin)) {
+            delete req.session.tempUser.OTPInfo
             throw new Error("Mã xác thực không chính xác!")
         }
 
+        delete req.session.tempUser.OTPInfo
         req.session.tempUser.status = (req.session.tempUser.role == 'charity') ? 'inactive' : 'active'
 
         await models.User.create(req.session.tempUser)
