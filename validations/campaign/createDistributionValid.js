@@ -5,12 +5,12 @@ const { handle } = require('../validations')
 const validation = handle([
     body('receiver')
         .trim()
-        .notEmpty().withMessage("Người nhận đóng góp là bắt buộc!"),
+        .notEmpty().withMessage("Người nhận cứu trợ là bắt buộc!"),
     body('amount')
         .trim()
-        .notEmpty().withMessage("Vui lòng nhập số tiền đóng góp!")
-        .isInt({ min: 10000 }).withMessage("Số tiền đóng góp phải lớn hơn 10.000 VNĐ!")
-        .isInt({ max: 50000000 }).withMessage("Số tiền đóng góp phải nhỏ hơn 50.000.000 VNĐ!"),
+        .notEmpty().withMessage("Vui lòng nhập số tiền cứu trợ!")
+        .isInt({ min: 10000 }).withMessage("Số tiền cứu trợ phải lớn hơn 10.000 VNĐ!")
+        .isInt({ max: 500000000 }).withMessage("Số tiền cứu trợ phải nhỏ hơn 500.000.000 VNĐ!"),
     body('message')
         .trim()
         .notEmpty().withMessage("Vui lòng Nhập lời nhắn!")

@@ -1,25 +1,25 @@
 <div class="rows m-3">
-    <h4>Chỉnh sửa khoản đóng góp</h4>
+    <h4>Chỉnh sửa khoản cứu trợ</h4>
 </div>
 <div class="container-fluid p-3 mb-5">
     <div class="rows">
         <div class="col-sm-12 col-xl-12 px-0">
-            <h6 class="mb-4">Thông tin khoản đóng góp</h6>
-            <form class="col-12" id="createContributionForm">
+            <h6 class="mb-4">Thông tin khoản cứu trợ</h6>
+            <form class="col-12" id="createDistributionForm">
                 <div class="row mb-3">
-                    <label for="sender" class="col-sm-2 col-form-label">Người Đóng Góp</label>
+                    <label for="receiver" class="col-sm-2 col-form-label">Người Nhận Cứu Trợ</label>
                     <div class="col-12 col-md-10">
-                        <input type="text" class="form-control" id="sender" name="sender" value="{{contribution.sender}}"
-                            placeholder="Nhập thông tin người đóng góp">
+                        <input type="text" class="form-control" id="receiver" name="receiver" value="{{distribution.receiver}}"
+                            placeholder="Nhập thông tin người cứu trợ">
                     </div>
                 </div>
 
                 <div class="row mb-3">
-                    <label for="amount" class="col-sm-2 col-form-label">Số Tiền Đóng Góp</label>
+                    <label for="amount" class="col-sm-2 col-form-label">Số Tiền Cứu Trợ</label>
                     <div class="row col-12 col-md-10 align-items-center">
                         <div class="col-11">
-                            <input type="number" class="form-control" id="amount" name="amount" value="{{parseInt contribution.amount}}"
-                                placeholder="Nhập khoản tiền đóng góp">
+                            <input type="number" class="form-control" id="amount" name="amount" value="{{parseInt distribution.amount}}"
+                                placeholder="Nhập khoản tiền cứu trợ">
                         </div>
                         <div class="col-1 text-end">
                             <span>VND</span>
@@ -29,12 +29,12 @@
                 <div class="row mb-3">
                     <label for="message" class="col-sm-2 col-form-label">Lời Nhắn</label>
                     <div class="col-12 col-md-10">
-                        <textarea class="form-control" id="message" name="message" placeholder="Nhập lời nhắn...">{{contribution.message}}</textarea>
+                        <textarea class="form-control" id="message" name="message" >{{distribution.message}}</textarea>
                     </div>
                 </div>
                 <div class="mt-4">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
-                    <a class="btn btn-secondary ms-1" href="/campaign/{{contribution.Campaign.id}}/contributions">Trở về danh sách đóng góp</a>
+                    <a class="btn btn-secondary ms-1" href="/campaign/{{distribution.Campaign.id}}/distributions">Trở về danh sách cứu trợ</a>
                 </div>
             </form>
         </div>
@@ -42,7 +42,7 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('createContributionForm').addEventListener('submit', function (event) {
+        document.getElementById('createDistributionForm').addEventListener('submit', function (event) {
             event.preventDefault()
 
             let formErrors = document.getElementById('formErrors')
@@ -53,7 +53,7 @@
             const formData = new FormData(this)
             const data = JSON.stringify(Object.fromEntries(formData.entries()))
 
-            fetch(`/campaign/{{contribution.Campaign.id}}/contributions/edit/{{contribution.id}}`, {
+            fetch(`/campaign/{{distribution.Campaign.id}}/distributions/edit/{{distribution.id}}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -74,7 +74,7 @@
                         formErrors.classList = 'col md-12 alert alert-warning mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
-                        document.getElementById('createContributionForm').appendChild(formErrors);
+                        document.getElementById('createDistributionForm').appendChild(formErrors);
 
                     } else {
                         window.location.href = data.redirectURL

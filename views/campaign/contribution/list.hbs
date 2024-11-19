@@ -26,30 +26,22 @@
             <tbody id="contributionsContainer">
             </tbody>
         </table>
-        <div class="row m-3">
-            <nav aria-label="Page navigation example" id="pagination">
-                {{{
-                createPagination pagination paginationClass="pagination justify-content-center"
-                leftText="Previous" rightText="Next"
-                }}}
-            </nav>
-        </div>
     </div>
 </div>
-<div class="modal fade" id="deleteCampaignModal" tabindex="-1" aria-labelledby="deleteCampaignModalLabel"
+<div class="modal fade" id="deleteContributionModal" tabindex="-1" aria-labelledby="deleteContributionModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteCampaignModalLabel">Xóa Chiến Dịch</h5>
+                <h5 class="modal-title" id="deleteContributionModalLabel">Xóa Khoản Đóng Góp</h5>
             </div>
-            <div class="modal-body" id="deleteCampaignBody">
-                Bạn có chắc chắn muốn xóa khoản đóng góp này này?
+            <div class="modal-body" id="deleteContributionBody">
+                Bạn có chắc chắn muốn xóa khoản đóng góp này?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" id="deleteCampaignButton"
-                    onclick="deleteCampaign(event)">Đồng Ý</button>
+                <button type="button" class="btn btn-primary" id="deleteContributionButton"
+                    onclick="deleteContribution(event)">Đồng Ý</button>
             </div>
         </div>
     </div>
@@ -57,17 +49,17 @@
 
 <script>
     const showDeletePopup = (id, campaignID) => {
-        const deleteModal = new bootstrap.Modal(document.getElementById("deleteCampaignModal"))
+        const deleteModal = new bootstrap.Modal(document.getElementById("deleteContributionModal"))
         deleteModal.show()
 
-        const deleteCampaignButton = document.getElementById("deleteCampaignButton")
-        const deleteCampaignBody = document.getElementById("deleteCampaignBody")
+        const deleteContributionButton = document.getElementById("deleteContributionButton")
+        const deleteContributionBody = document.getElementById("deleteContributionBody")
 
-        deleteCampaignButton.setAttribute("data-id", id)
-        deleteCampaignButton.setAttribute("data-campaign-id", campaignID)
+        deleteContributionButton.setAttribute("data-id", id)
+        deleteContributionButton.setAttribute("data-campaign-id", campaignID)
 
     }
-    const deleteCampaign = (event) => {
+    const deleteContribution = (event) => {
         const id = event.target.dataset.id
         const campaignID = event.target.dataset.campaignId
         console.log(campaignID)
@@ -79,13 +71,13 @@
                 return response.json()
             })
             .then(data => {
-                deleteCampaignButton.remove()
+                deleteContributionButton.remove()
 
                 if (data.errors) {
-                    deleteCampaignBody.innerHTML = `<span class="text-danger">Có lỗi sảy ra, vui lòng thử lại!</span>`
+                    deleteContributionBody.innerHTML = `<span class="text-danger">Có lỗi sảy ra, vui lòng thử lại!</span>`
                 } else {
                     document.getElementById(`contributionItemRow_${id}`)?.remove()
-                    deleteCampaignBody.innerHTML = `<span class="text-primary">Đã xóa thành công!</span>`
+                    deleteContributionBody.innerHTML = `<span class="text-primary">Đã xóa thành công!</span>`
                 }
             })
             .catch(error => {
@@ -170,13 +162,6 @@
         }
         loadMoreItems()
         window.addEventListener("scroll", onScrollItemsBox)
-
-        eventWS.registerListener('transactionCreatedContributionEvent', 'campaignContributionList', (payload) => {
-            if (payload.newContribution) {
-                const row = renderItems(payload.newContribution)
-                itemContainerDom.prepend(row)
-            }
-        })
     })
 </script>
 {{/with}}

@@ -316,7 +316,26 @@ controller.showContributions = async (req, res) => {
 }
 
 controller.showDistributions = async (req, res) => {
-    return res.render("campaign/distribution/list")
+    const userID = res.locals.user.id
+    const campaignID = req.params.campaignID
+    const campaign = await models.Campaign.findOne({
+        where: {
+            id: campaignID
+        },
+        include: [
+            {
+                model: models.Charity,
+                require: true,
+                where: {
+                    userID
+                }
+            }
+        ]
+    })
+    if (!campaign) {
+        return res.redirect("/")
+    }
+    return res.render("campaign/distribution/list", { campaign })
 }
 
 controller.loadContributions = async (req, res) => {
@@ -513,7 +532,7 @@ controller.createDistribution = async (req, res) => {
         if (!campaign) {
             throw new Error("Chiến Dịch không tồn tại!")
         }
-        paymentMethod = await models.PaymentMethod.findOne({
+        const paymentMethod = await models.PaymentMethod.findOne({
             where: {
                 code: "CASH"
             }
@@ -580,6 +599,7 @@ controller.showEditContribution = async (req, res) => {
     return res.render("campaign/contribution/edit", { contribution })
 }
 controller.showEditDistribution = async (req, res) => {
+    console.log("hihi")
     const userID = res.locals.user.id
 
     const campaignID = req.params.campaignID
@@ -599,7 +619,7 @@ controller.showEditDistribution = async (req, res) => {
                 },
                 include: [
                     {
-                        model: models.User,
+                        model: models.Charity,
                         where: {
                             userID
                         }
@@ -641,9 +661,9 @@ controller.editContribution = async (req, res) => {
         }
 
         const contribution = await models.Transaction.findOne({
-            where:{
+            where: {
                 id,
-                type:"Contribution",
+                type: "Contribution",
                 donorID: null
             }
         })
@@ -695,9 +715,9 @@ controller.editDistribution = async (req, res) => {
         }
 
         const distribution = await models.Transaction.findOne({
-            where:{
+            where: {
                 id,
-                type:"Distribution",
+                type: "Distribution",
                 donorID: null
             }
         })
@@ -748,9 +768,9 @@ controller.deleteContribution = async (req, res) => {
         }
 
         const contribution = await models.Transaction.findOne({
-            where:{
+            where: {
                 id,
-                type:"Contribution",
+                type: "Contribution",
                 donorID: null
             }
         })
@@ -795,9 +815,9 @@ controller.deleteDistribution = async (req, res) => {
         }
 
         const distribution = await models.Transaction.findOne({
-            where:{
+            where: {
                 id,
-                type:"Distribution",
+                type: "Distribution",
                 donorID: null
             }
         })
