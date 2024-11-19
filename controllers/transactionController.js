@@ -1,6 +1,6 @@
 // controllers/transactionController.js
 'use strict'
-const { or } = require('sequelize')
+const { Op } = require('sequelize')
 const models = require('../models')
 const payment = require("../services/payment")
 const errors = require("../services/responseErrors")
@@ -140,7 +140,12 @@ controller.callback = async (req, res) => {
 
         const { status, apptransid, amount, campaign } = req.query
         const transaction = await models.Transaction.findOne({
-            where: { apptransid },
+            where: {
+                apptransid,
+                status: {
+                    [Op.ne]: "Success"
+                }
+            },
             include: [
                 {
                     model: models.Campaign,
@@ -159,7 +164,7 @@ controller.callback = async (req, res) => {
             ]
         })
         if (!transaction) {
-            throw new Error("Không tìm thấy giao dịch")
+            return res.redirect("/")
         }
 
         if (!await payment.callback(transaction.Campaign.Charity, req.query)) {
