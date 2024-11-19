@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     apptransid: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      allowNull: true
     },   
   }, {
     sequelize,

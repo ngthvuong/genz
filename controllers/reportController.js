@@ -294,7 +294,8 @@ controller.loadContributions = async (req, res) => {
         const contributions = await models.Transaction.findAll({
             where: {
                 campaignID,
-                type: "Contribution"
+                type: "Contribution",
+                status: "Success"
             },
             order: [["createdAt", "DESC"]],
             limit,
@@ -328,7 +329,8 @@ controller.loadDistributions = async (req, res) => {
         const distributions = await models.Transaction.findAll({
             where: {
                 campaignID,
-                type: "Distribution"
+                type: "Distribution",
+                status: "Success"
             },
             order: [["createdAt", "DESC"]],
             limit,

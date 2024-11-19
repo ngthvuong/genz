@@ -22,7 +22,7 @@ class TransactionCreatedDistributionEvent extends CommonEvent {
      * 3. If isFilter is true, should be assign a list of userID to this->userIDs
      */
     handle = async () => {
-        return { transaction }
+        return { newDistribution: this.event.newDistribution }
     }
 }
 

@@ -1,20 +1,24 @@
 const incrementedIndex = function (index) {
-    return index + 1;
+    return index + 1
 }
-const dateFormat = function (date) {
-    return date ? moment(date).format('DD/MM/YYYY') : 'N/A';;
+const dateFormat = function (date, format = "DD/MM/YYYY") {
+    const formatDate = (typeof format === 'string') ? format : "DD/MM/YYYY"
+    return date ? moment(date).format(formatDate) : 'N/A'
 }
 
 const dateTimeFormat = function (date) {
-    return date ? moment(date).format('DD/MM/YYYY H:mm:ss') : 'N/A';
+    return date ? moment(date).format('DD/MM/YYYY H:mm:ss') : 'N/A'
 }
 
 const formatAmount = function (amount) {
-    return Number(amount).toLocaleString()
+    return Number(amount).toLocaleString(
+        'vi-VN',
+        { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+    )
 }
 
 const nToBr = function (string) {
-    return string.replace(/\n/g, "<br>");
+    return string.replace(/\n/g, "<br>")
 }
 const campaignStatusText = function (status) {
     let statusText = "Đã kết thúc"
@@ -44,7 +48,7 @@ const convertUserRole = function (role) {
     } else if (role == "recipient") {
         VNRole = "Người Nhận Quyên Góp"
     }
-    return VNRole;
+    return VNRole
 }
 
 const createStarList = function (stars) {
@@ -69,4 +73,12 @@ const createStarList = function (stars) {
     str += '</div>'
 
     return str
+}
+const escapeHtml = function (unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
 }

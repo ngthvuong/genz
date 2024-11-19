@@ -2,8 +2,7 @@
 const errors = require("../services/responseErrors")
 const campaignStore = require("../storage/campaignStore")
 const models = require("../models")
-const { Op } = require('sequelize')
-
+const { Op, where } = require('sequelize')
 
 const controller = {}
 
@@ -12,7 +11,7 @@ controller.share = (req, res, next) => {
     next()
 }
 
-controller.showlist = async (req, res) => {
+controller.showList = async (req, res) => {
     const charity = await models.Charity.findOne({
         where: {
             userID: res.locals.user.id
@@ -287,6 +286,532 @@ controller.deleteCampaign = async (req, res) => {
         })
     } catch (error) {
         console.error(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+
+controller.showContributions = async (req, res) => {
+    const userID = res.locals.user.id
+    const campaignID = req.params.campaignID
+    const campaign = await models.Campaign.findOne({
+        where: {
+            id: campaignID
+        },
+        include: [
+            {
+                model: models.Charity,
+                require: true,
+                where: {
+                    userID
+                }
+            }
+        ]
+    })
+    if (!campaign) {
+        return res.redirect("/")
+    }
+
+    return res.render("campaign/contribution/list", { campaign })
+}
+
+controller.showDistributions = async (req, res) => {
+    return res.render("campaign/distribution/list")
+}
+
+controller.loadContributions = async (req, res) => {
+    try {
+        const campaignID = req.params.campaignID
+        const { offset, limit } = req.body
+
+        const checkCampaign = await models.Campaign.findOne({
+            attributes: ["id"],
+            where: {
+                id: campaignID,
+                status: { [Op.ne]: "Planning" }
+            }
+        })
+        if (!checkCampaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const contributions = await models.Transaction.findAll({
+            where: {
+                campaignID,
+                type: "Contribution",
+                status: "Success"
+            },
+            order: [["madeAt", "DESC"]],
+            limit,
+            offset,
+        })
+
+
+        return res.json({ success: true, contributions })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+controller.loadDistributions = async (req, res) => {
+    try {
+        const campaignID = req.params.campaignID
+        const { offset, limit } = req.body
+
+        const checkCampaign = await models.Campaign.findOne({
+            attributes: ["id"],
+            where: {
+                id: campaignID,
+                status: { [Op.ne]: "Planning" }
+            }
+        })
+        if (!checkCampaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const distributions = await models.Transaction.findAll({
+            where: {
+                campaignID,
+                type: "Distribution",
+                status: "Success"
+            },
+            order: [["madeAt", "DESC"]],
+            limit,
+            offset,
+        })
+
+        return res.json({ success: true, distributions })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+
+controller.showCreateContribution = async (req, res) => {
+    const userID = res.locals.user.id
+    const campaignID = req.params.campaignID
+    const campaign = await models.Campaign.findOne({
+        where: {
+            id: campaignID
+        },
+        include: [
+            {
+                model: models.Charity,
+                require: true,
+                where: {
+                    userID
+                }
+            }
+        ]
+    })
+    if (!campaign) {
+        return res.redirect("/")
+    }
+    return res.render("campaign/contribution/create", { campaign })
+}
+controller.showCreateDistribution = async (req, res) => {
+    const userID = res.locals.user.id
+    const campaignID = req.params.campaignID
+    const campaign = await models.Campaign.findOne({
+        where: {
+            id: campaignID
+        },
+        include: [
+            {
+                model: models.Charity,
+                require: true,
+                where: {
+                    userID
+                }
+            }
+        ]
+    })
+    if (!campaign) {
+        return res.redirect("/")
+    }
+    return res.render("campaign/distribution/create", { campaign })
+
+}
+
+controller.createContribution = async (req, res) => {
+    try {
+        const userID = res.locals.user.id
+        const campaignID = req.params.campaignID
+        const { sender, amount, message } = req.body
+        const campaign = await models.Campaign.findOne({
+            where: {
+                id: campaignID
+            },
+            include: [
+                {
+                    model: models.Charity,
+                    require: true,
+                    where: {
+                        userID
+                    }
+                }
+            ]
+        })
+        if (!campaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+        const paymentMethod = await models.PaymentMethod.findOne({
+            where: {
+                code: "CASH"
+            }
+        })
+        const contribution = new models.Transaction()
+        contribution.type = "Contribution"
+        contribution.status = "Success"
+        contribution.madeAt = new Date()
+        contribution.receiver = res.locals.user.name
+
+        contribution.sender = sender
+        contribution.amount = amount
+        contribution.message = message
+
+        contribution.campaignID = campaignID
+        contribution.paymentMethodID = paymentMethod.id
+        contribution.save()
+
+        return res.json({
+            success: true,
+            newContribution: contribution,
+            redirectURL: `/campaign/${campaignID}/contributions`
+        })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+controller.createDistribution = async (req, res) => {
+    try {
+
+        const userID = res.locals.user.id
+        const campaignID = req.params.campaignID
+        const { receiver, amount, message } = req.body
+        const campaign = await models.Campaign.findOne({
+            where: {
+                id: campaignID
+            },
+            include: [
+                {
+                    model: models.Charity,
+                    require: true,
+                    where: {
+                        userID
+                    }
+                }
+            ]
+        })
+        if (!campaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+        paymentMethod = await models.PaymentMethod.findOne({
+            where: {
+                code: "CASH"
+            }
+        })
+        const distribution = new models.Transaction()
+        distribution.type = "Distribution"
+        distribution.status = "Success"
+        distribution.madeAt = new Date()
+        distribution.sender = res.locals.user.name
+
+        distribution.receiver = receiver
+        distribution.amount = amount
+        distribution.message = message
+
+        distribution.campaignID = campaignID
+        distribution.paymentMethodID = paymentMethod.id
+        distribution.save()
+
+        return res.json({
+            success: true,
+            newDistribution: distribution,
+            redirectURL: `/campaign/${campaignID}/distributions`
+        })
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+
+controller.showEditContribution = async (req, res) => {
+    const userID = res.locals.user.id
+
+    const campaignID = req.params.campaignID
+    const id = req.params.id
+
+    const contribution = await models.Transaction.findOne({
+        where: {
+            id,
+            type: "Contribution"
+        },
+        include: [
+            {
+                model: models.Campaign,
+                require: true,
+                where: {
+                    id: campaignID
+                },
+                include: [
+                    {
+                        model: models.Charity,
+                        require: true,
+                        where: {
+                            userID
+                        }
+                    }
+                ]
+            }
+        ]
+    })
+    if (!contribution) {
+        return res.redirect("/")
+    }
+    return res.render("campaign/contribution/edit", { contribution })
+}
+controller.showEditDistribution = async (req, res) => {
+    const userID = res.locals.user.id
+
+    const campaignID = req.params.campaignID
+    const id = req.params.id
+
+    const distribution = await models.Transaction.findOne({
+        where: {
+            id,
+            type: "Distribution"
+        },
+        include: [
+            {
+                model: models.Campaign,
+                require: true,
+                where: {
+                    id: campaignID
+                },
+                include: [
+                    {
+                        model: models.User,
+                        where: {
+                            userID
+                        }
+                    }
+                ]
+            }
+        ]
+    })
+    if (!distribution) {
+        return res.redirect("/")
+    }
+
+    return res.render("campaign/distribution/edit", { distribution })
+}
+
+controller.editContribution = async (req, res) => {
+    try {
+        const userID = res.locals.user.id
+        const campaignID = req.params.campaignID
+        const id = req.params.id
+
+        const { sender, amount, message } = req.body
+        const campaign = await models.Campaign.findOne({
+            where: {
+                id: campaignID
+            },
+            include: [
+                {
+                    model: models.Charity,
+                    require: true,
+                    where: {
+                        userID
+                    }
+                }
+            ]
+        })
+        if (!campaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const contribution = await models.Transaction.findOne({
+            where:{
+                id,
+                type:"Contribution",
+                donorID: null
+            }
+        })
+        if (!contribution) {
+            throw new Error("Khoản đóng góp không tồn tại!")
+        }
+
+        contribution.sender = sender
+        contribution.amount = amount
+        contribution.message = message
+        contribution.save()
+
+        return res.json({
+            success: true,
+            contribution: contribution,
+            redirectURL: `/campaign/${campaignID}/contributions`
+        })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+controller.editDistribution = async (req, res) => {
+    try {
+        const userID = res.locals.user.id
+        const campaignID = req.params.campaignID
+        const id = req.params.id
+
+        const { receiver, amount, message } = req.body
+
+        const campaign = await models.Campaign.findOne({
+            where: {
+                id: campaignID
+            },
+            include: [
+                {
+                    model: models.Charity,
+                    require: true,
+                    where: {
+                        userID
+                    }
+                }
+            ]
+        })
+        if (!campaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const distribution = await models.Transaction.findOne({
+            where:{
+                id,
+                type:"Distribution",
+                donorID: null
+            }
+        })
+        if (!distribution) {
+            throw new Error("Khoản cứu trợ không tồn tại!")
+        }
+
+        distribution.receiver = receiver
+        distribution.amount = amount
+        distribution.message = message
+        distribution.save()
+
+        return res.json({
+            success: true,
+            distribution: distribution,
+            redirectURL: `/campaign/${campaignID}/distributions`
+        })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+
+controller.deleteContribution = async (req, res) => {
+    try {
+        const userID = res.locals.user.id
+        const campaignID = req.params.campaignID
+        const id = req.params.id
+
+        const campaign = await models.Campaign.findOne({
+            where: {
+                id: campaignID
+            },
+            include: [
+                {
+                    model: models.Charity,
+                    require: true,
+                    where: {
+                        userID
+                    }
+                }
+            ]
+        })
+        if (!campaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const contribution = await models.Transaction.findOne({
+            where:{
+                id,
+                type:"Contribution",
+                donorID: null
+            }
+        })
+        if (!contribution) {
+            throw new Error("Khoản đóng góp không tồn tại!")
+        }
+
+        contribution.destroy()
+
+        return res.json({
+            success: true,
+        })
+
+    } catch (error) {
+        console.log(error)
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
+controller.deleteDistribution = async (req, res) => {
+    try {
+        const userID = res.locals.user.id
+        const campaignID = req.params.campaignID
+        const id = req.params.id
+
+        const campaign = await models.Campaign.findOne({
+            where: {
+                id: campaignID
+            },
+            include: [
+                {
+                    model: models.Charity,
+                    require: true,
+                    where: {
+                        userID
+                    }
+                }
+            ]
+        })
+        if (!campaign) {
+            throw new Error("Chiến Dịch không tồn tại!")
+        }
+
+        const distribution = await models.Transaction.findOne({
+            where:{
+                id,
+                type:"Distribution",
+                donorID: null
+            }
+        })
+        if (!distribution) {
+            throw new Error("Khoản cứu trợ không tồn tại!")
+        }
+        distribution.destroy()
+
+        return res.json({
+            success: true,
+        })
+
+    } catch (error) {
+        console.log(error)
         errors.add({ msg: error.message })
         return res.json(errors.get())
     }

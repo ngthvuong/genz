@@ -1,0 +1,182 @@
+{{#with campaign}}
+<div>
+    <div class="container-fluid pt-4 px-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">{{name}}</h4>
+            <div>
+                <a href="/campaign/edit/{{id}}" class="btn btn-secondary">Chỉnh Sửa Chiến Dịch</a>
+                <a href="/campaign/{{id}}/contributions/create" class="btn btn-success">Tạo mới đóng góp</a>
+            </div>
+        </div>
+    </div>
+    <div class="px-4 table-responsive mt-5 d-flex align-items-center justify-content-between flex-wrap">
+        <span class="fw-bold text-dark fs-4">Bảng Danh Sách Đóng Góp</span>
+    </div>
+    <div class="px-4 table-responsive">
+        <table class="table">
+            <thead>
+                <tr class="align-middle">
+                    <th scope="col" class="w-10 text-center" style="width: 10%;">Ngày</th>
+                    <th scope="col" class="w-15" style="width: 15%;">Tên</th>
+                    <th scope="col" class="w-15 text-end" style="width: 15%;">Số Tiền</th>
+                    <th scope="col" class="w-35 text-start" style="width: 45%;">Lời Nhắn</th>
+                    <th scope="col" class="w-15" style="width: 15%;">Lệnh</th>
+                </tr>
+            </thead>
+            <tbody id="contributionsContainer">
+            </tbody>
+        </table>
+        <div class="row m-3">
+            <nav aria-label="Page navigation example" id="pagination">
+                {{{
+                createPagination pagination paginationClass="pagination justify-content-center"
+                leftText="Previous" rightText="Next"
+                }}}
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteCampaignModal" tabindex="-1" aria-labelledby="deleteCampaignModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCampaignModalLabel">Xóa Chiến Dịch</h5>
+            </div>
+            <div class="modal-body" id="deleteCampaignBody">
+                Bạn có chắc chắn muốn xóa khoản đóng góp này này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="deleteCampaignButton"
+                    onclick="deleteCampaign(event)">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const showDeletePopup = (id, campaignID) => {
+        const deleteModal = new bootstrap.Modal(document.getElementById("deleteCampaignModal"))
+        deleteModal.show()
+
+        const deleteCampaignButton = document.getElementById("deleteCampaignButton")
+        const deleteCampaignBody = document.getElementById("deleteCampaignBody")
+
+        deleteCampaignButton.setAttribute("data-id", id)
+        deleteCampaignButton.setAttribute("data-campaign-id", campaignID)
+
+    }
+    const deleteCampaign = (event) => {
+        const id = event.target.dataset.id
+        const campaignID = event.target.dataset.campaignId
+        console.log(campaignID)
+
+        fetch(`/campaign/${campaignID}/contributions/delete/${id}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                deleteCampaignButton.remove()
+
+                if (data.errors) {
+                    deleteCampaignBody.innerHTML = `<span class="text-danger">Có lỗi sảy ra, vui lòng thử lại!</span>`
+                } else {
+                    document.getElementById(`contributionItemRow_${id}`)?.remove()
+                    deleteCampaignBody.innerHTML = `<span class="text-primary">Đã xóa thành công!</span>`
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const itemPerPage = 10
+        const data = []
+        let itemCount = 0
+        let itemLoad = true
+        const itemContainerDom = document.querySelector("#contributionsContainer")
+
+        const renderItems = (item) => {
+            const row = document.createElement("tr")
+            row.classList = "align-middle"
+            row.id = `contributionItemRow_${item.id}`
+            row.innerHTML = `
+                <td class="text-center">${dateFormat(item.madeAt)}</td>
+                <td>${item.sender}</td>
+                <td class="text-end">${formatAmount(item.amount)}</td>
+                <td class="text-left">${item.message}</td>`
+            if (!item.donorID) {
+                row.innerHTML += `<td>
+                    <a class="btn btn-sm btn-primary" href="/campaign/{{id}}/contributions/edit/${item.id}">Sửa</a>
+                    <button class="btn btn-sm btn-danger" type="button"
+                        onclick="showDeletePopup(${item.id}, {{id}})">Xóa</button>
+                </td>`
+            } else {
+                row.innerHTML += `<td>
+                    <a class="btn btn-sm btn-secondary pe-none" href="javascript:void(0)">Sửa</a>
+                    <button class="btn btn-sm btn-secondary pe-none" href="#">Xóa</button>
+                </td>`
+            }
+            return row
+        }
+
+        const loadMoreItems = async () => {
+            itemLoad = false
+            const formData = new FormData()
+            formData.append("offset", itemCount)
+            formData.append("limit", itemPerPage)
+
+            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+            fetch(`/campaign/{{id}}/contributions/load`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.success) {
+                        const { contributions: items } = data
+                        if (items.length >= itemPerPage) {
+                            itemLoad = true
+                        }
+                        items.forEach(item => {
+                            ++itemCount
+                            const row = renderItems(item)
+                            itemContainerDom.append(row)
+                        })
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        }
+        const onScrollItemsBox = async () => {
+            if (itemLoad) {
+                const { scrollTop, scrollHeight, clientHeight } = document.documentElement
+                if (scrollTop + clientHeight >= scrollHeight - 50) {
+                    itemLoad = false
+                    await loadMoreItems()
+                }
+            }
+        }
+        loadMoreItems()
+        window.addEventListener("scroll", onScrollItemsBox)
+
+        eventWS.registerListener('transactionCreatedContributionEvent', 'campaignContributionList', (payload) => {
+            if (payload.newContribution) {
+                const row = renderItems(payload.newContribution)
+                itemContainerDom.prepend(row)
+            }
+        })
+    })
+</script>
+{{/with}}

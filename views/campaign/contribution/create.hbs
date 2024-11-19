@@ -1,0 +1,88 @@
+<div class="rows m-3">
+    <h4>Tạo mới khoản đóng góp</h4>
+</div>
+<div class="container-fluid p-3 mb-5">
+    <div class="rows">
+        <div class="col-sm-12 col-xl-12 px-0">
+            <h6 class="mb-4">Thông tin khoản đóng góp</h6>
+            <form class="col-12" id="createContributionForm">
+                <div class="row mb-3">
+                    <label for="sender" class="col-sm-2 col-form-label">Người Đóng Góp</label>
+                    <div class="col-12 col-md-10">
+                        <input type="text" class="form-control" id="sender" name="sender"
+                            placeholder="Nhập thông tin người đóng góp">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="amount" class="col-sm-2 col-form-label">Số Tiền Đóng Góp</label>
+                    <div class="row col-12 col-md-10 align-items-center">
+                        <div class="col-11">
+                            <input type="number" class="form-control" id="amount" name="amount"
+                                placeholder="Nhập khoản tiền đóng góp">
+                        </div>
+                        <div class="col-1 text-end">
+                            <span>VND</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="message" class="col-sm-2 col-form-label">Lời Nhắn</label>
+                    <div class="col-12 col-md-10">
+                        <textarea class="form-control" id="message" name="message"></textarea>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Tạo mới</button>
+                    <a class="btn btn-secondary ms-1" href="/campaign/{{campaign.id}}/contributions">Trở về danh sách đóng góp</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('createContributionForm').addEventListener('submit', function (event) {
+            event.preventDefault()
+
+            let formErrors = document.getElementById('formErrors')
+            if (formErrors) {
+                formErrors.remove()
+            }
+
+            const formData = new FormData(this)
+            const data = JSON.stringify(Object.fromEntries(formData.entries()))
+
+            fetch(`/campaign/{{campaign.id}}/contributions/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.errors) {
+
+                        let messages = ''
+                        data.errors.forEach(error => {
+                            messages += `<p>${error.msg}</p>`
+                        })
+                        formErrors = document.createElement('div')
+                        formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                        formErrors.id = "formErrors"
+                        formErrors.innerHTML = messages
+                        document.getElementById('createContributionForm').appendChild(formErrors);
+
+                    } else {
+                        window.location.href = data.redirectURL
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        })
+    })
+</script>

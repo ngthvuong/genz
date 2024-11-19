@@ -1,11 +1,20 @@
 <div class="rows m-3">
-    <h4>Tạo mới chiến dịch</h4>
+    <h4>Quản lý chiến dịch</h4>
 </div>
 {{#with campaign}}
+<div class="d-flex gap-2 p-3 my-3">
+    <div>
+        <a class="btn btn-lg btn-primary" href="/campaign/{{id}}/contributions">Quản Lý Đóng Góp</a>
+    </div>
+    <div>
+        <a class="btn btn-lg btn-danger" href="/campaign/{{id}}/distributions">Quản Lý Phân Phối</a>
+    </div>
+</div>
+
 <div class="container-fluid p-3 mb-5">
     <div class="rows">
         <div class="col-sm-12 col-xl-12 px-0">
-            <h6 class="mb-4">Thông tin chiến dịch</h6>
+            <h6 class="mb-4">Chỉnh sửa thông tin chiến dịch</h6>
             <form class="col-12" id="editCampaignForm" enctype="multipart/form-data">
                 <div class="row mb-3">
                     <label for="inputCampaignName" class="col-sm-2 col-form-label">Tên chiến dịch</label>
@@ -25,14 +34,14 @@
                     <label for="inputCampaignStartDate" class="col-sm-2 col-form-label">Ngày bắt đầu</label>
                     <div class="col-12 col-md-10">
                         <input type="date" class="form-control" id="inputCampaignStartDate" name="campaignStartDate"
-                            value="{{dateFormat startDate "YYYY-MM-DD"}}">
+                            value="{{dateFormat startDate " YYYY-MM-DD"}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputCampaignEndDate" class="col-sm-2 col-form-label">Ngày kết thúc</label>
                     <div class="col-12 col-md-10">
                         <input type="date" class="form-control" id="inputCampaignEndDate" name="campaignEndDate"
-                            value="{{dateFormat endDate "YYYY-MM-DD"}}">
+                            value="{{dateFormat endDate " YYYY-MM-DD"}}">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -47,7 +56,7 @@
                     <div class="row col-12 col-md-10 align-items-center">
                         <div class="col-11">
                             <input type="number" class="form-control" id="inputCampaignBudget" name="campaignBudget"
-                                placeholder="Nhập ngân sách dự kiến" value="{{budget}}">
+                                placeholder="Nhập ngân sách dự kiến" value="{{parseInt budget}}">
                         </div>
                         <div class="col-1 text-end">
                             <span class="" id="inputGroupAddon">VND</span>

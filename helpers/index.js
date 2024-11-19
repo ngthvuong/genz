@@ -112,6 +112,9 @@ handlebars.registerHelper('createStarList', function (stars) {
 handlebars.registerHelper('eq', (a, b) => a === b);
 handlebars.registerHelper('neq', (a, b) => a !== b);
 
+handlebars.registerHelper('parseInt', (number) => parseInt(number));
+
+
 
 module.exports = {
     incrementedIndex: handlebars.helpers.incrementedIndex,
@@ -128,8 +131,6 @@ module.exports = {
     convertCampaignStatus: handlebars.helpers.convertCampaignStatus,
     eq: handlebars.helpers.eq,
     neq: handlebars.helpers.neq,
-
-
-
+    parseInt: handlebars.helpers.parseInt,
 
 }
