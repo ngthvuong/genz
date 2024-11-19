@@ -497,6 +497,11 @@ controller.createContribution = async (req, res) => {
         contribution.paymentMethodID = paymentMethod.id
         contribution.save()
 
+        const TransactionCreatedContributionEvent = require("../websocket/events/transactionCreatedContributionEvent")
+        await new TransactionCreatedContributionEvent({
+            newContribution: contribution
+        }).dispatch()
+
         return res.json({
             success: true,
             newContribution: contribution,
@@ -549,7 +554,12 @@ controller.createDistribution = async (req, res) => {
 
         distribution.campaignID = campaignID
         distribution.paymentMethodID = paymentMethod.id
-        distribution.save()
+        await distribution.save()
+
+        const TransactionCreatedDistributionEvent = require("../websocket/events/transactionCreatedDistributionEvent")
+        await new TransactionCreatedDistributionEvent({
+            newDistribution: distribution
+        }).dispatch()
 
         return res.json({
             success: true,

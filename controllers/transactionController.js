@@ -167,15 +167,16 @@ controller.callback = async (req, res) => {
         }
 
         if (status == 1) {
-            const madeAt = new Date()
-            await models.Transaction.update(
-                {
-                    status: "Success",
-                    amount,
-                    madeAt
-                },
-                { where: { apptransid } }
-            )
+            transaction.status = "Success"
+            transaction.amount = amount
+            transaction.madeAt = new Date()
+            await transaction.save()
+
+            const TransactionCreatedContributionEvent = require("../websocket/events/transactionCreatedContributionEvent")
+            await new TransactionCreatedContributionEvent({
+                newContribution: transaction
+            }).dispatch()
+
             return res.render('transaction/success', {
                 transaction
             })
