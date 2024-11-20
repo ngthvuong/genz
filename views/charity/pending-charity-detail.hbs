@@ -54,8 +54,8 @@
     <div class="col-4">
     </div>
     <div class="rows col-8 text-dark d-flex justify-content-between">
-        <a class="btn rejectButton statementButton " href="#" onclick="rejectCharity('{{User.id}}')">TỪ CHỐI</a>
-        <a class="btn approveButton statementButton" href="#" onclick="approveCharity('{{User.id}}')">CHẤP NHẬN</a>
+        <a class="btn rejectButton statementButton " href="#" onclick="showRejectCharity('{{User.id}}')">TỪ CHỐI</a>
+        <a class="btn approveButton statementButton" href="#" onclick="showApproveCharity('{{User.id}}')">CHẤP NHẬN</a>
     </div>
 </div>
 <div row m-3>
@@ -65,56 +65,118 @@
 </div>
 {{/with}}
 
-<script>
-    function approveCharity(userId) {
-        const confirmation = confirm("Bạn có chắc chắn muốn chấp nhận tổ chức từ thiện này?");
-        if (confirmation) {
-            fetch(`/charity-verification/charities/approve/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Tổ chức từ thiện đã được chấp nhận!');
-                        window.location.href = "/charity-verification";
-                    } else {
-                        alert('Có lỗi xảy ra khi chấp nhận tổ chức từ thiện.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        } else {
-            return;
-        }
-    }
-</script>
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="notificationModalLabel"></h5>
+            </div>
+            <div class="modal-body" id="notificationModalBody">
+            </div>
+            <div class="modal-footer" id="notificationModalFooter">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="notificationSubmitButton" class="btn btn-primary"
+                    onclick="notificationSubmit(event)">Đống Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    function rejectCharity(userId) {
-        const confirmation = confirm("Bạn có chắc chắn muốn từ chối tổ chức từ thiện này?");
-        if (confirmation) {
-            fetch(`/charity-verification/charities/reject/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Tổ chức từ thiện bị từ chối do thông tin không hợp lệ.!');
-                        window.location.href = "/charity-verification";
-                    } else {
-                        alert('Có lỗi xảy ra khi từ chối tổ chức từ thiện.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        } else {
-            return;
+    const notificationModalDom = document.getElementById("notificationModal")
+    const notificationModalLabelDom = document.getElementById("notificationModalLabel")
+    const notificationModalBodyDom = document.getElementById("notificationModalBody")
+    const notificationModalFooterDom = document.getElementById("notificationModalFooter")
+    const notificationSubmitButtonDom = document.getElementById("notificationSubmitButton")
+
+
+    function showApproveCharity(userId) {
+        notificationModalLabelDom.innerHTML = `Xác Nhận Giấy Phép`
+        notificationModalBodyDom.innerHTML = `
+            <span class="text-primary">Bạn có chắc chắn muốn chấp nhận tổ chức từ thiện này?</span>
+        `
+        const notificationModal = new bootstrap.Modal(notificationModalDom)
+        notificationSubmitButtonDom.setAttribute("data-user-id", userId)
+        notificationSubmitButtonDom.setAttribute("data-type", "approve")
+        notificationModal.show()
+    }
+
+    function showRejectCharity(userId) {
+        notificationModalLabelDom.innerHTML = `Từ Chối Giấy Phép`
+        notificationModalBodyDom.innerHTML = `
+            <span class="text-primary">Bạn có chắc chắn muốn từ chối tổ chức từ thiện này?</span>
+        `
+        const notificationModal = new bootstrap.Modal(notificationModalDom)
+        notificationSubmitButtonDom.setAttribute("data-user-id", userId)
+        notificationSubmitButtonDom.setAttribute("data-type", "reject")
+        notificationModal.show()
+    }
+
+    function notificationSubmit(event) {
+        event.preventDefault()
+
+        const type = event.target.dataset.type
+        const userId = event.target.dataset.userId
+
+        if (type == "approve") {
+            approveCharity(userId)
+        } else if (type == "reject") {
+            rejectCharity(userId)
         }
     }
+
+    function approveCharity(userId) {
+        fetch(`/charity-verification/charities/approve/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                notificationModalFooterDom.innerHTML = `
+                    <a href="/charity-verification" class="btn btn-secondary">Đồng Ý</a>
+                `
+                if (response.ok) {
+                    notificationModalBodyDom.innerHTML = `
+                        <span class="text-primary">Tổ chức từ thiện đã được chấp nhận!</span>
+                    `
+                } else {
+                    notificationModalBodyDom.innerHTML = `
+                        <span class="text-danger">Có lỗi xảy ra khi chấp nhận tổ chức từ thiện!</span>
+                    `
+                }
+
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function rejectCharity(userId) {
+        fetch(`/charity-verification/charities/reject/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                notificationModalFooterDom.innerHTML = `
+                    <a href="/charity-verification" class="btn btn-secondary">Đồng Ý</a>
+                `
+                if (response.ok) {
+                    notificationModalBodyDom.innerHTML = `
+                        <span class="text-primary">Tổ chức từ thiện bị từ chối do thông tin không hợp lệ!</span>
+                    `
+                } else {
+                    notificationModalBodyDom.innerHTML = `
+                        <span class="text-danger">Có lỗi xảy ra khi từ chối tổ chức từ thiện!</span>
+                    `
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
 </script>
