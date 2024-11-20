@@ -256,6 +256,9 @@ controller.showStatement = async (req, res) => {
                 model: models.Transaction,
                 separate: true,
                 as: "Contributions",
+                where: {
+                    status: "Success"
+                },
                 order: [["createdAt", "DESC"]],
                 limit: 10
             },
@@ -263,6 +266,9 @@ controller.showStatement = async (req, res) => {
                 model: models.Transaction,
                 separate: true,
                 as: "Distributions",
+                where: {
+                    status: "Success"
+                },
                 order: [["createdAt", "DESC"]],
                 limit: 10
             }

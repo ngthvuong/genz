@@ -43,19 +43,19 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col" class="w-10" style="width: 10%;">#</th>
                                 <th scope="col" class="w-15" style="width: 15%;">Ngày</th>
                                 <th scope="col" class="w-20" style="width: 20%;">Người Gửi</th>
+                                <th scope="col" class="w-20" style="width: 20%;">Người Nhận</th>
                                 <th scope="col" class="w-15" style="width: 15%;">Số tiền</th>
-                                <th scope="col" class="w-40" style="width: 40%;">Thông Tin</th>
+                                <th scope="col" class="w-40" style="width: 30%;">Thông Tin</th>
                             </tr>
                         </thead>
                         <tbody>
                             {{#each Contributions}}
-                            <tr>
-                                <th scope="row">{{incrementedIndex @index}}</th>
+                            <tr id="transactionItem_{{id}}">
                                 <td>{{dateFormat madeAt}}</td>
                                 <td>{{sender}}</td>
+                                <td>{{receiver}}</td>
                                 <td>{{formatAmount amount}}</td>
                                 <td>{{message}}</td>
                             </tr>
@@ -72,18 +72,18 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col" style="width: 10%;">#</th>
                                 <th scope="col" style="width: 15%;">Ngày</th>
+                                <th scope="col" style="width: 20%;">Người Gởi</th>
                                 <th scope="col" style="width: 20%;">Người Nhận</th>
                                 <th scope="col" style="width: 15%;">Số tiền</th>
-                                <th scope="col" style="width: 40%;">Thông Tin</th>
+                                <th scope="col" style="width: 30%;">Thông Tin</th>
                             </tr>
                         </thead>
                         <tbody>
                             {{#each Distributions}}
-                            <tr>
-                                <th scope="row">{{incrementedIndex @index}}</th>
+                            <tr id="transactionItem_{{id}}">
                                 <td>{{dateFormat madeAt}}</td>
+                                <td>{{sender}}</td>
                                 <td>{{receiver}}</td>
                                 <td>{{formatAmount amount}}</td>
                                 <td>{{message}}</td>
@@ -100,6 +100,7 @@
 {{/with}}
 
 <script>
+    const campaignID = `{{campaign.id}}`
     document.querySelector("#report_more_info_tags").addEventListener("click", (event) => {
         const campaignMoreInfoTag = event.target.closest(".report_more_info_tag")
         if (campaignMoreInfoTag) {
@@ -148,11 +149,13 @@
                         }
                         const tbody = contributionDom.querySelector("tbody")
                         contributions.forEach(contribution => {
+                            contributionCount++
                             const row = document.createElement("tr")
+                            row.id = `transactionItem_${contribution.id}`
                             row.innerHTML = `
-                                <th scope="row">${++contributionCount}</th>
                                 <td>${dateFormat(contribution.madeAt)}</td>
                                 <td>${contribution.sender}</td>
+                                <td>${contribution.receiver}</td>
                                 <td>${formatAmount(contribution.amount)}</td>
                                 <td>${contribution.message}</td>
                             `
@@ -174,7 +177,6 @@
             }
         }
         contributionDom.addEventListener("scroll", onScrollContributionBox)
-
 
         let distributionCount = parseInt("{{campaign.Distributions.length}}")
         let distributionLoad = distributionCount < 10 ? false : true
@@ -205,10 +207,13 @@
                         }
                         const tbody = distributionDom.querySelector("tbody")
                         distributions.forEach(distribution => {
+                            distributionCount++
                             const row = document.createElement("tr")
+                            row.id = `transactionItem_${distribution.id}`
+
                             row.innerHTML = `
-                                <th scope="row">${++distributionCount}</th>
                                 <td>${dateFormat(distribution.madeAt)}</td>
+                                <td>${distribution.sender}</td>
                                 <td>${distribution.receiver}</td>
                                 <td>${formatAmount(distribution.amount)}</td>
                                 <td>${distribution.message}</td>
@@ -224,13 +229,100 @@
         const onScrollDistributionBox = async (event, callback) => {
             if (distributionLoad) {
                 const { scrollTop, scrollHeight, clientHeight } = event.target
-                if (scrollTop + clientHeight >= scrollHeight - 50  ) {
+                if (scrollTop + clientHeight >= scrollHeight - 50) {
                     distributionLoad = false
                     await loadMoreDistribution()
                 }
             }
         }
         distributionDom.addEventListener("scroll", onScrollDistributionBox)
+
+        eventWS.registerListener('transactionCreatedContributionEvent', 'statementReport', (payload) => {
+            const contribution = payload.newContribution
+            if (contribution.campaignID == campaignID) {
+                console.log(contribution)
+                const tbody = contributionDom.querySelector("tbody")
+                const row = document.createElement("tr")
+                row.id = `transactionItem_${contribution.id}`
+                row.innerHTML = `
+                                <td>${dateFormat(contribution.madeAt)}</td>
+                                <td>${contribution.sender}</td>
+                                <td>${contribution.receiver}</td>
+                                <td>${formatAmount(contribution.amount)}</td>
+                                <td>${contribution.message}</td>
+                            `
+                tbody.prepend(row)
+                contributionCount++
+
+            }
+        })
+        eventWS.registerListener('transactionCreatedDistributionEvent', 'statementReport', (payload) => {
+            const distribution = payload.newDistribution
+
+            if (distribution.campaignID == campaignID) {
+                const tbody = distributionDom.querySelector("tbody")
+                const row = document.createElement("tr")
+                row.id = `transactionItem_${distribution.id}`
+                row.innerHTML = `
+                                <td>${dateFormat(distribution.madeAt)}</td>
+                                <td>${distribution.sender}</td>
+                                <td>${distribution.receiver}</td>
+                                <td>${formatAmount(distribution.amount)}</td>
+                                <td>${distribution.message}</td>
+                            `
+                tbody.prepend(row)
+                distributionCount++
+            }
+        })
+
+
+        eventWS.registerListener('transactionModifiedContributionEvent', 'statementReport', (payload) => {
+            const contribution = payload.contribution
+            if (contribution.campaignID == campaignID) {
+                const targetedTransactionDom = document.getElementById(`transactionItem_${contribution.id}`)
+                if (targetedTransactionDom) {
+                    targetedTransactionDom.innerHTML = `
+                        <td>${dateFormat(contribution.madeAt)}</td>
+                        <td>${contribution.sender}</td>
+                        <td>${contribution.receiver}</td>
+                        <td>${formatAmount(contribution.amount)}</td>
+                        <td>${contribution.message}</td>
+                    `
+                }
+            }
+        })
+
+        eventWS.registerListener('transactionModifiedDistributionEvent', 'statementReport', (payload) => {
+            const distribution = payload.distribution
+            if (distribution.campaignID == campaignID) {
+                const targetedTransactionDom = document.getElementById(`transactionItem_${distribution.id}`)
+                if(targetedTransactionDom){
+                    targetedTransactionDom.innerHTML = `
+                        <td>${dateFormat(distribution.madeAt)}</td>
+                        <td>${distribution.sender}</td>
+                        <td>${distribution.receiver}</td>
+                        <td>${formatAmount(distribution.amount)}</td>
+                        <td>${distribution.message}</td>
+                    `
+                }
+            }
+        })
+
+        eventWS.registerListener('transactionDeletedContributionEvent', 'statementReport', (payload) => {
+            const targetedTransactionDom = document.getElementById(`transactionItem_${payload.id}`)
+            if (targetedTransactionDom) {
+                targetedTransactionDom.remove()
+                contributionCount++
+            }
+        })
+        eventWS.registerListener('transactionDeletedDistributionEvent', 'statementReport', (payload) => {
+            const targetedTransactionDom = document.getElementById(`transactionItem_${payload.id}`)
+            if (targetedTransactionDom) {
+                targetedTransactionDom.remove()
+                distributionCount++
+            }
+        })
+
     })
 
     const exportStatement = () => {
@@ -266,4 +358,5 @@
                 console.error('Error:', error);
             });
     }
+
 </script>

@@ -218,7 +218,7 @@ controller.editCampaign = async (req, res) => {
         updatedCampaign.description = campaignDescription
         updatedCampaign.location = campaignLocation
         updatedCampaign.status = campaignStatus
-        updatedCampaign.save()
+        await updatedCampaign.save()
 
         if (req.file) {
             const campaignImageFile = await campaignStore.saveFile(req)
@@ -233,7 +233,7 @@ controller.editCampaign = async (req, res) => {
 
             }
             campaignImage.imagePath = campaignImageFile.path
-            campaignImage.save()
+            await campaignImage.save()
 
         }
         // Sau khi thành công, chuyển hướng đến trang báo thành công
@@ -495,7 +495,7 @@ controller.createContribution = async (req, res) => {
 
         contribution.campaignID = campaignID
         contribution.paymentMethodID = paymentMethod.id
-        contribution.save()
+        await contribution.save()
 
         const TransactionCreatedContributionEvent = require("../websocket/events/transactionCreatedContributionEvent")
         await new TransactionCreatedContributionEvent({
@@ -684,7 +684,12 @@ controller.editContribution = async (req, res) => {
         contribution.sender = sender
         contribution.amount = amount
         contribution.message = message
-        contribution.save()
+        await contribution.save()
+
+        const TransactionModifiedContributionEvent = require("../websocket/events/transactionModifiedContributionEvent")
+        await new TransactionModifiedContributionEvent({
+            contribution: contribution
+        }).dispatch()
 
         return res.json({
             success: true,
@@ -738,7 +743,12 @@ controller.editDistribution = async (req, res) => {
         distribution.receiver = receiver
         distribution.amount = amount
         distribution.message = message
-        distribution.save()
+        await distribution.save()
+
+        const TransactionModifiedDistributionEvent = require("../websocket/events/transactionModifiedDistributionEvent")
+        await new TransactionModifiedDistributionEvent({
+            distribution: distribution
+        }).dispatch()
 
         return res.json({
             success: true,
@@ -790,6 +800,11 @@ controller.deleteContribution = async (req, res) => {
 
         contribution.destroy()
 
+        const TransactionDeletedContributionEvent = require("../websocket/events/transactionDeletedContributionEvent")
+        await new TransactionDeletedContributionEvent({
+            id: id
+        }).dispatch()
+
         return res.json({
             success: true,
         })
@@ -835,6 +850,11 @@ controller.deleteDistribution = async (req, res) => {
             throw new Error("Khoản cứu trợ không tồn tại!")
         }
         distribution.destroy()
+
+        const TransactionDeletedDistributionEvent = require("../websocket/events/transactionDeletedDistributionEvent")
+        await new TransactionDeletedDistributionEvent({
+            id: id
+        }).dispatch()
 
         return res.json({
             success: true,

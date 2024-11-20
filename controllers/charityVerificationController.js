@@ -154,7 +154,7 @@ controller.updateApprovedCharityStatus = async (req, res) => {
 
     if (approvedCharity) {
         approvedCharity.User.status = 'active'
-        approvedCharity.User.save()
+        await approvedCharity.User.save()
 
         const UserApprovedEvent = require("../websocket/events/userApprovedEvent")
         await new UserApprovedEvent({
@@ -184,7 +184,7 @@ controller.updateRejectedCharityStatus = async (req, res) => {
 
     if (rejectedCharity) {
         rejectedCharity.User.status = 'reject'
-        rejectedCharity.User.save()
+        await rejectedCharity.User.save()
 
         const userRejectedEvent = require("../websocket/events/userRejectedEvent")
         await new userRejectedEvent({
