@@ -46,6 +46,14 @@
         </div>
     </div>
 </div>
+<div id="deleteResult" class="toast align-items-center position-fixed bottom-0 end-0" role="alert" aria-live="assertive"
+    aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body" id="deleteResultToastBody">
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
 
 <script>
     const showDeletePopup = (id, campaignID) => {
@@ -62,7 +70,6 @@
     const deleteDistribution = (event) => {
         const id = event.target.dataset.id
         const campaignID = event.target.dataset.campaignId
-        console.log(campaignID)
 
         fetch(`/campaign/${campaignID}/distributions/delete/${id}`, {
             method: 'DELETE',
@@ -71,14 +78,19 @@
                 return response.json()
             })
             .then(data => {
-                deleteDistributionButton.remove()
 
                 if (data.errors) {
-                    deleteDistributionBody.innerHTML = `<span class="text-danger">Có lỗi sảy ra, vui lòng thử lại!</span>`
+                    document.querySelector("#deleteResultToastBody").innerHTML = `<span class="text-danger">Có lỗi sảy ra, vui lòng thử lại!</span>`
                 } else {
                     document.getElementById(`distributionItemRow_${id}`)?.remove()
-                    deleteDistributionBody.innerHTML = `<span class="text-primary">Đã xóa thành công!</span>`
+                    document.querySelector("#deleteResultToastBody").innerHTML = `<span class="text-success">Đã xóa thành công!</span>`
                 }
+                const modalElement = document.getElementById("deleteDistributionModal")
+                const deleteModal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement)
+                deleteModal.hide()
+                const toastDom = document.querySelector("#deleteResult")
+                const toast = new bootstrap.Toast(toastDom)
+                toast.show()
             })
             .catch(error => {
                 console.error('Error:', error)

@@ -96,6 +96,14 @@
         </div>
     </div>
 </div>
+<div id="deleteResult" class="toast align-items-center position-fixed bottom-0 end-0" role="alert" aria-live="assertive"
+    aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body" id="deleteResultToastBody">
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
 <script>
     const showDeletePopup = (id) => {
         const deleteModal = new bootstrap.Modal(document.getElementById("deleteCampaignModal"))
@@ -115,14 +123,18 @@
                 return response.json()
             })
             .then(data => {
-                deleteCampaignButton.remove()
-
                 if (data.errors) {
-                    deleteCampaignBody.innerHTML = `<span class="text-danger">Có lỗi sảy ra, vui long thử lại!</span>`
+                    document.querySelector("#deleteResultToastBody").innerHTML = `<span class="text-danger">Có lỗi sảy ra, vui lòng thử lại!</span>`
                 } else {
                     document.getElementById(`campaignItemRow_${id}`)?.remove()
-                    deleteCampaignBody.innerHTML = `<span class="text-primary">Đã xóa thành công!</span>`
+                    document.querySelector("#deleteResultToastBody").innerHTML = `<span class="text-success">Đã xóa thành công!</span>`
                 }
+                const modalElement = document.getElementById("deleteCampaignModal")
+                const deleteModal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement)
+                deleteModal.hide()
+                const toastDom = document.querySelector("#deleteResult")
+                const toast = new bootstrap.Toast(toastDom)
+                toast.show()
             })
             .catch(error => {
                 console.error('Error:', error)
