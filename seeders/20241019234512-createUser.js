@@ -19,7 +19,7 @@ module.exports = {
     */
     await User.bulkCreate([
       {
-        name: "GenZ Team",
+        name: "Admin GenZ Team",
         phone: "0909093060",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093060.jpg",
@@ -29,7 +29,7 @@ module.exports = {
         notifyChannel: "phone"
       },
       {
-        name: "Hoàng Lê",
+        name: "Đóng Góp 1",
         phone: "0909093061",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093061.jpg",
@@ -39,7 +39,57 @@ module.exports = {
         notifyChannel: "phone"
       },
       {
-        name: "Ninh Võ",
+        name: "Đóng Góp 2",
+        phone: "0909093261",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093061.jpg",
+        email: "hoangle2@genz.com",
+        status: 'active',
+        role: "donor",
+        notifyChannel: "phone"
+      },
+      {
+        name: "Đóng Góp 3",
+        phone: "0909093361",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093061.jpg",
+        email: "hoangle3@genz.com",
+        status: 'active',
+        role: "donor",
+        notifyChannel: "phone"
+      },
+      {
+        name: "Đóng Góp 4",
+        phone: "0909093461",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093061.jpg",
+        email: "hoangle4@genz.com",
+        status: 'active',
+        role: "donor",
+        notifyChannel: "phone"
+      },
+      {
+        name: "Đóng Góp 5",
+        phone: "0909093561",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093061.jpg",
+        email: "hoangle5@genz.com",
+        status: 'active',
+        role: "donor",
+        notifyChannel: "phone"
+      },
+      {
+        name: "Đóng Góp 6",
+        phone: "0909093661",
+        password: hashPassword("!234qwER"),
+        avatarPath: "/media/avatars/0909093061.jpg",
+        email: "hoangle6@genz.com",
+        status: 'active',
+        role: "donor",
+        notifyChannel: "phone"
+      },
+      {
+        name: "Tổ Chức Quyên Góp 1",
         phone: "0909093062",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093062.jpg",
@@ -49,7 +99,7 @@ module.exports = {
         notifyChannel: "phone"
       },
       {
-        name: "Tín Nguyễn",
+        name: "Tổ Chức Quyên Góp 2",
         phone: "0909093063",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093063.jpg",
@@ -59,7 +109,7 @@ module.exports = {
         notifyChannel: "phone"
       },
       {
-        name: "Vương Nguyễn",
+        name: "Nhận Hỗ Trợ 1",
         phone: "0909093064",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093064.jpg",
@@ -69,7 +119,7 @@ module.exports = {
         notifyChannel: "phone"
       },
       {
-        name: "Ninh Võ 1",
+        name: "Tổ Chức Quyên Góp 3",
         phone: "0909093065",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093062.jpg",
@@ -79,7 +129,7 @@ module.exports = {
         notifyChannel: "phone"
       },
       {
-        name: "Ninh Võ 2",
+        name: "Tổ Chức Quyên Góp 4",
         phone: "0909093066",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093062.jpg",
@@ -89,7 +139,7 @@ module.exports = {
         notifyChannel: "phone"
       },
       {
-        name: "Ninh Võ 3",
+        name: "Tổ Chức Quyên Góp 5",
         phone: "0909093067",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093062.jpg",
@@ -99,7 +149,7 @@ module.exports = {
         notifyChannel: "phone"
       },
       {
-        name: "Ninh Võ 4",
+        name: "Tổ Chức Quyên Góp 6",
         phone: "0909093068",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093062.jpg",
@@ -109,7 +159,7 @@ module.exports = {
         notifyChannel: "phone"
       },
       {
-        name: "Ninh Võ 5",
+        name: "Tổ Chức Quyên Góp 7",
         phone: "0909093069",
         password: hashPassword("!234qwER"),
         avatarPath: "/media/avatars/0909093062.jpg",
