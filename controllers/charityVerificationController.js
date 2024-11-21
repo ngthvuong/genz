@@ -118,25 +118,6 @@ controller.showPendingCharityDetails = async (req, res) => {
     res.render('charity/pending-charity-detail')
 }
 
-controller.updateCharityStatus = async (req, res) => {
-    let id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
-
-    try {
-        let user = await models.User.findOne(id)
-        if (!user) {
-            return res.status(404).send('Người dùng không tìm thấy.')
-        }
-
-        user.status = 'active'
-        await user.save()
-
-        res.status(200).send('Tổ chức từ thiện đã được chấp nhận.')
-    } catch (error) {
-        console.error(error)
-        res.status(500).send('Có lỗi xảy ra.')
-    }
-}
-
 controller.updateApprovedCharityStatus = async (req, res) => {
     let id = isNaN(req.params.id) ? 0 : parseInt(req.params.id)
 
