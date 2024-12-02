@@ -18,8 +18,6 @@ auth.isLogged = () => {
         }
         res.locals.user = req.session.user;
         res.locals.user.permission = require("../config/permissionConfig.json")[res.locals.user.role]
-        // console.log(res.locals.user)
-        // console.log(req.originalUrl.split('/'))
         next()
     }
 }

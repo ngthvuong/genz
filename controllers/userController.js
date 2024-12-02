@@ -125,7 +125,7 @@ controller.resetUserSession = async (req, res) => {
 
 controller.showProfile = async (req, res) => {
     const userID = req.session.user ? req.session.user.id : 0;
-    const user = await models.User.findOne({
+    const userProfile = await models.User.findOne({
         where: { id: userID },
         include: [
             {
@@ -139,13 +139,13 @@ controller.showProfile = async (req, res) => {
         ]
     })
 
-    if (!user) {
+    if (!userProfile) {
         return res.redirect("/")
     }
 
     return res.render('user/profile', {
         title: "Thông Tin Tài Khoản",
-        user: user
+        userProfile
     })
 }
 
