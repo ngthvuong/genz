@@ -13,8 +13,10 @@
     const newsFeedContainerDom = document.querySelector("#newsFeedContainer")
 
     const renderNewsFeed = (newsFeed) => {
-        const row = document.createElement("div")
-        row.classList = "rows col-12 col-md-6 mx-auto mb-5"
+        const row = document.createElement("a")
+        row.classList = "d-grid col-12 col-md-6 mx-auto mb-5"
+        row.href = `/news-feed/details/${newsFeed.id}`
+        row.id = `newsFeed_${newsFeed.id}`
         row.innerHTML = `
             <div class="d-flex justify-content-between">
                 <p class="col-8 fw-bold text-dark"># ${newsFeed.title}</p>
@@ -26,7 +28,10 @@
             </div>
             <div class="col-12">
                 <img class="w-100" src="${newsFeed.imagePath}" />
-            
+            </div>
+            <div class="col-12 d-flex justify-content-between mt-2">
+                <span class="text-dark">${newsFeed.NewsFeedFeelings.length} lượt thích</span>
+                <span class="text-dark">${newsFeed.NewsFeedComments.length} bình luận</span>
             </div>
         `
         return row

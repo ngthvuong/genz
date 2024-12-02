@@ -16,14 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   NewsFeedComment.init({
-    type: {
-      type: DataTypes.ENUM('like', 'dislike'),
-      allowNull: false
-    },
-    publishedAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
+    content: {
+      type: DataTypes.TEXT,
+      allowNull:false
+    }
   }, {
     sequelize,
     modelName: 'NewsFeedComment',

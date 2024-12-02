@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
   Comment.init({
     content: {
       type: DataTypes.TEXT,
-      allowNull:false}
+      allowNull:false
+    }
   }, {
     sequelize,
     modelName: 'Comment',

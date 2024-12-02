@@ -17,13 +17,9 @@ module.exports = (sequelize, DataTypes) => {
   }
   NewsFeedFeeling.init({
     type: {
-      type: DataTypes.TEXT,
+      type: DataTypes.ENUM('like'),
       allowNull: false
-    },
-    publishedAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
+    }
   }, {
     sequelize,
     modelName: 'NewsFeedFeeling',

@@ -1,0 +1,175 @@
+{{#with newsFeed}}
+<div class="row m-3">
+    <h4>
+        {{title}}
+    </h4>
+</div>
+<div class="row m-3">
+    <div class="col-6">
+        <img class="w-100 h-auto" src="{{imagePath}}" alt="">
+    </div>
+    <div class="col-6 text-dark d-grid">
+        <div>
+            <div class="row col-12 mt-2">
+                <div class="col-12 fw-bold">Nội Dung</div>
+                <div class="col-12">{{{nToBr content}}}</div>
+            </div>
+        </div>
+        <div class="mt-auto">
+            <div class="row col-12 mt-4">
+                <div class="col-4 fw-bold">Tác Giả</div>
+                <div class="col-8">
+                    <a href="/charity/{{Author.id}}">{{Author.name}}</a>
+                </div>
+            </div>
+            <div class="row col-12 mt-2">
+                <div class="col-4 fw-bold">Chiến Dịch</div>
+                <div class="col-8">
+                    <a href="/report/{{Campaign.id}}">{{Campaign.name}}</a>
+                </div>
+            </div>
+            <div class="col-12 mt-5 d-flex align-items-center gap-2">
+                {{#if ../isLiked}}
+                <button type="button" class="btn btn-sm btn-secondary d-inline" id="touchFeelingButton"
+                    onclick="touchNewsFeedFeeling()">bỏ thích</button>
+                {{else}}
+                <button type="button" class="btn btn-sm btn-primary d-inline" id="touchFeelingButton"
+                    onclick="touchNewsFeedFeeling()">thích</button>
+                {{/if}}
+                <span>Bài viết có <span class="fw-bold" id="totalFeelings">{{NewsFeedFeelings.length}}</span> lượt
+                    thích!</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row m-3">
+    <h5>Thêm Bình Luận</h5>
+    <form class="rows col-12 d-flex" onsubmit="submitNewsFeedComment(event)">
+        <textarea class="form-control" name="commentContent" id="newsFeedCommentContent" rows="2"></textarea>
+        <button type="submit" class="btn btn-success newsFeedCommentSubmit col-1 ms-1">Gởi</button>
+    </form>
+</div>
+<div class="row m-3">
+    <h5>Danh Sách Bình Luận (<span class="fw-bold" id="totalComment">{{NewsFeedComments.length}}</span>)</h5>
+    <div id="commentContainer">
+        {{#each NewsFeedComments}}
+        <div class="row col-12 mb-3">
+            <div class="col-1">
+                <img class="w-100 px-1" src="{{User.avatarPath}}" onerror="this.src='/img/logo.svg';" />
+            </div>
+            <div class="rows col-11">
+                <div class="fw-bold text-dark">{{User.name}}</div>
+                <div>{{{nToBr content}}}</div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+{{/with}}
+
+<script>
+    const submitNewsFeedComment = (event) => {
+        event.preventDefault();
+        const contentDom = event.target.querySelector('textarea[name="commentContent"]')
+        if (!contentDom.value) {
+            contentDom.focus()
+            return
+        }
+
+        const formData = new FormData(event.target)
+        formData.append("newsFeedID", "{{ newsFeed.id }}")
+        formData.append("userID", "{{ user.id }}")
+
+        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+        fetch('/news-feed/comment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                contentDom.value = ""
+                contentDom.focus()
+
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    }
+
+    const touchNewsFeedFeeling = () => {
+        const formData = new FormData()
+        formData.append("newsFeedID", "{{ newsFeed.id }}")
+        formData.append("userID", "{{ user.id }}")
+
+        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+
+        fetch('/news-feed/feeling', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    }
+
+    let totalComment = parseInt('{{newsFeed.NewsFeedComments.length}}')
+    eventWS.registerListener('newsFeedCreatedCommentEvent', 'newsFeedDetails', (payload) => {
+        const { newComment } = payload
+        if (newComment.NewsFeed.id == "{{newsFeed.id}}") {
+            let newCommentDom = document.createElement("div")
+            newCommentDom.className = "row col-12 mb-2"
+            newCommentDom.innerHTML = `
+            <div class="col-1">
+                <img class="w-100 px-1" src="${newComment.User.avatarPath}" onerror="this.src='/img/logo.svg';" />
+            </div>
+            <div class="rows col-11">
+                <div class="fw-bold text-dark">${newComment.User.name}</div>
+                <div>${newComment.content.replace(/\n/g, "<br>")}</div>
+            </div>
+        `
+            document.querySelector("#commentContainer").prepend(newCommentDom)
+
+            totalComment++
+            document.querySelector("#totalComment").innerText = totalComment
+        }
+    })
+
+    let totalFeelings = parseInt('{{newsFeed.NewsFeedFeelings.length}}')
+    eventWS.registerListener('newsFeedTouchFeelingEvent', 'newsFeedDetails', (payload) => {
+        const { newFeeling, newsFeedID } = payload
+        const touchFeelingButton = document.querySelector("#touchFeelingButton")
+        if (newsFeedID == "{{newsFeed.id}}") {
+            if (newFeeling) {
+                touchFeelingButton.classList.add('btn-secondary')
+                touchFeelingButton.classList.remove('btn-primary')
+                touchFeelingButton.innerText = 'bỏ thích'
+
+                totalFeelings++
+                document.querySelector("#totalFeelings").innerText = totalFeelings
+
+            } else {
+                touchFeelingButton.classList.add('btn-primary')
+                touchFeelingButton.classList.remove('btn-secondary')
+                touchFeelingButton.innerText = 'thích'
+
+                totalFeelings--
+                document.querySelector("#totalFeelings").innerText = totalFeelings
+            }
+        }
+    })
+</script>
