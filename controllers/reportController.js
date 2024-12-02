@@ -84,7 +84,12 @@ controller.showDetails = async (req, res) => {
                 include: [
                     { model: models.User }
                 ]
-            }, {
+            },
+            {
+                model: models.CampaignImage,
+                as: 'firstImage'
+            },
+            {
                 model: models.Review,
                 include: models.User,
                 separate: true,
