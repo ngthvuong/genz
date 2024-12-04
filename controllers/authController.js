@@ -3,7 +3,7 @@
 const errors = require("../services/responseErrors")
 const OTPService = require('../services/OTPService')
 const models = require('../models')
-const { steps, fullPhoneWithoutPrefix, hashPassword, comparePassword } = require('../services/authService')
+const { steps, hashPassword, comparePassword } = require('../services/authService')
 
 
 const controller = {}
