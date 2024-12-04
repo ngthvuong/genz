@@ -296,7 +296,10 @@ controller.showContributions = async (req, res) => {
     const campaignID = req.params.campaignID
     const campaign = await models.Campaign.findOne({
         where: {
-            id: campaignID
+            id: campaignID,
+            status: {
+                [Op.notIn]: ["Planning", "Finished"]
+            }
         },
         include: [
             {
@@ -320,7 +323,10 @@ controller.showDistributions = async (req, res) => {
     const campaignID = req.params.campaignID
     const campaign = await models.Campaign.findOne({
         where: {
-            id: campaignID
+            id: campaignID,
+            status: {
+                [Op.notIn]: ["Planning", "Finished"]
+            }
         },
         include: [
             {
@@ -347,7 +353,9 @@ controller.loadContributions = async (req, res) => {
             attributes: ["id"],
             where: {
                 id: campaignID,
-                status: { [Op.ne]: "Planning" }
+                status: {
+                    [Op.notIn]: ["Planning", "Finished"]
+                }
             }
         })
         if (!checkCampaign) {
@@ -383,7 +391,9 @@ controller.loadDistributions = async (req, res) => {
             attributes: ["id"],
             where: {
                 id: campaignID,
-                status: { [Op.ne]: "Planning" }
+                status: {
+                    [Op.notIn]: ["Planning", "Finished"]
+                }
             }
         })
         if (!checkCampaign) {
@@ -415,7 +425,10 @@ controller.showCreateContribution = async (req, res) => {
     const campaignID = req.params.campaignID
     const campaign = await models.Campaign.findOne({
         where: {
-            id: campaignID
+            id: campaignID,
+            status: {
+                [Op.notIn]: ["Planning", "Finished"]
+            }
         },
         include: [
             {
@@ -437,7 +450,10 @@ controller.showCreateDistribution = async (req, res) => {
     const campaignID = req.params.campaignID
     const campaign = await models.Campaign.findOne({
         where: {
-            id: campaignID
+            id: campaignID,
+            status: {
+                [Op.notIn]: ["Planning", "Finished"]
+            }
         },
         include: [
             {
@@ -463,7 +479,10 @@ controller.createContribution = async (req, res) => {
         const { sender, amount, message } = req.body
         const campaign = await models.Campaign.findOne({
             where: {
-                id: campaignID
+                id: campaignID,
+                status: {
+                    [Op.notIn]: ["Planning", "Finished"]
+                }
             },
             include: [
                 {
@@ -522,7 +541,10 @@ controller.createDistribution = async (req, res) => {
         const { receiver, amount, message } = req.body
         const campaign = await models.Campaign.findOne({
             where: {
-                id: campaignID
+                id: campaignID,
+                status: {
+                    [Op.notIn]: ["Planning", "Finished"]
+                }
             },
             include: [
                 {
@@ -589,7 +611,10 @@ controller.showEditContribution = async (req, res) => {
                 model: models.Campaign,
                 require: true,
                 where: {
-                    id: campaignID
+                    id: campaignID,
+                    status: {
+                        [Op.notIn]: ["Planning", "Finished"]
+                    }
                 },
                 include: [
                     {
@@ -609,7 +634,6 @@ controller.showEditContribution = async (req, res) => {
     return res.render("campaign/contribution/edit", { contribution })
 }
 controller.showEditDistribution = async (req, res) => {
-    console.log("hihi")
     const userID = res.locals.user.id
 
     const campaignID = req.params.campaignID
@@ -625,7 +649,10 @@ controller.showEditDistribution = async (req, res) => {
                 model: models.Campaign,
                 require: true,
                 where: {
-                    id: campaignID
+                    id: campaignID,
+                    status: {
+                        [Op.notIn]: ["Planning", "Finished"]
+                    }
                 },
                 include: [
                     {
@@ -654,7 +681,10 @@ controller.editContribution = async (req, res) => {
         const { sender, amount, message } = req.body
         const campaign = await models.Campaign.findOne({
             where: {
-                id: campaignID
+                id: campaignID,
+                status: {
+                    [Op.notIn]: ["Planning", "Finished"]
+                }
             },
             include: [
                 {
@@ -713,7 +743,10 @@ controller.editDistribution = async (req, res) => {
 
         const campaign = await models.Campaign.findOne({
             where: {
-                id: campaignID
+                id: campaignID,
+                status: {
+                    [Op.notIn]: ["Planning", "Finished"]
+                }
             },
             include: [
                 {
