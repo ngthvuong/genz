@@ -3,7 +3,7 @@
 const Nexmo = require("../../../thirdParties/OTPSMS")
 
 const mobileOTP = {}
-const { fullPhoneWithoutPrefix } = require('../services/authService')
+const { fullPhoneWithoutPrefix } = require('../../../services/authService')
 
 
 mobileOTP.sendOTP = async (user) => {
