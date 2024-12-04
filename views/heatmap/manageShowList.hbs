@@ -1,0 +1,114 @@
+<div>
+    <div class="container-fluid pt-4 px-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Quản Lý Bản Đồ Nhiệt</h4>
+            <a href="/heatmap/manage/create" class="btn btn-success">Tạo Mới Bản Đồ Nhiệt</a>
+        </div>
+    </div>
+    <div class="px-4 table-responsive mt-5 d-flex align-items-center justify-content-between flex-wrap">
+        <span class="fw-bold text-dark fs-4">Bảng Danh Sách</span>
+    </div>
+    <div class="px-4 table-responsive">
+        {{#if heatMaps.length}}
+        <table class="table">
+            <thead>
+                <tr class="align-middle">
+                    <th scope="col" class="w-20" style="width: 70%;">Tên</th>
+                    <th scope="col" class="w-10" style="width: 15%;">Trạng Thái</th>
+                    <th scope="col" class="w-15" style="width: 15%;">Lệnh</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each heatMaps}}
+                <tr class="align-middle" id="heatmapItemRow_{{id}}">
+                    <td>{{name}}</td>
+                    <td class="{{status}}_status_color">{{convertHeatMapStatus status}}</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" href="/heatmap/manage/edit/{{id}}">Sửa</a>
+                        <button class="btn btn-sm btn-danger" type="button"
+                            onclick="showDeletePopup({{id}})">Xóa</button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <div class="row m-3">
+            <nav aria-label="Page navigation example" id="pagination">
+                {{{
+                createPagination pagination paginationClass="pagination justify-content-center"
+                leftText="Previous" rightText="Next"
+                }}}
+            </nav>
+        </div>
+        {{else}}
+        <div class="col-12 my-4 px-0">
+            Không có bản đồ nhiệt nào phù hợp!
+        </div>
+        {{/if}}
+    </div>
+</div>
+
+<div class="modal fade" id="deleteHeatMapModal" tabindex="-1" aria-labelledby="deleteHeatMapModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteHeatMapModalLabel">Xóa Chiến Dịch</h5>
+            </div>
+            <div class="modal-body" id="deleteHeatMapBody">
+                Bạn có chắc chắn muốn xóa bản đồ này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="deleteHeatMapButton"
+                    onclick="deleteHeatMap(event)">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="deleteResult" class="toast align-items-center position-fixed bottom-0 end-0" role="alert" aria-live="assertive"
+    aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body" id="deleteResultToastBody">
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+<script>
+    const showDeletePopup = (id) => {
+        const deleteModal = new bootstrap.Modal(document.getElementById("deleteHeatMapModal"))
+        deleteModal.show()
+
+        const deleteHeatMapButton = document.getElementById("deleteHeatMapButton")
+        const deleteHeatMapBody = document.getElementById("deleteHeatMapBody")
+
+        deleteHeatMapButton.setAttribute("data-id", id)
+    }
+    
+    const deleteHeatMap = (event) => {
+        const id = event.target.dataset.id
+        fetch(`/heatmap/manage/delete/${id}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                if (data.errors) {
+                    document.querySelector("#deleteResultToastBody").innerHTML = `<span class="text-danger">Có lỗi sảy ra, vui lòng thử lại!</span>`
+                } else {
+                    document.getElementById(`heatmapItemRow_${id}`)?.remove()
+                    document.querySelector("#deleteResultToastBody").innerHTML = `<span class="text-success">Đã xóa thành công!</span>`
+                }
+                const modalElement = document.getElementById("deleteHeatMapModal")
+                const deleteModal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement)
+                deleteModal.hide()
+                const toastDom = document.querySelector("#deleteResult")
+                const toast = new bootstrap.Toast(toastDom)
+                toast.show()
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    }
+</script>

@@ -1,82 +1,94 @@
 {
     "admin": {
         "report": {
-            "rating" : false
+            "rating": false
         },
         "user": {
             "verifyLicense": true
         },
         "campaign": {
-            "all" : false
+            "all": false
         },
         "donate": {
-            "all" : false
+            "all": false
         },
         "news": {
             "create": false
         },
         "transaction": {
-            "all" : false
+            "all": false
+        },
+        "heatmap": {
+            "config": true
         }
     },
     "donor": {
         "report": {
-            "rating" : true
+            "rating": true
         },
         "user": {
             "verifyLicense": false
         },
         "campaign": {
-            "all" : false
+            "all": false
         },
         "donate": {
-            "all" : true
+            "all": true
         },
         "news": {
             "create": false
         },
         "transaction": {
-            "all" : false
+            "all": false
+        },
+        "heatmap": {
+            "config": false
         }
     },
     "charity": {
         "report": {
-            "rating" : false
+            "rating": false
         },
         "user": {
             "verifyLicense": false
         },
         "campaign": {
-            "all" : true
+            "all": true
         },
         "donate": {
-            "all" : false
+            "all": false
         },
         "news": {
             "create": true
         },
         "transaction": {
-            "all" : true
+            "all": true
+        },
+        "heatmap": {
+            "config": false
         }
     },
     "recipient": {
         "report": {
-            "rating" : true
+            "rating": true
         },
         "user": {
             "verifyLicense": false
         },
         "campaign": {
-            "all" : false
+            "all": false
         },
         "donate": {
-            "all" : false
+            "all": false
         },
         "news": {
             "create": false
         },
         "transaction": {
-            "all" : false
+            "all": false
+        },
+        "heatmap": {
+            "config": false
         }
     }
 }

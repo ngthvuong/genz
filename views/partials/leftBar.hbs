@@ -14,4 +14,9 @@
     {{#if user.permission.donate.all}}
     <a href="/transaction" class="nav-item nav-link"><i class="fa fa-gift me-2"></i>Lịch Sử Đóng Góp</a>
     {{/if}}
+
+    {{#if user.permission.heatmap.config}}
+    <a href="/heatmap/manage/list" class="nav-item nav-link"><i class="fa fa-gift me-2"></i>Quản Lý Bản Đồ Nhiệt</a>
+    {{/if}}
 </div>
+{{>heatmap}}

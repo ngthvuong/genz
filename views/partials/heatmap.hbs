@@ -1,27 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Azure Maps Heatmap - Priority by Color</title>
-    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
-    <link href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css" rel="stylesheet" />
-    <style>
-        #map-container {
-            width: 100%;
-            height: 400px;
-        }
-    </style>
-</head>
-
-<body>
+<div class="map-container d-none">
     <div id="map-container"></div>
-    <script>
-        const heatMapData = JSON.parse('{{{heatMapData}}}')
-        console.log(heatMapData)
+    <button type="button" onClick="expandMap(event)" class="touchSizeMap btn btn-secondary btn-sm"><i
+            class="bi bi-arrows-fullscreen"></i></button>
+</div>
+<script>
+    const heatMapData = JSON.parse('{{{heatMapData}}}')
+    let map
+    if (heatMapData) {
+        document.querySelector(".map-container")?.classList.remove("d-none")
 
-        const map = new atlas.Map('map-container', {
+        map = new atlas.Map('map-container', {
             center: [
                 heatMapData.centerCoordinate.longitude,
                 heatMapData.centerCoordinate.latitude
@@ -31,7 +19,7 @@
                 authType: 'subscriptionKey',
                 subscriptionKey: '9CK5vUwgBEPIqMa2ReEXCeYlWGSkZEZ1wdWHtlZd9UHj8aUtVAwWJQQJ99AKACYeBjFx5reYAAAgAZMP1zkp'
             }
-        });
+        })
 
         const features = heatMapData.points.map(point => {
             return {
@@ -63,7 +51,21 @@
             });
             map.layers.add(heatmapLayer);
         });
-    </script>
-</body>
+    }
+    const expandMap = (event) => {
+        const mapContainer = event.target.closest(".map-container")
+        if (mapContainer) {
+            if (!mapContainer.classList.contains("expand")) {
+                mapContainer.classList.add("expand")
+                event.target.closest(".touchSizeMap").innerHTML = `<i class="bi bi-arrows-angle-contract"></i>`
+            } else {
+                mapContainer.classList.remove("expand")
+                event.target.closest(".touchSizeMap").innerHTML = `<i class="bi bi-arrows-fullscreen"></i>`
+            }
 
-</html>
+            if (map) {
+                map.resize()
+            }
+        }
+    }
+</script>

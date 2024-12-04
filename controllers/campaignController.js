@@ -2,7 +2,7 @@
 const errors = require("../services/responseErrors")
 const campaignStore = require("../storage/campaignStore")
 const models = require("../models")
-const { Op, where } = require('sequelize')
+const { Op } = require('sequelize')
 
 const controller = {}
 

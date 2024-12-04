@@ -11,6 +11,8 @@ const newsFeedRouter = require('./newsFeedRouter')
 const charityVerificationRouter = require('./charityVerificationRouter')
 const charityListRouter = require('./charityListRouter')
 const transactionRouter = require('./transactionRouter')
+const heatMapRouter = require('./heatMapRouter')
+
 const commonMiddleware = require('../middlewares/commonMiddleware')
 
 const router = express.Router()
@@ -26,5 +28,7 @@ router.use('/test', testRouter)
 router.use('/', homeRouter)
 router.use('/charity-verification', charityVerificationRouter)
 router.use('/charity', charityListRouter)
+router.use('/heatmap', heatMapRouter)
+
 
 module.exports = router

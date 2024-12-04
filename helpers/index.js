@@ -86,6 +86,14 @@ handlebars.registerHelper('convertCampaignStatus', function (role) {
     return VNRole
 })
 
+handlebars.registerHelper('convertHeatMapStatus', function (role) {
+    let VNRole = "Đã Tắt"
+    if (role == "enable") {
+        VNRole = "Đang Mở"
+    }
+    return VNRole
+})
+
 handlebars.registerHelper('createStarList', function (stars) {
     let str = '<div class="rating d-flex justify-content-center">'
 
@@ -132,5 +140,6 @@ module.exports = {
     eq: handlebars.helpers.eq,
     neq: handlebars.helpers.neq,
     parseInt: handlebars.helpers.parseInt,
+    convertHeatMapStatus: handlebars.helpers.convertHeatMapStatus,
 
 }

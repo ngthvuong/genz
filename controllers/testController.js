@@ -4,14 +4,12 @@ const payment = require("../services/payment")
 const OTPService = require("../services/OTPService")
 
 const models = require("../models")
-const { password } = require("pg/lib/defaults")
 
 
 const controller = {}
 
 controller.transfer = async (req, res) => {
     const charity = await models.Charity.findOne();
-    console.log(charity)
     const transaction = await payment.transfer("1111" + Date.now(), charity, 'MASTERCARD', {
         appUser: '0909976102',
         amount: '111111',
@@ -82,7 +80,29 @@ controller.eventRollback = async (req, res) => {
 
 }
 controller.heatmap = async (req, res) => {
-    res.render("test/heatmap")
+    const heatMap = await models.HeatMap.findOne({
+        where: {
+            status: 'enable'
+        },
+        include: [
+            {
+                model: models.HeatMapProvince,
+                include: [
+                    {
+                        model: models.Province,
+                    }
+                ]
+            }
+        ],
+        order: [['createdAt', 'desc']]
+    })
+
+    const heatMapService = require("../services/heatMapService")
+    const heatMapData = heatMapService.buildData(heatMap)
+
+    res.render("test/heatmap", { 
+        heatMapData : JSON.stringify(heatMapData)
+    })
 }
 
 controller.permission = async (req, res) => {

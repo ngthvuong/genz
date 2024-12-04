@@ -1,0 +1,85 @@
+<form class="px-4" onSubmit="submitCreateHeatMap(event)" id="heatMapForm">
+    <div class="container-fluid pt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Thêm Mới Bản Đồ Nhiệt</h4>
+            <div>
+                <button type="submit" class="btn btn-primary">Thêm</button>
+                <a href="/heatmap/manage/list" class="btn btn-secondary">Trở Về Trang Danh Sách</a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid pt-4">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Tên bản đồ nhiệt">
+            <label for="name">Tên</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="unit" name="unit" placeholder="Đơn vị t">
+            <label for="unit">Đơn Vị Tính</label>
+        </div>
+        <div class="form-floating mb-3">
+            <h5>Danh Sách Tỉnh - Thành Phố</h5>
+        </div>
+        {{#each provinces}}
+        <div class="row mb-3">
+            <input type="hidden" name="heatmap[code][]" value="{{code}}">
+            <label for="heatMapForm_province_data_{{code}}" class="col-sm-2 col-form-label">{{name}}</label>
+            <div class="col-12 col-md-10">
+                <input type="number" class="form-control" id="heatMapForm_province_data_{{code}}"
+                    name="heatmap[value][]" placeholder="nhập giá trị...">
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</form>
+<script>
+    const submitCreateHeatMap = (event) => {
+        event.preventDefault();
+
+        let formErrors = document.getElementById('formErrors')
+        if (formErrors) {
+            formErrors.remove()
+        }
+
+        const formData = new FormData(event.target)
+        const data = {
+            name: formData.get('name'),
+            unit: formData.get('unit'),
+            heatmap: {
+                code: formData.getAll('heatmap[code][]'),
+                value: formData.getAll('heatmap[value][]'),
+            },
+        }
+
+        fetch('/heatmap/manage/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(result => {
+                if (result.errors) {
+
+                    let messages = ''
+                    result.errors.forEach(error => {
+                        messages += `<p>${error.msg}</p>`
+                    })
+                    formErrors = document.createElement('div')
+                    formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                    formErrors.id = "formErrors"
+                    formErrors.innerHTML = messages
+                    document.getElementById('heatMapForm').prepend(formErrors);
+
+                } else {
+                    window.location.href = result.nextUrl
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
+    }
+</script>
