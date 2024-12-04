@@ -10,7 +10,8 @@
     "username": "genz",
     "password": "!@34qwER",
     "database": "genz",
-    "host": "127.0.0.1",
+    "host": "45.251.114.223",
+    "port": "5432",
     "dialect": "postgres"
   },
   "production": {
