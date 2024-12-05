@@ -8,17 +8,6 @@ const errors = require("../services/responseErrors")
 
 const controller = {}
 
-controller.show = async (req, res) => {
-
-
-    const campaign = await models.Campaign.findOne({ where: { id: campaignID } })
-    if (!campaign) {
-        throw new Error("Chiến dịch không tồn tại!")
-    }
-
-    res.render('home')
-}
-
 controller.create = async (req, res) => {
     try {
         const { campaignID, content, title } = req.body
@@ -44,7 +33,7 @@ controller.create = async (req, res) => {
         const imagePath = newsFeedImage.path
 
 
-        const NewsFeed = await models.NewsFeed.create({
+        const newsFeed = await models.NewsFeed.create({
             title,
             content,
             campaignID,
@@ -53,12 +42,35 @@ controller.create = async (req, res) => {
             authorID: userID
         })
 
+        const newNewsFeed = await models.NewsFeed.findOne({
+            where: {
+                id: newsFeed.id
+            },
+            include: [
+                {
+                    model: models.NewsFeedComment,
+                    separate: true,
+                    order: [['createdAt', 'desc']],
+                    include: {
+                        model: models.User
+                    }
+                },
+                {
+                    model: models.NewsFeedFeeling,
+                    include: {
+                        model: models.User
+                    }
+                }
+            ]
+        })
+
+
         const NewsFeedCreatedEvent = require("../websocket/events/newsFeedCreateEvent")
         await new NewsFeedCreatedEvent({
-            newNewsFeed: NewsFeed.toJSON()
+            newNewsFeed: newNewsFeed.toJSON()
         }).dispatch()
 
-        return res.json(NewsFeed)
+        return res.json(newsFeed)
     } catch (error) {
         console.error(error)
         errors.add({ msg: error.message })
