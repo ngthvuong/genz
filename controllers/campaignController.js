@@ -3,6 +3,7 @@ const errors = require("../services/responseErrors")
 const campaignStore = require("../storage/campaignStore")
 const models = require("../models")
 const { Op } = require('sequelize')
+const moment = require("moment")
 
 const controller = {}
 
@@ -86,7 +87,17 @@ controller.createCampaign = async (req, res) => {
     try {
         // Lấy dữ liệu từ form
         const { campaignName, campaignLocation, campaignStartDate, campaignEndDate, campaignGoal, campaignBudget,
-            campaignDescription, campaignStatus } = req.body
+            campaignDescription } = req.body
+
+        const today = moment().tz(process.env.TIME_ZONE).startOf("day")
+        const startDate = moment(campaignStartDate, 'YYYY-MM-DD').tz(process.env.TIME_ZONE)
+        const endDate = moment(campaignEndDate, 'YYYY-MM-DD').tz(process.env.TIME_ZONE)
+        if (startDate.isBefore(today)) {
+            throw new Error("Ngày bắt đầu không được nhỏ hơn ngày hiện tại!")
+        }
+        if (!endDate.isAfter(startDate)) {
+            throw new Error("Ngày kết thúc phải lớn hơn ngày bắt đầu!")
+        }
 
         const charity = await models.Charity.findOne({
             where: {
@@ -120,7 +131,7 @@ controller.createCampaign = async (req, res) => {
             budget: campaignBudget,
             description: campaignDescription,
             location: campaignLocation,
-            status: campaignStatus,
+            status: 'Planning',
             charityID: charity.id
         })
         const campaignImage = await campaignStore.saveFile(req)
@@ -169,10 +180,11 @@ controller.showEdit = async (req, res) => {
     }
     return res.render('campaign/edit', { campaign })
 }
+
 controller.editCampaign = async (req, res) => {
     try {
         const { campaignName, campaignLocation, campaignStartDate, campaignEndDate, campaignGoal, campaignBudget,
-            campaignDescription, campaignStatus } = req.body
+            campaignDescription } = req.body
 
         const id = req.params.id
 
@@ -202,22 +214,47 @@ controller.editCampaign = async (req, res) => {
             where: {
                 id,
                 status: {
-                    [Op.ne]: "Finished"
-                }
+                    [Op.notIn]: ["Closed", "Finished"]
+                },
+                charityID: charity.id,
             }
         })
         if (!updatedCampaign) {
             throw new Error("Chiến dịch không tồn tại")
         }
 
-        updatedCampaign.name = campaignName
-        updatedCampaign.startDate = campaignStartDate
-        updatedCampaign.endDate = campaignEndDate
-        updatedCampaign.goal = campaignGoal
-        updatedCampaign.budget = campaignBudget
-        updatedCampaign.description = campaignDescription
-        updatedCampaign.location = campaignLocation
-        updatedCampaign.status = campaignStatus
+        if (updatedCampaign.status == 'Planning') {
+            const today = moment().tz(process.env.TIME_ZONE).startOf("day")
+            const startDate = moment(campaignStartDate, 'YYYY-MM-DD').tz(process.env.TIME_ZONE)
+            const endDate = moment(campaignEndDate, 'YYYY-MM-DD').tz(process.env.TIME_ZONE)
+            if (startDate.isBefore(today)) {
+                throw new Error("Ngày bắt đầu không được nhỏ hơn ngày hiện tại!")
+            }
+            if (!endDate.isAfter(startDate)) {
+                throw new Error("Ngày kết thúc phải lớn hơn ngày bắt đầu!")
+            }
+            updatedCampaign.name = campaignName
+            updatedCampaign.startDate = campaignStartDate
+            updatedCampaign.endDate = campaignEndDate
+            updatedCampaign.goal = campaignGoal
+            updatedCampaign.budget = campaignBudget
+            updatedCampaign.description = campaignDescription
+            updatedCampaign.location = campaignLocation
+        }
+        if (updatedCampaign.status == 'Running') {
+            const today = moment().tz(process.env.TIME_ZONE).startOf("day")
+            const endDate = moment(campaignEndDate, 'YYYY-MM-DD').tz(process.env.TIME_ZONE)
+            if (!endDate.isAfter(today)) {
+                throw new Error("Ngày kết thúc phải lớn hơn ngày hiện tại!")
+            }
+            updatedCampaign.name = campaignName
+            updatedCampaign.endDate = campaignEndDate
+            updatedCampaign.goal = campaignGoal
+            updatedCampaign.budget = campaignBudget
+            updatedCampaign.description = campaignDescription
+            updatedCampaign.location = campaignLocation
+        }
+
         await updatedCampaign.save()
 
         if (req.file) {
@@ -245,6 +282,42 @@ controller.editCampaign = async (req, res) => {
         return res.json(errors.get())
     }
 }
+controller.changeCampaignFinishedStatus = async (req, res) => {
+    try {
+        const id = req.params.id
+
+        const charity = await models.Charity.findOne({
+            where: {
+                userID: res.locals.user.id
+            }
+        })
+        if (!charity) {
+            throw new Error("Bạn không phải là một người dùng tổ chức từ thiện")
+        }
+
+        const updatedCampaign = await models.Campaign.findOne({
+            where: {
+                id,
+                status: "Closed",
+                charityID: charity.id,
+            }
+        })
+        if (!updatedCampaign) {
+            throw new Error("Chiến dịch không tồn tại")
+        }
+
+        updatedCampaign.status = "Finished"
+
+        await updatedCampaign.save()
+
+        return res.json({
+            redirectURL: '/campaign'
+        })
+    } catch (error) {
+        errors.add({ msg: error.message })
+        return res.json(errors.get())
+    }
+}
 
 controller.deleteCampaign = async (req, res) => {
     try {
@@ -263,8 +336,9 @@ controller.deleteCampaign = async (req, res) => {
             where: {
                 id,
                 status: {
-                    [Op.eq]: "Planning"
+                    [Op.eq]: "Planning",
                 },
+                charityID: charity.id,
             },
             include: [
                 {

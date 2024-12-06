@@ -9,10 +9,6 @@ const validation = handle([
     body('campaignLocation')
         .trim()
         .notEmpty().withMessage("Địa điểm là bắt buộc!"),
-    body('campaignStartDate')
-        .trim()
-        .notEmpty().withMessage("Ngày bắt đầu là bắt buộc!")
-        .isISO8601().withMessage("Ngày bắt đầu không hợp lệ!"),
     body('campaignEndDate')
         .trim()
         .notEmpty().withMessage("Ngày kết thúc là bắt buộc!")
@@ -26,9 +22,5 @@ const validation = handle([
     body('campaignDescription')
         .trim()
         .notEmpty().withMessage("Mô tả là bắt buộc!"),
-    body('campaignStatus')
-        .trim()
-        .notEmpty().withMessage("Trạng thái là bắt buộc!"),
-
 ])
 module.exports = validation

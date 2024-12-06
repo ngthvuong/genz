@@ -34,6 +34,8 @@ router.post('/edit/:id',
     controller.editCampaign
 )
 router.delete('/delete/:id', controller.deleteCampaign)
+router.post('/finished/:id', controller.changeCampaignFinishedStatus)
+
 
 router.get('/:campaignID/contributions', controller.showContributions)
 router.get('/:campaignID/distributions', controller.showDistributions)

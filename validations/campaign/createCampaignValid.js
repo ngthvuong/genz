@@ -25,10 +25,7 @@ const validation = handle([
         .notEmpty().withMessage("Ngân sách là bắt buộc!"),
     body('campaignDescription')
         .trim()
-        .notEmpty().withMessage("Mô tả là bắt buộc!"),
-    body('campaignStatus')
-        .trim()
-        .notEmpty().withMessage("Trạng thái là bắt buộc!"),
+        .notEmpty().withMessage("Mô tả là bắt buộc!")
 
 ])
 module.exports = validation

@@ -82,39 +82,14 @@
                             placeholder="Nhập mô tả chiến dịch">{{description}}</textarea>
                     </div>
                 </div>
-                <fieldset class="row mb-3">
-                    <legend class="col-form-label col-sm-2 pt-0">Trạng thái chiến dịch</legend>
+                <div class="row mb-3">
+                    <legend class="col-form-label col-sm-2 pt-0">Trạng thái</legend>
                     <div class="col-12 col-md-10">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios1"
-                                value="Planning" checked="">
-                            <label class="form-check-label" for="gridRadios1">
-                                Planning
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios2"
-                                value="Running">
-                            <label class="form-check-label" for="gridRadios2">
-                                Running
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios3"
-                                value="Finished">
-                            <label class="form-check-label" for="gridRadios3">
-                                Finished
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios4"
-                                value="Closed">
-                            <label class="form-check-label" for="gridRadios4">
-                                Closed
-                            </label>
+                        <div class="{{status}}_status_color fw-bold">
+                            {{campaignStatusText status}}
                         </div>
                     </div>
-                </fieldset>
+                </div>
                 <div class="row col-12 mt-4 align-items-end">
                     {{#if firstImage}}
                     <div class="col-2">
@@ -124,12 +99,14 @@
 
                     <div class="col-10">
                         <label for="formFile" class="form-label">Tải lên hình ảnh chiến dịch</label>
-                        <input class="form-control" type="file" id="formFile" name="campaignPicture">
+                        <input class="form-control" type="file" id="inputCampaignPicture" name="campaignPicture">
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                    <button type="submit" id="submitEditCampaignForm" class="btn btn-primary">Cập Nhật</button>
+                    <button type="button" id="submitFinishedCampaign" class="btn btn-primary">Đóng Chiến Dịch</button>
+
                     <a class="btn btn-secondary ms-1" href="/campaign">Trở về danh sách</a>
                 </div>
             </form>
@@ -138,16 +115,29 @@
 </div>
 
 <script>
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('inputCampaignStartDate').setAttribute('min', today);
-    document.getElementById('inputCampaignEndDate').setAttribute('min', today);
 
-    document.querySelector(`#editCampaignForm .form-check-input[value="{{status}}"]`).checked = true
-</script>
-<script>
+    const status = '{{status}}'
+    if (status != 'Planning') {
+        document.querySelector("#inputCampaignStartDate").disabled = true
+    }
+    if (status != 'Planning' && status != 'Running') {
+        document.querySelector("#inputCampaignName").disabled = true
+        document.querySelector("#inputCampaignLocation").disabled = true
+        document.querySelector("#inputCampaignEndDate").disabled = true
+        document.querySelector("#inputCampaignGoal").disabled = true
+        document.querySelector("#inputCampaignBudget").disabled = true
+        document.querySelector("#inputCampaignDescription").disabled = true
+        document.querySelector("#inputCampaignPicture").disabled = true
+        document.querySelector("#submitEditCampaignForm").disabled = true
+        document.querySelector("#submitEditCampaignForm").remove()
+    }
+    if (status != 'Closed') {
+        document.querySelector("#submitFinishedCampaign").remove()
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('editCampaignForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+            event.preventDefault()
 
             let formErrors = document.getElementById('formErrors')
             if (formErrors) {
@@ -156,11 +146,47 @@
 
             const formData = new FormData(this)
             const data = JSON.stringify(Object.fromEntries(formData.entries()));
-            console.log(data)
 
             fetch('/campaign/edit/{{id}}', {
                 method: 'POST',
                 body: formData
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.errors) {
+
+                        let messages = ''
+                        data.errors.forEach(error => {
+                            messages += `<p>${error.msg}</p>`
+                        })
+                        formErrors = document.createElement('div')
+                        formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                        formErrors.id = "formErrors"
+                        formErrors.innerHTML = messages
+                        document.getElementById('editCampaignForm').appendChild(formErrors);
+
+                    } else {
+                        window.location.href = data.redirectURL
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        })
+
+
+        document.getElementById('submitFinishedCampaign').addEventListener('click', function (event) {
+            event.preventDefault()
+
+            let formErrors = document.getElementById('formErrors')
+            if (formErrors) {
+                formErrors.remove()
+            }
+
+            fetch('/campaign/finished/{{id}}', {
+                method: 'POST'
             })
                 .then(response => {
                     return response.json()

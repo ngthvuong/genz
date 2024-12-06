@@ -58,39 +58,14 @@
                             placeholder="Nhập mô tả chiến dịch"></textarea>
                     </div>
                 </div>
-                <fieldset class="row mb-3">
-                    <legend class="col-form-label col-sm-2 pt-0">Trạng thái chiến dịch</legend>
+                <div class="row mb-3">
+                    <legend class="col-form-label col-sm-2 pt-0">Trạng thái</legend>
                     <div class="col-12 col-md-10">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios1"
-                                value="Planning" checked="">
-                            <label class="form-check-label" for="gridRadios1">
-                                Planning
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios2"
-                                value="Running">
-                            <label class="form-check-label" for="gridRadios2">
-                                Running
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios3"
-                                value="Finished">
-                            <label class="form-check-label" for="gridRadios3">
-                                Finished
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="campaignStatus" id="gridRadios4"
-                                value="Closed">
-                            <label class="form-check-label" for="gridRadios4">
-                                Closed
-                            </label>
+                        <div class="Planning_status_color fw-bold">
+                            {{campaignStatusText 'Planning'}}
                         </div>
                     </div>
-                </fieldset>
+                </div>
                 <div class="col-12 col-md-12 mb-3">
                     <label for="formFile" class="form-label">Tải lên hình ảnh chiến dịch</label>
                     <input class="form-control" type="file" id="formFile" name="campaignPicture">
@@ -105,15 +80,9 @@
 </div>
 
 <script>
-    // Lấy ngày hôm nay và gán vào thuộc tính 'min' của input
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('inputCampaignStartDate').setAttribute('min', today);
-    document.getElementById('inputCampaignEndDate').setAttribute('min', today);
-</script>
-<script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('createCampaignForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+            event.preventDefault()
 
             let formErrors = document.getElementById('formErrors')
             if (formErrors) {
@@ -121,7 +90,7 @@
             }
 
             const formData = new FormData(this)
-            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+            const data = JSON.stringify(Object.fromEntries(formData.entries()))
             console.log(data)
 
             fetch('/campaign/create', {
@@ -142,7 +111,7 @@
                         formErrors.classList = 'col md-12 alert alert-warning mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
-                        document.getElementById('createCampaignForm').appendChild(formErrors);
+                        document.getElementById('createCampaignForm').appendChild(formErrors)
 
                     } else {
                         window.location.href = data.redirectURL
