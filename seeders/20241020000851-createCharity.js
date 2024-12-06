@@ -19,7 +19,7 @@ module.exports = {
     })
     const charities = users.map(user => ({
       representative: "Anh Hoàng 2k",
-      establishedDate: new Date('2020-10-14 07:00:00'),
+      establishedDate: new Date('2024-10-14 00:00:00'),
       merchantAppID: '2554',
       merchantKey1: 'sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn',
       merchantKey2: 'trMrHtvjo6myautxDUiAcYsVtaeQ8nhf',

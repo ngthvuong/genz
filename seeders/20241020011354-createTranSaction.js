@@ -56,7 +56,7 @@ module.exports = {
         transactions.push(
           {
             amount: 1000000 * (Math.floor(Math.random() * 5) + 1),
-            madeAt: new Date("2020-10-14 07:00:00"),
+            madeAt: new Date("2024-10-14 00:00:00"),
             message: "dummy Message",
             sender: user.name,
             receiver: campaign.Charity.User.name,
@@ -73,7 +73,7 @@ module.exports = {
         transactions.push(
           {
             amount: 10000000 * (Math.floor(Math.random() * 5) + 1),
-            madeAt: new Date("2020-10-14 07:00:00"),
+            madeAt: new Date("2024-10-14 00:00:00"),
             message: "dummy Message",
             sender: campaign.Charity.User.name,
             receiver: "Xã A",

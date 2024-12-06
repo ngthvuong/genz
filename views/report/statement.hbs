@@ -240,7 +240,6 @@
         eventWS.registerListener('transactionCreatedContributionEvent', 'statementReport', (payload) => {
             const contribution = payload.newContribution
             if (contribution.campaignID == campaignID) {
-                console.log(contribution)
                 const tbody = contributionDom.querySelector("tbody")
                 const row = document.createElement("tr")
                 row.id = `transactionItem_${contribution.id}`

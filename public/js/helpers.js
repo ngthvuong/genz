@@ -3,11 +3,11 @@ const incrementedIndex = function (index) {
 }
 const dateFormat = function (date, format = "DD/MM/YYYY") {
     const formatDate = (typeof format === 'string') ? format : "DD/MM/YYYY"
-    return date ? moment(date).format(formatDate) : 'N/A'
+    return date ? moment(date).tz('Asia/Ho_Chi_Minh').format(formatDate) : 'N/A'
 }
 
 const dateTimeFormat = function (date) {
-    return date ? moment(date).format('DD/MM/YYYY H:mm:ss') : 'N/A'
+    return date ? moment(date).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY H:mm:ss') : 'N/A'
 }
 
 const formatAmount = function (amount) {
@@ -74,11 +74,18 @@ const createStarList = function (stars) {
 
     return str
 }
-const escapeHtml = function (unsafe) {
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;")
+const escapeHtml = function (str) {
+    return str.replace(/[&<>"'`=/]/g, function(match) {
+        switch (match) {
+            case '&': return '&amp;';
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '"': return '&quot;';
+            case "'": return '&#039;';
+            case '`': return '&#96;';
+            case '=': return '&#61;';
+            case '/': return '&#47;';
+            default: return match;
+        }
+    });
 }

@@ -25,7 +25,7 @@ const sessionMiddleware = session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        maxAge: 20 * 60 * 1000 // 20 minutes
+        maxAge: 120 * 60 * 1000 // 120 minutes
     }
 });
 app.use(sessionMiddleware)
@@ -75,6 +75,9 @@ app.use((err, req, res, next) => {
         message: 'Internal server error.'
     })
 })
+
+const schedule = require("./schedules")
+schedule.dispatch()
 
 const { setupWebSocket } = require('./websocket')
 setupWebSocket(app, sessionMiddleware, corsConfig)

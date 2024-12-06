@@ -6,10 +6,10 @@ handlebars.registerHelper('incrementedIndex', function (index) {
 })
 handlebars.registerHelper('dateFormat', function (date, format = "DD/MM/YYYY") {
     const formatDate = (typeof format === 'string') ? format : "DD/MM/YYYY"
-    return date ? moment(date).format(formatDate) : 'N/A'
+    return date ? moment(date).tz(process.env.TIME_ZONE).format(formatDate) : 'N/A'
 });
 handlebars.registerHelper('dateTimeFormat', function (date) {
-    return date ? moment(date).format('DD/MM/YYYY H:mm:ss') : 'N/A'
+    return date ? moment(date).tz(process.env.TIME_ZONE).format('DD/MM/YYYY H:mm:ss') : 'N/A'
 })
 
 handlebars.registerHelper('formatAmount', function (amount) {

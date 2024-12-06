@@ -1,6 +1,8 @@
 'use strict'
 
 const models = require("../models")
+const { Op } = require("sequelize")
+const moment = require("moment")
 const campaignService = {}
 
 campaignService.averageCharityRating = (charity) => {
@@ -11,10 +13,10 @@ campaignService.averageCharityRating = (charity) => {
         let sumCharityRating = 0;
 
         charity.Campaigns.forEach(campaign => {
-               campaignService.averageRatingItem (campaign)
-               sumCharityRating += campaign.averageRating
+            campaignService.averageRatingItem(campaign)
+            sumCharityRating += campaign.averageRating
         });
-        charity.averageCharityRating = sumCharityRating/numberCampaigns
+        charity.averageCharityRating = sumCharityRating / numberCampaigns
     }
     if (charity.averageCharityRating === null || isNaN(charity.averageCharityRating)) {
         charity.averageCharityRating = 0;
@@ -59,5 +61,37 @@ campaignService.calTotalParams = async (campaign) => {
     campaign.totalRemaining = campaign.totalContribution - campaign.totalDistribution
 }
 
+campaignService.updateStatus = async () => {
+    const today = moment().startOf('day').tz(process.env.TIME_ZONE).toISOString()
+    await models.Campaign.update(
+        {
+            status: "Running"
+        }
+        ,
+        {
+            where: {
+                status: "Planning",
+                startDate: {
+                    [Op.lte]: today
+                }
+            }
+        }
+    )
+
+    await models.Campaign.update(
+        {
+            status: "Closed"
+        }
+        ,
+        {
+            where: {
+                status: "Running",
+                endDate: {
+                    [Op.lt]: today
+                }
+            }
+        }
+    )
+}
 
 module.exports = campaignService

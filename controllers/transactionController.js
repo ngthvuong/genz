@@ -186,10 +186,6 @@ controller.callback = async (req, res) => {
                 transaction
             })
         } else {
-            await models.Transaction.update(
-                { status: "Failed" },
-                { where: { apptransid } }
-            )
             return res.render('transaction/failed', {
                 errorMessage: 'Thanh toán không thành công. Vui lòng thử lại sau.'
             })
