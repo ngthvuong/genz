@@ -18,14 +18,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 <script>
     document.getElementById('downloadPDF').addEventListener('click', function() {
-        const element = document.getElementById('invoiceContent');  
+        const element = document.getElementById('invoiceContent')  
         const options = {
             filename: `hoadon_{{apptransid}}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },  
             html2canvas: { scale: 4 }, 
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-        };
-        html2pdf().from(element).set(options).save();
-    });
+        }
+        html2pdf().from(element).set(options).save()
+    })
 </script>
 {{/with}}

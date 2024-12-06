@@ -168,8 +168,8 @@
                         document.getElementById('editProfileForm').appendChild(formErrors);
 
                     } else {
-                        document.getElementById("profileName").textContent = result.data.user.name
-                        document.getElementById("profileAddress").textContent = result.data.user.address
+                        document.getElementById("profileName").textContent = escapeHtml(result.data.user.name)
+                        document.getElementById("profileAddress").textContent = escapeHtml(result.data.user.address)
                         if (result.data.user.avatarPath) {
                             document.getElementById("profileAvatar").src = result.data.user.avatarPath
                         }

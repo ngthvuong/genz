@@ -70,7 +70,6 @@
     const deleteContribution = (event) => {
         const id = event.target.dataset.id
         const campaignID = event.target.dataset.campaignId
-        console.log(campaignID)
 
         fetch(`/campaign/${campaignID}/contributions/delete/${id}`, {
             method: 'DELETE',
@@ -112,9 +111,9 @@
             row.id = `contributionItemRow_${item.id}`
             row.innerHTML = `
                 <td class="text-center">${dateFormat(item.madeAt)}</td>
-                <td>${item.sender}</td>
-                <td class="text-end">${formatAmount(item.amount)}</td>
-                <td class="text-left">${item.message}</td>`
+                <td>${escapeHtml(item.sender)}</td>
+                <td class="text-end">${formatAmount(escapeHtml(item.amount))}</td>
+                <td class="text-left">${escapeHtml(item.message)}</td>`
             if (!item.donorID) {
                 row.innerHTML += `<td>
                     <a class="btn btn-sm btn-primary" href="/campaign/{{id}}/contributions/edit/${item.id}">Sửa</a>

@@ -55,7 +55,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('newsFeedForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+            event.preventDefault()
 
             let formErrors = document.getElementById('formErrors')
             if (formErrors) {
@@ -82,7 +82,7 @@
                         formErrors.classList = 'col md-12 alert alert-warning mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
-                        document.getElementById('newsFeedForm').appendChild(formErrors);
+                        document.getElementById('newsFeedForm').appendChild(formErrors)
 
                     } else {
                         const toastDom = document.querySelector("#reviewResult")

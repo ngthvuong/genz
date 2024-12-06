@@ -60,25 +60,25 @@
 </div>
 <script>
     function showTransferModal() {
-        const amount = document.getElementById("amount").value;
-        const message = document.getElementById("message").value;
-        const paymentMethodSelect = document.getElementById("paymentMethod");
-        const paymentMethod = paymentMethodSelect.options[paymentMethodSelect.selectedIndex].text;
+        const amount = document.getElementById("amount").value
+        const message = document.getElementById("message").value
+        const paymentMethodSelect = document.getElementById("paymentMethod")
+        const paymentMethod = paymentMethodSelect.options[paymentMethodSelect.selectedIndex].text
 
-        document.getElementById("confirmAmount").textContent = amount;
-        document.getElementById("confirmPaymentMethod").textContent = paymentMethod;
-        document.getElementById("confirmMessage").textContent = message;
+        document.getElementById("confirmAmount").textContent = amount
+        document.getElementById("confirmPaymentMethod").textContent = paymentMethod
+        document.getElementById("confirmMessage").textContent = message
 
 
-        const transferModal = new bootstrap.Modal(document.getElementById("transferModal"));
-        transferModal.show();
+        const transferModal = new bootstrap.Modal(document.getElementById("transferModal"))
+        transferModal.show()
 
     }
     function submitTransfer() {
-        resetFormErrors();
-        const form = document.getElementById("transferForm");
-        const formData = new FormData(form);
-        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+        resetFormErrors()
+        const form = document.getElementById("transferForm")
+        const formData = new FormData(form)
+        const data = JSON.stringify(Object.fromEntries(formData.entries()))
         fetch(`/transaction/transfer`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -86,34 +86,31 @@
         })
             .then(response => response.json())
             .then(result => {
-                console.log(result);
                 if (!result.errors) {
-                    window.location.href = result.redirectUrl;
+                    window.location.href = result.redirectUrl
                 } else {
-                    displayFormErrors(result.errors);
+                    displayFormErrors(result.errors)
 
                     const modalElement = document.querySelector("#transferModal")
-                    console.log(modalElement)
                     if (modalElement) {
                         const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement)
-                        console.log(modal)
                         modal.hide()
 
                     }
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => console.error('Error:', error))
     }
     function displayFormErrors(errors) {
-        let messages = '';
-        errors.forEach(error => { messages += `<p>${error.msg}</p>`; });
-        const formErrors = document.createElement('div');
-        formErrors.classList = 'alert alert-warning mt-3';
-        formErrors.innerHTML = messages;
-        document.getElementById('transferError').appendChild(formErrors);
+        let messages = ''
+        errors.forEach(error => { messages += `<p>${error.msg}</p>` })
+        const formErrors = document.createElement('div')
+        formErrors.classList = 'alert alert-warning mt-3'
+        formErrors.innerHTML = messages
+        document.getElementById('transferError').appendChild(formErrors)
     }
     function resetFormErrors(errors) {
-        document.getElementById('transferError').innerHTML = '';
+        document.getElementById('transferError').innerHTML = ''
     }
 
 </script>

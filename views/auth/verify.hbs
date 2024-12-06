@@ -74,7 +74,7 @@
                         formErrors.classList = 'col md-12 alert alert-warning mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
-                        document.getElementById('verifyForm').appendChild(formErrors);
+                        document.getElementById('verifyForm').appendChild(formErrors)
 
                     } else {
                         window.location.href = data.nextUrl
@@ -86,7 +86,7 @@
         })
 
         document.getElementById('resendOTPForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+            event.preventDefault()
 
             let formErrors = document.getElementById('formErrors')
             if (formErrors) {
@@ -116,7 +116,7 @@
                         formErrors.classList = 'col md-12 alert alert-warning mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
-                        document.getElementById('verifyForm').appendChild(formErrors);
+                        document.getElementById('verifyForm').appendChild(formErrors)
 
                     } else {
                         let messages = `<p>${data.message}</p>`
@@ -124,7 +124,7 @@
                         formErrors.classList = 'col md-12 alert alert-success mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
-                        document.getElementById('verifyForm').appendChild(formErrors);
+                        document.getElementById('verifyForm').appendChild(formErrors)
                     }
                 })
                 .catch(error => {

@@ -61,7 +61,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('registerForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+            event.preventDefault()
 
             let formErrors = document.getElementById('formErrors')
             if (formErrors) {
@@ -69,7 +69,7 @@
             }
 
             const formData = new FormData(this)
-            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+            const data = JSON.stringify(Object.fromEntries(formData.entries()))
 
             fetch('/auth/register', {
                 method: 'POST',

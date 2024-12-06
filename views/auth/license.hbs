@@ -58,7 +58,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('charityForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+            event.preventDefault()
 
             let formErrors = document.getElementById('formErrors')
             if (formErrors) {
@@ -85,7 +85,7 @@
                         formErrors.classList = 'col md-12 alert alert-warning mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
-                        document.getElementById('charityForm').appendChild(formErrors);
+                        document.getElementById('charityForm').appendChild(formErrors)
 
                     } else {
                         window.location.href = data.nextUrl

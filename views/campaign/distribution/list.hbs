@@ -110,9 +110,9 @@
             row.id = `distributionItemRow_${item.id}`
             row.innerHTML = `
                 <td class="text-center">${dateFormat(item.madeAt)}</td>
-                <td>${item.receiver}</td>
-                <td class="text-end">${formatAmount(item.amount)}</td>
-                <td class="text-left">${item.message}</td>`
+                <td>${escapeHtml(item.receiver)}</td>
+                <td class="text-end">${formatAmount(escapeHtml(item.amount))}</td>
+                <td class="text-left">${escapeHtml(item.message)}</td>`
             if (!item.donorID) {
                 row.innerHTML += `<td>
                     <a class="btn btn-sm btn-primary" href="/campaign/{{id}}/distributions/edit/${item.id}">Sửa</a>

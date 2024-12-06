@@ -28,7 +28,7 @@
         const userID = "{{ user.id }}"
         const formData = new FormData()
         formData.append('userID', userID)
-        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+        const data = JSON.stringify(Object.fromEntries(formData.entries()))
 
         fetch('/user/resetSession', {
             method: 'POST',
@@ -54,7 +54,7 @@
         const userID = "{{ user.id }}"
         const formData = new FormData()
         formData.append('userID', userID)
-        const data = JSON.stringify(Object.fromEntries(formData.entries()));
+        const data = JSON.stringify(Object.fromEntries(formData.entries()))
 
         fetch('/user/resetSession', {
             method: 'POST',

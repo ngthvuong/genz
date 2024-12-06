@@ -154,10 +154,10 @@
                             row.id = `transactionItem_${contribution.id}`
                             row.innerHTML = `
                                 <td>${dateFormat(contribution.madeAt)}</td>
-                                <td>${contribution.sender}</td>
-                                <td>${contribution.receiver}</td>
+                                <td>${escapeHtml(contribution.sender)}</td>
+                                <td>${escapeHtml(contribution.receiver)}</td>
                                 <td>${formatAmount(contribution.amount)}</td>
-                                <td>${contribution.message}</td>
+                                <td>${escapeHtml(contribution.message)}</td>
                             `
                             tbody.append(row)
                         })
@@ -213,10 +213,10 @@
 
                             row.innerHTML = `
                                 <td>${dateFormat(distribution.madeAt)}</td>
-                                <td>${distribution.sender}</td>
-                                <td>${distribution.receiver}</td>
+                                <td>${escapeHtml(distribution.sender)}</td>
+                                <td>${escapeHtml(distribution.receiver)}</td>
                                 <td>${formatAmount(distribution.amount)}</td>
-                                <td>${distribution.message}</td>
+                                <td>${escapeHtml(distribution.message)}</td>
                             `
                             tbody.append(row)
                         })
@@ -245,10 +245,10 @@
                 row.id = `transactionItem_${contribution.id}`
                 row.innerHTML = `
                                 <td>${dateFormat(contribution.madeAt)}</td>
-                                <td>${contribution.sender}</td>
-                                <td>${contribution.receiver}</td>
+                                <td>${escapeHtml(contribution.sender)}</td>
+                                <td>${escapeHtml(contribution.receiver)}</td>
                                 <td>${formatAmount(contribution.amount)}</td>
-                                <td>${contribution.message}</td>
+                                <td>${escapeHtml(contribution.message)}</td>
                             `
                 tbody.prepend(row)
                 contributionCount++
@@ -264,10 +264,10 @@
                 row.id = `transactionItem_${distribution.id}`
                 row.innerHTML = `
                                 <td>${dateFormat(distribution.madeAt)}</td>
-                                <td>${distribution.sender}</td>
-                                <td>${distribution.receiver}</td>
+                                <td>${escapeHtml(distribution.sender)}</td>
+                                <td>${escapeHtml(distribution.receiver)}</td>
                                 <td>${formatAmount(distribution.amount)}</td>
-                                <td>${distribution.message}</td>
+                                <td>${escapeHtml(distribution.message)}</td>
                             `
                 tbody.prepend(row)
                 distributionCount++
@@ -282,21 +282,20 @@
                 if (targetedTransactionDom) {
                     targetedTransactionDom.innerHTML = `
                         <td>${dateFormat(contribution.madeAt)}</td>
-                        <td>${contribution.sender}</td>
-                        <td>${contribution.receiver}</td>
+                        <td>${escapeHtml(contribution.sender)}</td>
+                        <td>${escapeHtml(contribution.receiver)}</td>
                         <td>${formatAmount(contribution.amount)}</td>
-                        <td>${contribution.message}</td>
+                        <td>${escapeHtml(contribution.message)}</td>
                     `
                 }
             }
         })
 
         eventWS.registerListener('transactionModifiedDistributionEvent', 'statementReport', (payload) => {
-            console.log(payload)
             const distribution = payload.distribution
             if (distribution.campaignID == campaignID) {
                 const targetedTransactionDom = document.getElementById(`transactionItem_${distribution.id}`)
-                if(targetedTransactionDom){
+                if (targetedTransactionDom) {
                     targetedTransactionDom.innerHTML = `
                         <td>${dateFormat(distribution.madeAt)}</td>
                         <td>${distribution.sender}</td>

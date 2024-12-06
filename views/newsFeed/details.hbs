@@ -138,8 +138,8 @@
                 <img class="w-100 px-1" src="${newComment.User.avatarPath}" onerror="this.src='/img/logo.svg';" />
             </div>
             <div class="rows col-11">
-                <div class="fw-bold text-dark">${newComment.User.name}</div>
-                <div>${newComment.content.replace(/\n/g, "<br>")}</div>
+                <div class="fw-bold text-dark">${escapeHtml(newComment.User.name)}</div>
+                <div>${escapeHtml(newComment).content.replace(/\n/g, "<br>")}</div>
             </div>
         `
             document.querySelector("#commentContainer").prepend(newCommentDom)

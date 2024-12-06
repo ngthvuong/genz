@@ -37,7 +37,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('loginForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+            event.preventDefault()
 
             let formErrors = document.getElementById('formErrors')
             if (formErrors) {
@@ -45,7 +45,7 @@
             }
 
             const formData = new FormData(this)
-            const data = JSON.stringify(Object.fromEntries(formData.entries()));
+            const data = JSON.stringify(Object.fromEntries(formData.entries()))
 
             fetch('/auth/login', {
                 method: 'POST',
@@ -68,7 +68,7 @@
                         formErrors.classList = 'col md-12 alert alert-warning mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
-                        document.getElementById('loginForm').appendChild(formErrors);
+                        document.getElementById('loginForm').appendChild(formErrors)
 
                     } else {
                         window.location.href = data.nextUrl
