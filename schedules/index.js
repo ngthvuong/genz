@@ -14,11 +14,11 @@ const commands = {
 }
 
 schedule.dispatch = () => {
-    nodeSchedule.scheduleJob('*/5 * * * *', async () => {
+    nodeSchedule.scheduleJob('*/2 * * * *', async () => {
         console.log('Running order update schedule...' + new Date())
         await commands.updateTransferPendingStatus()
     })
-    nodeSchedule.scheduleJob('* */1 * * *', async () => {
+    nodeSchedule.scheduleJob('0 */1 * * *', async () => {
         console.log('Running campaign update schedule...' + new Date())
         await commands.updateCampaignStatus()
     })
