@@ -1,6 +1,5 @@
 'use strict';
 const { Province, HeatMap, HeatMapProvince } = require('../models');
-const heatmap = require('../models/heatmap');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
