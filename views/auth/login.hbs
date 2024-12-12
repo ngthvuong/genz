@@ -15,7 +15,8 @@
                         <label for="phone">Số điện thoại</label>
                     </div>
                     <div class="form-floating mb-4">
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu">
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="Mật khẩu">
                         <label for="password">Mật khẩu</label>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mb-4">
@@ -59,17 +60,12 @@
                 })
                 .then(data => {
                     if (data.errors) {
-
-                        let messages = ''
-                        data.errors.forEach(error => {
-                            messages += `<p>${error.msg}</p>`
-                        })
+                        let messages = '<p>Tên đăng nhập hoặc mật khẩu không hợp lệ!</p>'
                         formErrors = document.createElement('div')
                         formErrors.classList = 'col md-12 alert alert-warning mt-3'
                         formErrors.id = "formErrors"
                         formErrors.innerHTML = messages
                         document.getElementById('loginForm').appendChild(formErrors)
-
                     } else {
                         window.location.href = data.nextUrl
                     }
