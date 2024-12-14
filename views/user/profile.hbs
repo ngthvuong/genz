@@ -33,11 +33,11 @@
 
                 <!--Edit Profile Modal -->
                 <div class="modal fade" id="showEditProfile" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    aria-labelledby="editProfileFormTitle" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <form class="modal-content" id="editProfileForm">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Sửa Thông Tin Tài Khoản</h5>
+                                <h5 class="modal-title" id="editProfileFormTitle">Sửa Thông Tin Tài Khoản</h5>
                                 <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
                                 </button>
                             </div>
@@ -133,7 +133,6 @@
             changePassBox.classList.add("d-none")
         } else {
             changePassBox.classList.remove("d-none")
-
         }
     }
     document.addEventListener('DOMContentLoaded', function () {
@@ -175,6 +174,10 @@
                         }
 
                         document.getElementById("closeEditProfileModal").click()
+
+                        document.getElementById("password").value = ""
+                        document.getElementById("confirmPassword").value = ""
+                        document.getElementById("isChangePassword").click()
                     }
                 })
                 .catch(error => {

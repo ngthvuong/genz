@@ -75,17 +75,21 @@ const createStarList = function (stars) {
     return str
 }
 const escapeHtml = function (str) {
-    return str.replace(/[&<>"'`=/]/g, function(match) {
-        switch (match) {
-            case '&': return '&amp;';
-            case '<': return '&lt;';
-            case '>': return '&gt;';
-            case '"': return '&quot;';
-            case "'": return '&#039;';
-            case '`': return '&#96;';
-            case '=': return '&#61;';
-            case '/': return '&#47;';
-            default: return match;
-        }
-    });
+    if(str){
+        return str.replace(/[&<>"'`=/]/g, function(match) {
+            switch (match) {
+                case '&': return '&amp;';
+                case '<': return '&lt;';
+                case '>': return '&gt;';
+                case '"': return '&quot;';
+                case "'": return '&#039;';
+                case '`': return '&#96;';
+                case '=': return '&#61;';
+                case '/': return '&#47;';
+                default: return match;
+            }
+        })
+    }
+    return str
+
 }
