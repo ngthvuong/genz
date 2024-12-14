@@ -33,10 +33,10 @@ handlebars.registerHelper('campaignStatusText', function (status) {
             statusText = "Đang thực hiện"
             break
         case 'Closed':
-            statusText = "Đã kết thúc"
+            statusText = "Đã đóng"
             break
         case 'Finished':
-            statusText = "Đã đóng"
+            statusText = "Đã kết thúc"
             break
     }
     return statusText
@@ -71,17 +71,6 @@ handlebars.registerHelper('convertUserRole', function (role) {
         VNRole = "Người Đóng Góp"
     } else if (role == "recipient") {
         VNRole = "Người Nhận Quyên Góp"
-    }
-    return VNRole
-})
-handlebars.registerHelper('convertCampaignStatus', function (role) {
-    let VNRole = "Đã Kết Thúc"
-    if (role == "Planning") {
-        VNRole = "Kế Hoạch"
-    } else if (role == "Running") {
-        VNRole = "Đang Thực Hiện"
-    } else if (role == "Closed") {
-        VNRole = "Đã Đóng"
     }
     return VNRole
 })

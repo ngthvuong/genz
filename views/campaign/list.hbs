@@ -45,7 +45,7 @@
                     <td class="text-center">{{dateFormat startDate}}</td>
                     <td class="text-center">{{dateFormat endDate}}</td>
 
-                    <td class="{{status}}_status_color">{{convertCampaignStatus status}}</td>
+                    <td class="{{status}}_status_color">{{campaignStatusText status}}</td>
                     <td>
                         {{#if (neq status "Finished")}}
                         <a class="btn btn-sm btn-primary" href="/campaign/edit/{{id}}">Sửa</a>
