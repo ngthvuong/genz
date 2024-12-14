@@ -1,8 +1,12 @@
 {{#with campaign}}
 <div class="rows m-3 position-relative">
     <h4>Sao Kê Chiến Dịch Từ Thiện</h4>
-    <a class="btn btn-success report_statement_download" onclick="exportStatement()" href="javascript:void(0)">Tải
-        Về</a>
+    <div class="report_statement_download">
+        <a class="btn btn-secondary" href="/report/{{id}}">Về Trang Chiến Dịch</a>
+        <a class="btn btn-success" onclick="exportStatement()" href="javascript:void(0)">Tải
+            Về</a>
+    </div>
+
 </div>
 <div class="rows m-3">
     <h5>Tổng Quan</h5>
