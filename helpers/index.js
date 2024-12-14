@@ -95,7 +95,7 @@ handlebars.registerHelper('convertHeatMapStatus', function (role) {
 })
 
 handlebars.registerHelper('createStarList', function (stars) {
-    let str = '<div class="rating d-flex justify-content-center">'
+    let str = '<div class="rating">'
 
     let fullStars = Math.floor(stars)
     let halfStar = stars - fullStars

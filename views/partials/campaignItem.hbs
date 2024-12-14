@@ -4,7 +4,9 @@
             <img class="image" class="w-100" src="{{firstImage.imagePath}}" alt="{{name}}"
                 onerror="this.src='/img/logo.svg';" />
         </div>
-        {{{createStarList averageRating}}}
+        <div class="d-flex justify-content-center">
+            {{{createStarList averageRating}}}
+        </div>
         <p class="text-bold text-primary text-center mb-0 mt-3">{{name}}</p>
     </a>
 </div>
