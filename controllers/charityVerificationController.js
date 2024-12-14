@@ -7,6 +7,7 @@ const campaignService = require('../services/campaignService')
 
 controller.share = (req, res, next) => {
     res.locals.searchUrl = "/charity-verification"
+    res.locals.searchPlaceHolder = "Tìm kiếm tổ chức từ thiện"
     next()
 }
 

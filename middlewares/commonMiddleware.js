@@ -6,6 +6,8 @@ middleware.setShareVariables = () => {
     return async (req, res, next) => {
         res.locals.appName = process.env.APP_NAME
         res.locals.searchUrl = "/report"
+        res.locals.searchPlaceHolder = "Tìm kiếm chiến dịch"
+
         res.locals.heatMapData = await middleware.getHeatMap()
         next()
     }

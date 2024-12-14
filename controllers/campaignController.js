@@ -9,6 +9,7 @@ const controller = {}
 
 controller.share = (req, res, next) => {
     res.locals.searchUrl = "/campaign"
+    res.locals.searchPlaceHolder = "Tìm kiếm chiến dịch"
     next()
 }
 

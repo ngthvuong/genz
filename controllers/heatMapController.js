@@ -8,6 +8,7 @@ const { Op } = require('sequelize')
 
 controller.share = (req, res, next) => {
     res.locals.searchUrl = "/heatmap/manage/list"
+    res.locals.searchPlaceHolder = "Tìm kiếm tổ chức bản đồ nhiệt"
     next()
 }
 
