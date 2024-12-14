@@ -102,11 +102,12 @@ class UploadHandler {
             }
 
             fs.writeFile(destinationPath, buffer, (err) => {
+                delete req.file.buffer
+
                 if (err) {
                     console.error("Error writing file:", err);
                     throw new Error('Có lỗi trong quá trình lưu tệp tin.');
                 }
-
                 resolve({
                     fileName: fullName,
                     dirPath: this.getFullDirPath().replace(/\\/g, '/'),
