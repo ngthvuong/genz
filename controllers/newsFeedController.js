@@ -11,7 +11,14 @@ const controller = {}
 controller.create = async (req, res) => {
     try {
         const { campaignID, content, title } = req.body
-        const campaign = await models.Campaign.findOne({ where: { id: campaignID } })
+        const campaign = await models.Campaign.findOne({
+            where: {
+                id: campaignID,
+                status: {
+                    [Op.ne]: "Planning",
+                }
+            }
+        })
         if (!campaign) {
             throw new Error("Chiến dịch không tồn tại!")
         }

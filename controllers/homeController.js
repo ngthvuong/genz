@@ -16,12 +16,18 @@ controller.show = async (req, res) => {
         include: [
             {
                 model: models.Campaign,
-                attributes:["id", "name"]
+                attributes: ["id", "name"],
+                separate: true,
+                where: {
+                    status: {
+                        [Op.ne]: "Planning",
+                    }
+                }
             }
         ]
     })
 
-    res.render('home', {charity})
+    res.render('home', { charity })
 }
 
 controller.errorPage = async (req, res) => {
