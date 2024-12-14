@@ -5,11 +5,16 @@ const errors = {
 }
 
 errors.add = function (error) {
-    this.data.push(error)
+    const hasMessage = this.data.some(existingError => existingError.msg === error.msg)
+    if (!hasMessage) {
+        this.data.push(error)
+    }
     return this
 }
 errors.multiAdd = function (errorList) {
-    this.data.push(...errorList)
+    errorList.forEach(error => {
+        this.add(error)
+    })
     return this
 }
 errors.get = function () {

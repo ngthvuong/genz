@@ -11,9 +11,9 @@ const validation = handle([
         .notEmpty().withMessage("Vui lòng chọn phương thức thanh toán!"),
     body('amount')
         .trim()
-        .notEmpty().withMessage("Vui lòng nhập số tiền đóng góp!")
-        .isInt({ min: 10000 }).withMessage("Số tiền đóng góp phải lớn hơn 10.000 VNĐ!")
-        .isInt({ max: 50000000 }).withMessage("Số tiền đóng góp phải nhỏ hơn 50.000.000 VNĐ!"),
+        .notEmpty().withMessage("Số tiền nhập không hợp lệ, xin lui lòng đảm bảo giá trị nhập lớn hơn 10000 VND và nhỏ hơn 50000000 VND")
+        .isInt({ min: 10000 }).withMessage("Số tiền nhập không hợp lệ, xin lui lòng đảm bảo giá trị nhập lớn hơn 10000 VND và nhỏ hơn 50000000 VND")
+        .isInt({ max: 50000000 }).withMessage("Số tiền nhập không hợp lệ, xin lui lòng đảm bảo giá trị nhập lớn hơn 10000 VND và nhỏ hơn 50000000 VND"),
     body('message')
         .trim()
         .notEmpty().withMessage("Vui lòng nhập nội dung đóng góp!")        
