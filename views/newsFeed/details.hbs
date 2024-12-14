@@ -30,11 +30,11 @@
             </div>
             <div class="col-12 mt-5 d-flex align-items-center gap-2">
                 {{#if ../isLiked}}
-                <button type="button" class="btn btn-sm btn-secondary d-inline" id="touchFeelingButton"
-                    onclick="touchNewsFeedFeeling()">bỏ thích</button>
-                {{else}}
                 <button type="button" class="btn btn-sm btn-primary d-inline" id="touchFeelingButton"
-                    onclick="touchNewsFeedFeeling()">thích</button>
+                    onclick="touchNewsFeedFeeling()"><i class="bi bi-hand-thumbs-up fs-6"></i></button>
+                {{else}}
+                <button type="button" class="btn btn-sm btn-secondary d-inline" id="touchFeelingButton"
+                    onclick="touchNewsFeedFeeling()"><i class="bi bi-hand-thumbs-up fs-6"></i></button>
                 {{/if}}
                 <span>Bài viết có <span class="fw-bold" id="totalFeelings">{{NewsFeedFeelings.length}}</span> lượt
                     thích!</span>
@@ -155,17 +155,15 @@
         const touchFeelingButton = document.querySelector("#touchFeelingButton")
         if (newsFeedID == "{{newsFeed.id}}") {
             if (newFeeling) {
-                touchFeelingButton.classList.add('btn-secondary')
-                touchFeelingButton.classList.remove('btn-primary')
-                touchFeelingButton.innerText = 'bỏ thích'
+                touchFeelingButton.classList.add('btn-primary')
+                touchFeelingButton.classList.remove('btn-secondary')
 
                 totalFeelings++
                 document.querySelector("#totalFeelings").innerText = totalFeelings
 
             } else {
-                touchFeelingButton.classList.add('btn-primary')
-                touchFeelingButton.classList.remove('btn-secondary')
-                touchFeelingButton.innerText = 'thích'
+                touchFeelingButton.classList.add('btn-secondary')
+                touchFeelingButton.classList.remove('btn-primary')
 
                 totalFeelings--
                 document.querySelector("#totalFeelings").innerText = totalFeelings
