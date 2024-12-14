@@ -1,12 +1,12 @@
 {{#if charity}}
-<div class="container-fluid px-4">
-    <div>
+<div class="container-fluid px-4 createNewFeedContainer">
+    <div class="createNewFeed">
         <input class="btn btn-sm btn-success" type="button" value="Tạo Bài Viết" onClick="toggleNewsFeedForm()">
     </div>
-    <div class="rows d-none mt-3" id="newsFeedFormBox">
+    <div class="rows d-none" id="newsFeedFormBox">
         <h4>Thêm Bảng Tin Mới</h4>
         <form class="col-12" id="newsFeedForm">
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-3 mt-3">
                 <select class="form-select" id="campaignID" name="campaignID" aria-label="Bảng tin về chiến dịch">
                     <option value="" selected="">Chọn chiến dịch</option>
                     {{#each charity.Campaigns}}

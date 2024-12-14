@@ -241,3 +241,11 @@ body {
     top: 10px;
     left: 10px;
 }
+.createNewFeedContainer{
+    position: relative;
+}
+.createNewFeed{
+    position: absolute;
+    top: 0px;
+    right: 15px;
+}
