@@ -63,7 +63,7 @@ controller.showUnapprovedCharityList = async (req, res) => {
     const pendingUsers = await models.User.findAll(options)
 
     pendingUsers.forEach(user => {
-        campaignService.averageCharityRating(user.Charity)
+        user.Charity.averageCharityRating = 0
     })
 
     const pagination = {
