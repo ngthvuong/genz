@@ -1,10 +1,9 @@
 {
   "development": {
-    "username": "genz",
-    "password": "!@34qwER",
+    "username": "postgres",
+    "password": "postgres",
     "database": "genz",
-    "host": "45.251.114.223",
-    "port": "5432",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
