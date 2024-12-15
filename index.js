@@ -9,6 +9,13 @@ const port = process.env.PORT || 3060
 const path = require('path')
 const hbs = require('express-handlebars')
 const session = require('express-session')
+const redisStore = require("connect-redis").default
+const { createClient } = require("redis")
+const redisClient = createClient({
+    url: process.env.REDIS_URL
+})
+redisClient.connect().catch(console.error)
+
 const cors = require('cors')
 const { createPagination } = require("express-handlebars-paginate")
 
@@ -21,6 +28,7 @@ app.use(express.urlencoded({ extended: true }))
 
 const sessionMiddleware = session({
     secret: process.env.SESSION_SECRET,
+    store: new redisStore({ client: redisClient }),
     resave: false,
     saveUninitialized: false,
     cookie: {
