@@ -20,7 +20,9 @@ handlebars.registerHelper('formatAmount', function (amount) {
 })
 
 handlebars.registerHelper('nToBr', function (string) {
-    return string.replace(/\n/g, "<br>")
+    if (!string) return string
+    const escapedString = handlebars.helpers.escapeHtml(string)
+    return escapedString.replace(/\n/g, "<br>")
 })
 
 handlebars.registerHelper('campaignStatusText', function (status) {
@@ -106,12 +108,28 @@ handlebars.registerHelper('createStarList', function (stars) {
 
     return str
 })
-handlebars.registerHelper('eq', (a, b) => a === b);
-handlebars.registerHelper('neq', (a, b) => a !== b);
+handlebars.registerHelper('eq', (a, b) => a === b)
+handlebars.registerHelper('neq', (a, b) => a !== b)
 
-handlebars.registerHelper('parseInt', (number) => parseInt(number));
-
-
+handlebars.registerHelper('parseInt', (number) => parseInt(number))
+handlebars.registerHelper('escapeHtml', function (str) {
+    if(str){
+        return str.replace(/[&<>"'`=/]/g, function(match) {
+            switch (match) {
+                case '&': return '&amp;';
+                case '<': return '&lt;';
+                case '>': return '&gt;';
+                case '"': return '&quot;';
+                case "'": return '&#039;';
+                case '`': return '&#96;';
+                case '=': return '&#61;';
+                case '/': return '&#47;';
+                default: return match;
+            }
+        })
+    }
+    return str
+})
 
 module.exports = {
     incrementedIndex: handlebars.helpers.incrementedIndex,
@@ -130,5 +148,5 @@ module.exports = {
     neq: handlebars.helpers.neq,
     parseInt: handlebars.helpers.parseInt,
     convertHeatMapStatus: handlebars.helpers.convertHeatMapStatus,
-
+    escapeHtml: handlebars.helpers.escapeHtml,
 }

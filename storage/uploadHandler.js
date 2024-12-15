@@ -84,7 +84,7 @@ class UploadHandler {
     saveFile(req) {
         return new Promise(async (resolve, reject) => {
             if (!req.file) {
-                throw new Error('File is not provided in the request.');
+                return reject(new Error('Vui lòng upload file!'))
             }
 
             await this.setFileName(req)
@@ -106,7 +106,7 @@ class UploadHandler {
 
                 if (err) {
                     console.error("Error writing file:", err);
-                    throw new Error('Có lỗi trong quá trình lưu tệp tin.');
+                    return reject(new Error('Có lỗi trong quá trình lưu tệp tin hoặc tên bài viết chứa ký tự đặt biệt!'))
                 }
                 resolve({
                     fileName: fullName,
