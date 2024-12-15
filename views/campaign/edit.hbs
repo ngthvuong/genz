@@ -93,7 +93,8 @@
                 <div class="row col-12 mt-4 align-items-end">
                     {{#if firstImage}}
                     <div class="col-2">
-                        <img src="{{firstImage.imagePath}}" class="col-12">
+                        <img class="col-12" style="width:50px" src="{{firstImage.imagePath}}" alt="{{name}}"
+                            onerror="this.src='/img/logo.svg';" />
                     </div>
                     {{/if}}
 

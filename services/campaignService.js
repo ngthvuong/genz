@@ -46,18 +46,21 @@ campaignService.averageRatingItem = (campaign) => {
 }
 
 campaignService.calTotalParams = async (campaign) => {
-    campaign.totalContribution = await models.Transaction.sum('amount', {
+    const totalContribution = await models.Transaction.sum('amount', {
         where: {
             campaignID: campaign.id,
             type: "Contribution"
         }
     })
-    campaign.totalDistribution = await models.Transaction.sum('amount', {
+    campaign.totalContribution = totalContribution ? totalContribution : 0
+
+    const totalDistribution = await models.Transaction.sum('amount', {
         where: {
             campaignID: campaign.id,
             type: "Distribution"
         }
     })
+    campaign.totalDistribution = totalDistribution ? totalDistribution : 0
     campaign.totalRemaining = campaign.totalContribution - campaign.totalDistribution
 }
 

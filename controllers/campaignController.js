@@ -4,6 +4,8 @@ const campaignStore = require("../storage/campaignStore")
 const models = require("../models")
 const { Op } = require('sequelize')
 const moment = require("moment")
+const campaignService = require("../services/campaignService")
+
 
 const controller = {}
 
@@ -247,6 +249,11 @@ controller.editCampaign = async (req, res) => {
             const endDate = moment(campaignEndDate, 'YYYY-MM-DD').tz(process.env.TIME_ZONE)
             if (!endDate.isAfter(today)) {
                 throw new Error("Ngày kết thúc phải lớn hơn ngày hiện tại!")
+            }
+
+            await campaignService.calTotalParams(updatedCampaign)
+            if(campaignBudget < updatedCampaign.totalContribution){
+                throw new Error("Ngân sách mới nhỏ hơn tổng lượng đóng góp hiện tại!")
             }
             updatedCampaign.name = campaignName
             updatedCampaign.endDate = campaignEndDate
