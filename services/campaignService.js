@@ -49,7 +49,8 @@ campaignService.calTotalParams = async (campaign) => {
     const totalContribution = await models.Transaction.sum('amount', {
         where: {
             campaignID: campaign.id,
-            type: "Contribution"
+            type: "Contribution",
+            status: "Success"
         }
     })
     campaign.totalContribution = totalContribution ? totalContribution : 0
@@ -57,7 +58,8 @@ campaignService.calTotalParams = async (campaign) => {
     const totalDistribution = await models.Transaction.sum('amount', {
         where: {
             campaignID: campaign.id,
-            type: "Distribution"
+            type: "Distribution",
+            status: "Success"
         }
     })
     campaign.totalDistribution = totalDistribution ? totalDistribution : 0

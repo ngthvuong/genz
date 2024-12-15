@@ -4,6 +4,8 @@ const { Op } = require('sequelize')
 const models = require('../models')
 const payment = require("../services/payment")
 const errors = require("../services/responseErrors")
+const campaignService = require("../services/campaignService")
+
 const controller = {}
 
 controller.showList = async (req, res) => {
@@ -65,9 +67,9 @@ controller.show = async (req, res) => {
                 }
             ]
         })
-        if (!campaign) return res.status(404).send("Chiến dịch không tồn tại")
-        if (campaign.status === 'Closed' || campaign.status === 'Finished') {
-            return res.status(403).send("Chiến dịch này không còn mở để nhận quyên góp")
+
+        if (!campaign || campaign.status === 'Closed' || campaign.status === 'Finished') {
+            return res.redirect("/")
         }
         const paymentMethods = await models.PaymentMethod.findAll({ where: { type: 'online' } })
         res.render("transaction/transfer", { campaign, paymentMethods })
@@ -81,9 +83,27 @@ controller.transfer = async (req, res) => {
     try {
         const { campaignID, paymentMethodID, amount, message } = req.body
 
-        const campaign = await models.Campaign.findByPk(campaignID)
+        const campaign = await models.Campaign.findOne({
+            where: {
+                id: campaignID,
+                status: {
+                    [Op.eq]: "Running"
+                }
+            }
+        })
         if (!campaign) {
             throw new Error("Chiến dịch không tồn tại")
+        }
+
+        await campaignService.calTotalParams(campaign)
+        const availableAmount = campaign.budget - campaign.totalContribution
+
+        if (availableAmount < parseFloat(amount)) {
+            const availableAmountFormat = Number(availableAmount).toLocaleString(
+                'vi-VN',
+                { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+            )
+            throw new Error(`Số tiền đóng vượt mức ngân sách còn lại (${availableAmountFormat} VNĐ)!`)
         }
 
         const receiverUser = await models.User.findOne({

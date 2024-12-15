@@ -252,7 +252,7 @@ controller.editCampaign = async (req, res) => {
             }
 
             await campaignService.calTotalParams(updatedCampaign)
-            if(campaignBudget < updatedCampaign.totalContribution){
+            if (campaignBudget < updatedCampaign.totalContribution) {
                 throw new Error("Ngân sách mới nhỏ hơn tổng lượng đóng góp hiện tại!")
             }
             updatedCampaign.name = campaignName
@@ -579,6 +579,18 @@ controller.createContribution = async (req, res) => {
         if (!campaign) {
             throw new Error("Chiến Dịch không tồn tại!")
         }
+
+        await campaignService.calTotalParams(campaign)
+        const availableAmount = campaign.budget - campaign.totalContribution
+
+        if (availableAmount < parseFloat(amount)) {
+            const availableAmountFormat = Number(availableAmount).toLocaleString(
+                'vi-VN',
+                { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+            )
+            throw new Error(`Số tiền đóng vượt mức ngân sách còn lại (${availableAmountFormat} VNĐ)!`)
+        }
+
         const paymentMethod = await models.PaymentMethod.findOne({
             where: {
                 code: "CASH"
@@ -641,6 +653,18 @@ controller.createDistribution = async (req, res) => {
         if (!campaign) {
             throw new Error("Chiến Dịch không tồn tại!")
         }
+
+        await campaignService.calTotalParams(campaign)
+        const availableAmount = campaign.totalContribution - campaign.totalDistribution
+
+        if (availableAmount < parseFloat(amount)) {
+            const availableAmountFormat = Number(availableAmount).toLocaleString(
+                'vi-VN',
+                { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+            )
+            throw new Error(`Số tiền đóng vượt số đóng góp chưa cứu trợ còn lại (${availableAmountFormat} VNĐ)!`)
+        }
+
         const paymentMethod = await models.PaymentMethod.findOne({
             where: {
                 code: "CASH"
@@ -793,6 +817,19 @@ controller.editContribution = async (req, res) => {
             throw new Error("Khoản đóng góp không tồn tại!")
         }
 
+
+
+        await campaignService.calTotalParams(campaign)
+        const availableAmount = campaign.budget - campaign.totalContribution + parseFloat(contribution.amount)
+
+        if (availableAmount < parseFloat(amount)) {
+            const availableAmountFormat = Number(availableAmount).toLocaleString(
+                'vi-VN',
+                { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+            )
+            throw new Error(`Số tiền đóng vượt mức ngân sách còn lại (${availableAmountFormat} VNĐ)!`)
+        }
+
         contribution.sender = sender
         contribution.amount = amount
         contribution.message = message
@@ -853,6 +890,17 @@ controller.editDistribution = async (req, res) => {
         })
         if (!distribution) {
             throw new Error("Khoản cứu trợ không tồn tại!")
+        }
+
+        await campaignService.calTotalParams(campaign)
+        const availableAmount = campaign.totalContribution - campaign.totalDistribution + parseFloat(distribution.amount)
+
+        if (availableAmount < parseFloat(amount)) {
+            const availableAmountFormat = Number(availableAmount).toLocaleString(
+                'vi-VN',
+                { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+            )
+            throw new Error(`Số tiền đóng vượt số đóng góp chưa cứu trợ còn lại (${availableAmountFormat} VNĐ)!`)
         }
 
         distribution.receiver = receiver
