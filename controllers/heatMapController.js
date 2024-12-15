@@ -100,7 +100,7 @@ controller.insert = async (req, res) => {
                 heatMapPoints.push({
                     heatMapID: heatMap.id,
                     provinceCode: heatmap.code[i],
-                    value: heatmap.value[i]
+                    value: parseFloat(heatmap.value[i])
                 })
             }
         }
@@ -186,10 +186,10 @@ controller.update = async (req, res) => {
                     newHeatMapPoints.push({
                         heatMapID: id,
                         provinceCode: heatmap.code[i],
-                        value: heatmap.value[i]
+                        value: parseFloat(heatmap.value[i])
                     })
                 } else {
-                    point.value = heatmap.value[i]
+                    point.value = parseFloat(heatmap.value[i])
                     await point.save()
                 }
 
