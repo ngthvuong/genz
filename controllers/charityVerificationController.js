@@ -109,11 +109,12 @@ controller.showPendingCharityDetails = async (req, res) => {
         }
         ]
     })
-    campaignService.averageCharityRating(pendingCharity)
 
     if (!pendingCharity) {
         return res.redirect("/")
     }
+
+    pendingCharity.averageCharityRating = 0
 
     res.locals.charity = pendingCharity
     res.render('charity/pending-charity-detail')
