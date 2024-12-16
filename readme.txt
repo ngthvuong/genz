@@ -21,4 +21,4 @@
 	- Đối với môi trường dev, khởi động ứng dụng bằng lệnh `npx nodemon`
 	- Đối với môi trường production
         + Cài đặt pm2: sudo npm install -g pm2
-        + tạo tiến trình cho ứng dụng: pm2 start index.js --watch --ignore-watch="node_modules logs" --update-env --name genz
+        + tạo tiến trình cho ứng dụng: pm2 start index.js --watch --name genz
