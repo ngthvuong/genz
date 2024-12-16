@@ -177,42 +177,44 @@
                 })
         })
 
+        const submitFinishedCampaign = document.getElementById('submitFinishedCampaign')
+        if (submitFinishedCampaign) {
+            submitFinishedCampaign.addEventListener('click', function (event) {
+                event.preventDefault()
 
-        document.getElementById('submitFinishedCampaign').addEventListener('click', function (event) {
-            event.preventDefault()
+                let formErrors = document.getElementById('formErrors')
+                if (formErrors) {
+                    formErrors.remove()
+                }
 
-            let formErrors = document.getElementById('formErrors')
-            if (formErrors) {
-                formErrors.remove()
-            }
+                fetch('/campaign/finished/{{id}}', {
+                    method: 'POST'
+                })
+                    .then(response => {
+                        return response.json()
+                    })
+                    .then(data => {
+                        if (data.errors) {
 
-            fetch('/campaign/finished/{{id}}', {
-                method: 'POST'
+                            let messages = ''
+                            data.errors.forEach(error => {
+                                messages += `<p>${error.msg}</p>`
+                            })
+                            formErrors = document.createElement('div')
+                            formErrors.classList = 'col md-12 alert alert-warning mt-3'
+                            formErrors.id = "formErrors"
+                            formErrors.innerHTML = messages
+                            document.getElementById('editCampaignForm').appendChild(formErrors)
+
+                        } else {
+                            window.location.href = data.redirectURL
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error)
+                    })
             })
-                .then(response => {
-                    return response.json()
-                })
-                .then(data => {
-                    if (data.errors) {
-
-                        let messages = ''
-                        data.errors.forEach(error => {
-                            messages += `<p>${error.msg}</p>`
-                        })
-                        formErrors = document.createElement('div')
-                        formErrors.classList = 'col md-12 alert alert-warning mt-3'
-                        formErrors.id = "formErrors"
-                        formErrors.innerHTML = messages
-                        document.getElementById('editCampaignForm').appendChild(formErrors)
-
-                    } else {
-                        window.location.href = data.redirectURL
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error)
-                })
-        })
+        }
     })
 </script>
 {{/with}}
