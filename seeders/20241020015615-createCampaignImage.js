@@ -21,7 +21,7 @@ module.exports = {
     campaigns.forEach(campaign => {
         campaignImages.push(
           {
-            imagePath: "/media/campaigns/"+campaign.id+"_1.jpg",
+            imagePath: "/media/campaigns/1_1.jpg",
             campaignID: campaign.id
           },
         )
